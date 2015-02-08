@@ -25,5 +25,5 @@ class TestSequenceFunctions(unittest.TestCase):
         for element in random.sample(self.seq, 5):
             self.assertTrue(element in self.seq)
 
-if __name__ == '__main__':
-    unittest.main()
+suite = unittest.TestLoader().loadTestsFromTestCase(TestSequenceFunctions)
+unittest.TextTestRunner(verbosity=2).run(suite)
