@@ -1,11 +1,7 @@
 language: python
 python:
-  - "2.6"
   - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: PLEASE CHANGE ME
+#install: PLEASE CHANGE ME
 # command to run tests, e.g. python setup.py test
-script:  PLEASE CHANGE ME
+script:  python testingtravis.py
