@@ -3,33 +3,52 @@ import subprocess
 import sys
 import os
 import shutil
-import time
 
-os_version = sys.platform
 
-if 'linux' in os_version:
-    #Install Bitmessage dependencies
-    subprocess.call(["apt-get install openssl git python-qt4"], shell=True)
+def check_config_creation():
+    """Checks whether PyBitmessage has created its keys.dat file
 
-    #Install PyBitmessage from github
+    Linux specific for now, but will be modified for other operating systems
+    """
+
+    return os.path.exists(os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
+
+
+def linux_install():
+    """Generic installation for linux operating systems
+
+    Currently requires sudo to be installed
+    Needs more testing
+    """
+
+    subprocess.call(["sudo apt-get install openssl git python-qt4"], shell=True)
+
     try:
         subprocess.call(["git clone https://github.com/Bitmessage/PyBitmessage $HOME/PyBitmessage"], shell=True)
     except:
         print 'PyBitmessage already installed or we received a permission denied error'
 
-    #Used to ignore the ENORMOUS amount of output generated from running PyBitmessage
-    DEVNULL = open(os.devnull, 'wb')
+    devnull = open(os.devnull, 'wb')  #Used to ignore the enormous amount of output from PyBitmessage
 
-    #Start up PyBitmessage (have to do this in order for ~/.config/PyBitmessage to be created)
-    process = subprocess.Popen(["exec " + RUN_PYBITMESSAGE], shell=True, stdout=DEVNULL, stderr=DEVNULL)
+    process = subprocess.Popen(["exec " + RUN_PYBITMESSAGE], shell=True, stdout=devnull, stderr=devnull)  #Run Pybitmessage so it can create the keys.dat file
 
-    #Sleep for a second so that the above process has enough time to create ~/.config/PyBitmessage
-    time.sleep(1)
+    while not check_config_creation():  #Wait until PyBitmessage creates the appropriate .config file structure
+        pass
 
-    #Kill the process since we don't need it running for the rest of the installation
     process.kill()
 
-    #Copy our modified keys.dat file to the user's ~/.config/PyBitmessage
-    shutil.copyfile("./config/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
-else:
+    shutil.copyfile("./config/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))  #Copy our modified keys.dat file to the user's ~/.config/PyBitmessage
+
+
+def windows_install():
     print 'FATAL ERROR: We detected you are using an inferior operating system to Linux...'
+
+if __name__ == '__main__':
+    os_version = sys.platform
+    if 'linux' in os_version:
+        linux_install()
+        print 'Installation Completed'
+    elif 'windows' in os_version:
+        windows_install()
+    else:
+        print "Couldn't detect a valid operating system"
