@@ -28,16 +28,19 @@ def linux_install():
     except:
         print 'PyBitmessage already installed or we received a permission denied error'
 
-    devnull = open(os.devnull, 'wb')  #Used to ignore the enormous amount of output from PyBitmessage
+    devnull = open(os.devnull, 'wb')  # Used to ignore the enormous amount of output from PyBitmessage
 
-    process = subprocess.Popen(["exec " + RUN_PYBITMESSAGE], shell=True, stdout=devnull, stderr=devnull)  #Run Pybitmessage so it can create the keys.dat file
+    # Run Pybitmessage so it can create the keys.dat file
+    process = subprocess.Popen(["exec " + RUN_PYBITMESSAGE], shell=True, stdout=devnull, stderr=devnull)
 
-    while not check_config_creation():  #Wait until PyBitmessage creates the appropriate .config file structure
+    # Wait until PyBitmessage creates the appropriate .config file structure
+    while not check_config_creation():
         pass
 
     process.kill()
 
-    shutil.copyfile("./config/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))  #Copy our modified keys.dat file to the user's ~/.config/PyBitmessage
+    # Copy our modified keys.dat file to the user's ~/.config/PyBitmessage
+    shutil.copyfile("./config/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
 
 
 def windows_install():
