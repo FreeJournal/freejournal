@@ -31,7 +31,7 @@ def linux_install():
     devnull = open(os.devnull, 'wb')  # Used to ignore the enormous amount of output from PyBitmessage
 
     # Run Pybitmessage so it can create the keys.dat file
-    process = subprocess.Popen(["exec " + RUN_PYBITMESSAGE], shell=True, stdout=devnull, stderr=devnull)
+    process = subprocess.Popen(["exec " + RUN_PYBITMESSAGE_LINUX], shell=True, stdout=devnull, stderr=devnull)
 
     # Wait until PyBitmessage creates the appropriate .config file structure
     while not check_config_creation():
