@@ -4,16 +4,17 @@ import subprocess
 import os
 import sys
 from config.config import *
-from bitmessage_file import BitMessageFile
 import base64
+import json
 
 
 class Bitmessage():
     def __init__(self):
         self.os = sys.platform
-        print 'Starting BitMessage on ' + self.os
+        print('Starting BitMessage on ' + self.os)
 
         self.__startup()
+        self.subscribe(MAIN_CHANNEL_ADDRESS, "FreeJournal Main Channel")
 
     def __startup(self):
         #Try connecting via the api first to see if PyBitmessage is already running
@@ -33,7 +34,7 @@ class Bitmessage():
             except:
                 pass
 
-    print 'Connected successfully'
+        print('Connected successfully')
 
     def _api_connect(self):
         """Connect to the Bitmessage client
@@ -50,42 +51,72 @@ class Bitmessage():
             # Start up PyBitmessage
             subprocess.Popen([RUN_PYBITMESSAGE_LINUX], shell=True, stdout=devnull, stderr=devnull)
 
-    def broadcast(self, label, subject, message):
-        """Sends a broadcast to subscribers
-        :param label: a valid address label for bitmessage
-        :param subject: base64 encoded text
-        :param message: base64 encoded text
+    def subscribe(self, address, label=None):
+        """Subscribes to an address and gives it an optional label
+        :param address: subscription bitmessage address
+        :param label: (optional) text to associate with address
         """
-        broadcast_address = self.api.createRandomAddress(label)
-        ack_data = self.api.sendBroadcast(broadcast_address, subject, message)
+        #Retrieve a list of current subscriptions
+        subs = self.api.listSubscriptions()
 
-        print 'Sending Broadcast...'
+        #Ensure user isn't already subscribed to the address
+        sub_dict = json.loads(subs)
+        for sub in sub_dict["subscriptions"]:
+            if sub['address'] == address:
+                return
+
+        #Create subscription
+        if label:
+            encoded_label = base64.b64encode(label)
+            self.api.addSubscription(address, encoded_label)
+        else:
+            self.api.addSubscription(address)
+
+    def create_address(self, label):
+        """Creates a random address for the user
+        :param label: text to associate with the address
+        :return: the bitmessage address
+        """
+        encoded_label = base64.b64encode(label)
+        return self.api.createRandomAddress(encoded_label)
+
+    def send_message(self, to_address, from_address, subject, message):
+        """Sends a message to specific address
+        **Useful for communicating with the main channel**
+        :param to_address: a valid address to send to
+        :param from_address: a valid identity address
+        :param subject: text
+        :param message: text
+        """
+
+        encoded_subject = base64.b64encode(subject)
+        encoded_message = base64.b64encode(message)
+        ack_data = self.api.sendMessage(to_address, from_address, encoded_subject, encoded_message)
+
+        print('Sending Message...')
 
         status = ''
         while 'sent' not in status:
             status = self.api.getStatus(ack_data)
-            print status
+            print(status)
             time.sleep(5)
 
+    def send_broadcast(self, from_address, subject, message):
+        """Sends a broadcast to subscribers of the parameter address
+        :param from_address: a valid address identity
+        :param subject: text
+        :param message: text
+        """
 
-if __name__ == '__main__':
-    args = sys.argv
+        encoded_subject = base64.b64encode(subject)
+        encoded_message = base64.b64encode(message)
 
-    if len(args) != 2:
-        print 'Please pass a path to a file'
+        ack_data = self.api.sendBroadcast(from_address, encoded_subject, encoded_message)
 
-    bitmessage = Bitmessage()
+        print('Sending Broadcast...')
 
-    # Create a basic file class
-    bitmessage_file = BitMessageFile(args[1])
-
-    file_hash = bitmessage_file.get_hash()
-    file_name = bitmessage_file.get_file_name()
-
-    # Construct a new address (testing purposes) and broadcast a test message
-    address_label = base64.b64encode(file_name)
-
-    broadcast_subject = base64.b64encode("~Test~")
-    broadcast_message = base64.b64encode(file_hash)
-
-    bitmessage.broadcast(address_label, broadcast_subject, broadcast_message)
+        status = ''
+        while 'sent' not in status:
+            status = self.api.getStatus(ack_data)
+            print(status)
+            time.sleep(5)

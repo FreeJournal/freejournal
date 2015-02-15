@@ -2,3 +2,4 @@
 
 RUN_PYBITMESSAGE_LINUX = "python ~/PyBitmessage/src/bitmessagemain.py"
 BITMESSAGE_SERVER = "http://username:password@0.0.0.0:8442/"
+MAIN_CHANNEL_ADDRESS = "BM-2cXoPUMD6FCtz8tijGhndfnKbfCCGeKuSS"
