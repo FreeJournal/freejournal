@@ -75,6 +75,20 @@ class Bitmessage():
 
         return True
 
+    def check_inbox(self, trash=False):
+        """Returns a json object of all the messages currently in the user's inbox
+        :param trash: boolean indicating whether the messages should be deleted (default is false)
+        :return: json object of messages
+        """
+        messages = self.api.getAllInboxMessages()
+        messages_dict = json.loads(messages)
+
+        if trash:
+            for message in messages_dict['inboxMessages']:
+                self.api.trashMessage(message['msgid'])
+
+        return messages_dict
+
     def create_address(self, label):
         """Creates a random address for the user
         :param label: text to associate with the address

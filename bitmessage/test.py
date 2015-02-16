@@ -15,6 +15,8 @@ if __name__ == '__main__':
     subject = "~Test~"
     message = "Test Message"
 
+    print bitmessage_connection.check_inbox()
+
     #Send a test broadcast
     bitmessage_connection.send_broadcast(address, subject, message)
 
