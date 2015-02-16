@@ -55,6 +55,7 @@ class Bitmessage():
         """Subscribes to an address and gives it an optional label
         :param address: subscription bitmessage address
         :param label: (optional) text to associate with address
+        :return boolean noting success of adding the subscription
         """
         #Retrieve a list of current subscriptions
         subs = self.api.listSubscriptions()
@@ -63,7 +64,7 @@ class Bitmessage():
         sub_dict = json.loads(subs)
         for sub in sub_dict["subscriptions"]:
             if sub['address'] == address:
-                return
+                return False
 
         #Create subscription
         if label:
@@ -71,6 +72,8 @@ class Bitmessage():
             self.api.addSubscription(address, encoded_label)
         else:
             self.api.addSubscription(address)
+
+        return True
 
     def create_address(self, label):
         """Creates a random address for the user
