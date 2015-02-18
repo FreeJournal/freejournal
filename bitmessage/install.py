@@ -40,7 +40,7 @@ def linux_install():
     process.kill()
 
     # Copy our modified keys.dat file to the user's ~/.config/PyBitmessage
-    shutil.copyfile("./config/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
+    shutil.copyfile(os.path.abspath(os.path.join(os.path.dirname(__file__))) + "/config/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
 
 
 def windows_install():
