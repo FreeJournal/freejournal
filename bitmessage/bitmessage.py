@@ -11,7 +11,6 @@ import json
 class Bitmessage():
     def __init__(self):
         self.os = sys.platform
-        print('Starting BitMessage on ' + self.os)
 
         self.__startup()
         self.subscribe(MAIN_CHANNEL_ADDRESS, "FreeJournal Main Channel")
@@ -44,6 +43,7 @@ class Bitmessage():
     def _launch_bitmessage(self):
         """Used to start up the PyBitmessage client so that we can connect to the api
         """
+        print('Starting BitMessage on ' + self.os)
         if 'linux2' in self.os:
             # Used to ignore the ENORMOUS amount of output from PyBitmessage
             devnull = open(os.devnull, 'wb')
@@ -97,6 +97,18 @@ class Bitmessage():
         encoded_label = base64.b64encode(label)
         return self.api.createRandomAddress(encoded_label)
 
+    def get_addresses(self):
+        """Get a list of addresses for the user
+        :return: json object of the addresses
+        """
+        addresses = self.api.listAddresses2()
+        addresses_dict = json.loads(addresses)
+
+        return addresses_dict
+
+    def get_sending_status(self, ack_data):
+        return self.api.getStatus(ack_data)
+
     def send_message(self, to_address, from_address, subject, message):
         """Sends a message to specific address
         **Useful for communicating with the main channel**
@@ -112,11 +124,7 @@ class Bitmessage():
 
         print('Sending Message...')
 
-        status = ''
-        while 'sent' not in status:
-            status = self.api.getStatus(ack_data)
-            print(status)
-            time.sleep(5)
+        return ack_data
 
     def send_broadcast(self, from_address, subject, message):
         """Sends a broadcast to subscribers of the parameter address
@@ -132,8 +140,4 @@ class Bitmessage():
 
         print('Sending Broadcast...')
 
-        status = ''
-        while 'sent' not in status:
-            status = self.api.getStatus(ack_data)
-            print(status)
-            time.sleep(5)
+        return ack_data
