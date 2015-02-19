@@ -33,6 +33,8 @@ class Bitmessage():
             except:
                 pass
 
+        self.api.connect()
+
         print('Connected successfully')
 
     def _api_connect(self):
