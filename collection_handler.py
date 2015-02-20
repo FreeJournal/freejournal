@@ -1,5 +1,5 @@
 from collection import *
-from FJMessage.fj_message import *
+from fj_message import *
 
 import json
 from bitmessage.bitmessage import *
@@ -20,7 +20,7 @@ class CollectionHandler:
         :param address:  the address this collection came from
         :return: True if the signatures match, False otherwise
         """
-        h = hashlib.sha256(fj_message["payload"] + address).hexdigest()
+        h = hashlib.sha256(address + json.dumps(fj_message["payload"], sort_keys=True)).hexdigest()
         if h == fj_message["signature"]:
             print "Signature Verified"
             return True
@@ -37,18 +37,20 @@ class CollectionHandler:
         """
         self.connection.subscribe(address)
         messages = self.connection.check_inbox()
-
-        for message in messages:
-            #decoded_message is a FJMessage
-            decoded_message = base64.b64decode(message["message"])
-            #Trying to filter out spam and non collection messages
-            # TODO Change this filtering technique?
-            if "type_id" in decoded_message["payload"] and decoded_message["payload"]["type_id"] == 1:
-                if self._check_signature(decoded_message, address):
-                    payload = decoded_message["payload"]
-                    return Collection(payload["type_id"], payload["title"], payload["description"],
-                                      payload["keywords"],payload["collection_address"],
-                                      payload["documents"], payload["merkle"], payload["btc"], payload["version"])
+        print messages
+        for message in messages["inboxMessages"]:
+            if message["fromAddress"] == address:
+                #decoded_message is a FJMessage
+                decoded_message = base64.b64decode(message["message"])
+                #Trying to filter out spam and non collection messages
+                # TODO Change this filtering technique?
+                if "type_id" in decoded_message["payload"] and decoded_message["payload"]["type_id"] == 1:
+                    if self._check_signature(decoded_message, address):
+                        payload = decoded_message["payload"]
+                        print "we did it"
+                        return Collection(payload["type_id"], payload["title"], payload["description"],
+                                          payload["keywords"], payload["collection_address"],
+                                          payload["documents"], payload["merkle"], payload["btc"], payload["version"])
         print "Could Not Import Collection"
 
     def create_collection(self, title, description, keywords, documents, address_label):
@@ -64,9 +66,9 @@ class CollectionHandler:
         new_address = self.connection.create_address(address_label)
         new_collection = Collection(1, title, description, keywords, new_address, 1)
         collection_payload = new_collection.to_json()
-        new_fj_message = FJMessage(1, new_address, collection_payload )
-        self.connection.send_message(MAIN_CHANNEL_ADDRESS, new_address, "New Collection - " + title, new_fj_message)
-        self.connection.send_broadcast(new_address, "New Collection - " + title, new_fj_message)
+        new_fj_message = FJMessage(1, new_address, collection_payload)
+        new_fj_message.generate_signature()
+        sendable_fj_message = new_fj_message.to_json()
+        self.connection.send_message("BM-2cXNKHuhYVZoFf6BuzEguXAXkefxEfuKiQ", new_address, "New Collection - " + title, sendable_fj_message)
+        #self.connection.send_broadcast(new_address, "New Collection - " + title, sendable_fj_message)
         return new_collection
-
-

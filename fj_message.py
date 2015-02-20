@@ -1,6 +1,6 @@
 import datetime
 import hashlib
-
+import json
 
 class FJMessage():
 
@@ -17,7 +17,7 @@ class FJMessage():
         self.type_id = type_id
         self.original_sender = original_sender
         self.signature = ''
-        self.time_created = datetime.datetime.now.time()
+        self.time_created = datetime.datetime.now()
         self.payload = payload
 
     def generate_signature(self):
@@ -26,3 +26,12 @@ class FJMessage():
         and the payload of the message
         """
         self.signature = hashlib.sha256(self.original_sender + self.payload).hexdigest()
+
+    def to_json(self):
+        """
+        Creates a json encoding to be sendable in a Bit Message,
+        :return: the json encoding of the message
+        """
+        return json.dumps({"protovol": self.protocol, "type_id": self.type_id, "original_sender": self.original_sender,
+                           "signature": self.signature, "time_created": self.time_created.strftime("%A, %d. %B %Y %I:%M%p"), "payload": self.payload},
+                          sort_keys=True)
