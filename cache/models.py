@@ -37,7 +37,7 @@ class Collection(Base):
     version = Column(Integer)
     btc = Column(String)
     keywords = relationship(Keyword, secondary=keyword_association)
-    documents = relationship(Document)
+    documents = relationship(Document, cascade="all, delete-orphan")
     # Caching information
     creation_date = Column(DateTime, nullable=False)
     accesses = Column(Integer, nullable=False, default=0)
