@@ -2,3 +2,4 @@
 *.iml
 *.pyc
 node_modules
+docs/*
