@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from models import DecBase
 import config
 
+
 def connect_db():
     """
     Initialize connection to the database engine

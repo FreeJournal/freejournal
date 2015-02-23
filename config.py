@@ -3,10 +3,9 @@
     Feel free to change this to any of the commented, alternate
     URL's to change database management systems.
 ''' 
-DB_URL = 'postgres://postgres:password@localhost/freejournal'
-
+# DB_URL = 'postgres://postgres:password@localhost/freejournal'
 # DB_URL = 'mysql://scott:tiger@localhost/foo'
-# DB_URL = 'sqlite:///foo.db'
+DB_URL = 'sqlite:///fj.db'
 
 ''' Caching strategy.
     'all': attempt to mirror all documents within diskspace constraints
