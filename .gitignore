@@ -1,3 +1,4 @@
 .idea
 *.iml
 *.pyc
+node_modules
