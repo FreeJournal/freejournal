@@ -2,3 +2,6 @@
 *.iml
 *.pyc
 node_modules
+docs/*
+!docs/overview
+*.db
