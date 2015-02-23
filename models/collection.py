@@ -51,5 +51,5 @@ class Collection(DecBase):
     """Number of times this collection is accessed by a user of this node (for cache pruning)"""
     votes = Column(Integer, nullable=False, default=0)
     """Latest vote count from the Bitcoin network, used to rank collection"""
-    votes_last_checked = Column(Date, nullable=True)
+    votes_last_checked = Column(DateTime, nullable=True)
     """Latest poll of Bitcoin network for collection votes, to coordinate internal repolling"""
