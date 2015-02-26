@@ -1,10 +1,7 @@
-from collection import *
-from fj_message import *
-import json
+from backend.datastructures.collection import *
+from backend.datastructures.fj_message import *
 from bitmessage.bitmessage import *
 from bitmessage.config.config import *
-import hashlib
-import base64
 
 
 class CollectionHandler:
@@ -33,8 +30,9 @@ class CollectionHandler:
         Imports a Collection from the given Bit Message address and checks if its signature is valid
         :param address: the address to import the collection from
         :return: A Collection object gathered from the Bit Message payload if successful,
-        an error message otherwise
+        False otherwise
         """
+        collections = []
         self.connection.subscribe(address)
         #buffer time to make sure to get messages
         time.sleep(10)
@@ -62,11 +60,17 @@ class CollectionHandler:
                         print "Contents of FJ Message invalid or corrupted"
                         continue
 
-                    return Collection(payload["type_id"], payload["title"], payload["description"],
+                    collections.append(Collection(payload["type_id"], payload["title"], payload["description"],
                                       payload["keywords"], payload["address"],
                                       payload["version"], payload["btc"], payload["documents"],
-                                      payload["merkle"], payload["tree"])
-        print "Could Not Import Collection"
+                                      payload["merkle"], payload["tree"]))
+
+        if not collections:
+            print "No Collections at this address"
+            return False
+        else:
+            return collections
+
 
     def publish_collection(self, title, description, keywords, documents, address_label):
         """
