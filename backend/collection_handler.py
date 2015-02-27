@@ -1,7 +1,9 @@
-from backend.datastructures.collection import *
-from backend.datastructures.fj_message import *
-from bitmessage.bitmessage import *
-from bitmessage.config.config import *
+from global_imports import *
+
+import json
+import hashlib
+import time
+import base64
 
 
 class CollectionHandler:
