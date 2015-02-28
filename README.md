@@ -8,6 +8,7 @@ Example Node: http://freejournal.io/
 The first step to installing FreeJournal is to ensure you have:
 - A Linux-based operating systems (for security reasons, we do not support Windows)
 - Python 2.x
+- python-pip (the pip command)
 - [PyBitmessage](https://github.com/Bitmessage/PyBitmessage/)
 - [python-bitcoinlib](https://github.com/petertodd/python-bitcoinlib)
 - [FreeNet](https://freenetproject.org)
@@ -15,8 +16,12 @@ The first step to installing FreeJournal is to ensure you have:
 If you are on Windows, you can still browse one of many existing FreeJournal nodes.
 Consult a list on our website.
 
-Run sh install.sh to install the required Python-based prerequisites, then modify
-config.py to change your local node settings.
+Run python install.py in bitmessage/
+to install the required Bitmessage-based prerequisites, then modify config.py to 
+change your local node settings.
+
+To install database, documentation, and other library requirements, run
+``pip install -r requirements.txt`` on the root directory.
 
 ## Generating Documentation
 
