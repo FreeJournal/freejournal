@@ -1,5 +1,5 @@
 # Free-Journal
-https://travis-ci.org/FreeJournal/freejournal.svg?branch=fixTravisAndUnittests
+[![Build Status](https://travis-ci.org/FreeJournal/freejournal.svg?branch=fixTravisAndUnittests)](https://travis-ci.org/FreeJournal/freejournal)
 Project Homepage: http://freejournal.org/
 Example Node: http://freejournal.io/
 
