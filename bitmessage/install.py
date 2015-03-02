@@ -1,4 +1,4 @@
-from config.config import *
+from global_imports import *
 import subprocess
 import os
 import platform

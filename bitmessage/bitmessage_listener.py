@@ -1,4 +1,4 @@
-from global_imports import *
+from global_imports import CollectionHandler, MAIN_CHANNEL_ADDRESS
 
 
 def process_collection(collection):
