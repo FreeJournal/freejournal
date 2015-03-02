@@ -77,7 +77,5 @@ class TestBitmessage(unittest.TestCase):
         if not sent:
             self.fail("Failed to send message")
 
-
-if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestBitmessage)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+suite = unittest.TestLoader().loadTestsFromTestCase(TestBitmessage)
+unittest.TextTestRunner(verbosity=2).run(suite)
