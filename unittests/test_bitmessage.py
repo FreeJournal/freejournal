@@ -1,3 +1,4 @@
+from global_imports import Bitmessage
 import unittest
 import sys
 import os
@@ -76,12 +77,5 @@ class TestBitmessage(unittest.TestCase):
         if not sent:
             self.fail("Failed to send message")
 
-
-if __name__ == '__main__':
-    sys.path.append("../bitmessage/")
-    path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    sys.path.insert(1, path)
-    from bitmessage.bitmessage import Bitmessage
-
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestBitmessage)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+suite = unittest.TestLoader().loadTestsFromTestCase(TestBitmessage)
+unittest.TextTestRunner(verbosity=2).run(suite)
