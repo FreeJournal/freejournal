@@ -1,6 +1,6 @@
 import unittest
 import datetime
-from global_imports import Collection2, Document, Keyword
+from global_imports import Collection, Document, Keyword
 from cache.cache import create_session
 import uuid
 
@@ -16,7 +16,7 @@ class TestCache(unittest.TestCase):
         coll_address = str(uuid.uuid1())
         doc_hash_1 = str(uuid.uuid1())
         doc_hash_2 = str(uuid.uuid1())
-        coll = Collection2(
+        coll = Collection(
             title="Test",
             description="This is a collection!",
             merkle="123456789",
@@ -43,7 +43,7 @@ class TestCache(unittest.TestCase):
             oldest_date=datetime.datetime.now()
         )
         self.session.add(coll)
-        coll = self.session.query(Collection2).filter(Collection2.address == coll_address).one()
+        coll = self.session.query(Collection).filter(Collection.address == coll_address).one()
         self.assertEquals(coll.title, "Test")
         doc = self.session.query(Document).filter(Document.hash == doc_hash_2).one()
         self.assertEquals(doc.title, "Test B")
