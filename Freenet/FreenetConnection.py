@@ -7,16 +7,19 @@ class FreenetConnection:
     '''
     Put a text file onto the freenode network
     
-    @param filename - String that will be used for the KSK
-                      or keyword-signed keys
+    @param filename - String that will be used for the CHK
+                      or content-hash keys
     @param data - The text data to add to freenode
     @return - complete URI for the file
     '''
     def put(self, filename, data):
-        uri= "KSK@" + filename+ uuid.uuid4().hex
-        job = self.fcpNode.put(uri, data=data, mimetype="text/plain", async=True)
+        job = self.fcpNode.put(data=data, mimetype="text/plain", async=True)
+        '''
+        Note, currently the async aspect is nullified by the wait 
+        going on below, however it is useful for debugging purposes 
+        so for now I will leave it as such.
+        '''
         if job.isComplete(): 
-            print("this happens")
             return uri
         else:
             job.wait()
@@ -24,7 +27,7 @@ class FreenetConnection:
 
     '''
     Retrieve a text file from the freenode network
-    @param uri - the 'KSK@' prepended URI for the file on the network
+    @param uri - the 'CHK@' prepended URI for the file on the network
     @return - The textual data 
     '''
     def get(self, uri):
