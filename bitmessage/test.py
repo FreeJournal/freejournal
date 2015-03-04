@@ -26,5 +26,4 @@ if __name__ == '__main__':
         oldest_date=datetime.datetime.now()
     )
 
-    #collection_handler.publish_collection(collection_test, address)
-    print bitmessage_connection.check_inbox()
+    collection_handler.publish_collection(collection_test, address)
