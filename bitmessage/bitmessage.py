@@ -86,9 +86,12 @@ class Bitmessage():
 
         if trash:
             for message in messages_dict['inboxMessages']:
-                self.api.trashMessage(message['msgid'])
+                self.delete_message(message['msgid'])
 
         return messages_dict
+
+    def delete_message(self, message_id):
+        self.api.trashMessage(message_id)
 
     def create_address(self, label):
         """Creates a random address for the user

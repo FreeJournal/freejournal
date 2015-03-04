@@ -42,3 +42,13 @@ apiinterface = 127.0.0.1
 apiusername = username
 apipassword = password
 daemon = true
+
+[BM-2cVu82X99DgzQqUmx1NsXBabyacr2SDgfK]
+label = FreeJournal Main Channel
+enabled = true
+decoy = false
+noncetrialsperbyte = 1000
+payloadlengthextrabytes = 1000
+privsigningkey = 5KeTkjKDswXAnUXAoMZRaNg4Kti3MR7QdLvubaPo2ZJAUG8SQ9L
+privencryptionkey = 5KJV16juVipDakdtjqLvjLdATN9nCnYMhXEqyPGwumuBqQfwm26
+lastpubkeysendtime = 1425435133

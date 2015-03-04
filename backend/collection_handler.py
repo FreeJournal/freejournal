@@ -58,7 +58,7 @@ class CollectionHandler:
 
         for message in messages["inboxMessages"]:
 
-            if message["fromAddress"] == address:
+            if message["toAddress"] == address:
 
                 # decoded_message is a FJMessage
                 base64_decode = base64.b64decode(message["message"])
@@ -101,6 +101,7 @@ class CollectionHandler:
                     )
 
                     insert_new_collection(collection_model)
+                    self.connection.delete_message(message['msgid'])
                     print "Collection cached"
                     return True
 
@@ -120,11 +121,5 @@ class CollectionHandler:
         new_fj_message = FJMessage(1, collection.address, collection_payload)
         new_fj_message.generate_signature()
         sendable_fj_message = new_fj_message.to_json()
-        temp_address = self.connection.create_address('temp')
-        if not address:
-            self.connection.send_message(MAIN_CHANNEL_ADDRESS, temp_address, "subject", sendable_fj_message)
-            self.connection.send_broadcast(MAIN_CHANNEL_ADDRESS, "subject", sendable_fj_message)
-        # This else block used for testing, will be removed in the future
-        else:
-            self.connection.send_message(address, temp_address, "subject", sendable_fj_message)
-        print temp_address
+
+        self.connection.send_message(MAIN_CHANNEL_ADDRESS, address, "subject", sendable_fj_message)

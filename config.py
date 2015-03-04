@@ -24,4 +24,6 @@ RUN_PYBITMESSAGE_LINUX = "python ~/PyBitmessage/src/bitmessagemain.py"
 BITMESSAGE_SERVER = "http://username:password@0.0.0.0:8442/"
 
 ''' Don't change this unless the main channel address is changed in the future '''
-MAIN_CHANNEL_ADDRESS = "BM-2cV2EhAShihfFhgxVWf3cRj3QfavrAgfNv"
+MAIN_CHANNEL_ADDRESS = "BM-2cVu82X99DgzQqUmx1NsXBabyacr2SDgfK"
+privsigningkey = "5KeTkjKDswXAnUXAoMZRaNg4Kti3MR7QdLvubaPo2ZJAUG8SQ9L"
+privencryptionkey = "5KJV16juVipDakdtjqLvjLdATN9nCnYMhXEqyPGwumuBqQfwm26"
