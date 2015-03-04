@@ -28,7 +28,12 @@ class CollectionHandler:
             return False
 
     def _collection_tojson(self, collection):
+        """
+        Encodes a Collection as a json representation so it can be sent through the bitmessage network
 
+        :param collection: The Collection to be encoded
+        :return: the json representation of the given Collection
+        """
         docs = collection.documents
         json_docs = []
         for doc in docs:
