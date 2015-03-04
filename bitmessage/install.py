@@ -1,4 +1,4 @@
-from config.config import *
+from global_imports import *
 import subprocess
 import os
 import platform
@@ -12,33 +12,6 @@ def check_config_creation():
     """
 
     return os.path.exists(os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
-
-
-def yum_install():
-    """Generic installation for linux versions using yum
-    """
-    subprocess.call(["sudo yum udpate"], shell=True)
-    subprocess.call(["sudo yum install openssl git PyQt4"], shell=True)
-
-    try:
-        subprocess.call(["git clone https://github.com/Bitmessage/PyBitmessage $HOME/PyBitmessage"], shell=True)
-    except:
-        print 'PyBitmessage already installed or we received a permission denied error'
-
-    devnull = open(os.devnull, 'wb')  # Used to ignore the enormous amount of output from PyBitmessage
-
-    # Run Pybitmessage so it can create the keys.dat file
-    process = subprocess.Popen(["exec " + RUN_PYBITMESSAGE_LINUX], shell=True, stdout=devnull, stderr=devnull)
-
-    # Wait until PyBitmessage creates the appropriate .config file structure
-    while not check_config_creation():
-        pass
-
-    process.kill()
-
-    # Copy our modified keys.dat file to the user's ~/.config/PyBitmessage
-    shutil.copyfile(os.path.abspath(os.path.join(os.path.dirname(__file__))) + "/config/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
-
 
 def apt_install():
     """Generic installation for linux versions using apt
@@ -63,7 +36,7 @@ def apt_install():
     process.kill()
 
     # Copy our modified keys.dat file to the user's ~/.config/PyBitmessage
-    shutil.copyfile(os.path.abspath(os.path.join(os.path.dirname(__file__))) + "/config/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
+    shutil.copyfile(os.path.abspath(os.path.join(os.path.dirname(__file__))) + "/installfiles/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
 
 
 def windows_install():
@@ -74,10 +47,8 @@ if __name__ == '__main__':
     if 'Ubuntu' in os_version:
         apt_install()
         print 'Installation Completed'
-    elif 'centos' in os_version:
-        yum_install()
-        print 'Installation Completed'
     elif 'windows' in os_version:
         windows_install()
     else:
         apt_install()
+        print 'Installation Completed'

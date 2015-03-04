@@ -2,7 +2,7 @@ import xmlrpclib
 import subprocess
 import os
 import sys
-from config.config import *
+from global_imports import MAIN_CHANNEL_ADDRESS, BITMESSAGE_SERVER, RUN_PYBITMESSAGE_LINUX
 import base64
 import json
 

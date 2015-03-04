@@ -1,9 +1,6 @@
 import unittest
 import datetime
-
-from models.collection import Collection
-from models.document import Document
-from models.keyword import Keyword
+from global_imports import Collection, Document, Keyword
 from cache.cache import create_session
 import uuid
 
@@ -53,3 +50,7 @@ class TestCache(unittest.TestCase):
         key = self.session.query(Keyword).filter(Keyword.id == 90909090).one()
         self.assertEquals(key.name, "Keyword A")
         self.assertTrue(key in coll.keywords)
+
+
+suite = unittest.TestLoader().loadTestsFromTestCase(TestCache)
+unittest.TextTestRunner(verbosity=2).run(suite)

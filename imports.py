@@ -1,23 +1,13 @@
-import os, sys
+import os
+import sys
 
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), './bitmessage/'))
-sys.path.insert(1, path)
+from config import *
+from cache.cache import *
 
-from bitmessage.bitmessage import *
-
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), './backend/datastructures/'))
-sys.path.insert(1, path)
-
-from backend.datastructures.collection import *
-from backend.datastructures.fj_message import *
-
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), './backend/'))
-sys.path.insert(1, path)
-
-from backend.collection_handler import *
-
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), './bitmessage/config/'))
-sys.path.insert(1, path)
-
-from bitmessage.config.config import *
+Bitmessage = getattr(__import__('bitmessage.bitmessage', fromlist=['']), 'Bitmessage')
+Collection = getattr(__import__('models.collection', fromlist=['']), 'Collection')
+FJMessage = getattr(__import__('backend.datastructures.fj_message', fromlist=['']), 'FJMessage')
+Document = getattr(__import__('models.document', fromlist=['']), 'Document')
+Keyword = getattr(__import__('models.keyword', fromlist=['']), 'Keyword')
+CollectionHandler = getattr(__import__('backend.collection_handler', fromlist=['']), 'CollectionHandler')
 
