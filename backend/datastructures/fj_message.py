@@ -1,6 +1,10 @@
 import datetime
 import hashlib
 import json
+import os
+from sys import path
+path.append(os.path.expanduser('~/PyBitmessage/src'))
+import addresses
 
 
 class FJMessage():
@@ -26,9 +30,9 @@ class FJMessage():
         Generates a sha256 signature of the address sending the message
         and the payload of the message
         """
-        #print "address", self.original_sender, "payload", self.payload
-        self.signature = hashlib.sha256(self.original_sender + self.payload).hexdigest()
-        #print self.signature
+        to_status, to_address_version_number, to_stream_number, to_ripe = addresses.decodeAddress(self.original_sender)
+        self.signature = hashlib.sha256(to_ripe.encode('hex') + self.payload).hexdigest()
+
     def to_json(self):
         """
         Creates a json encoding to be sendable in a Bit Message,
