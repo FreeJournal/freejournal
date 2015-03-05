@@ -4,10 +4,6 @@ import hashlib
 import time
 import base64
 import datetime
-from sys import path
-path.append(os.path.expanduser('~/PyBitmessage/src'))
-import addresses
-
 
 
 class CollectionHandler:

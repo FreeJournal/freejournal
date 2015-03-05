@@ -4,6 +4,10 @@ import sys
 from config import *
 from cache.cache import *
 
+
+sys.path.append(os.path.expanduser('~/PyBitmessage/src'))
+import addresses
+
 Bitmessage = getattr(__import__('bitmessage.bitmessage', fromlist=['']), 'Bitmessage')
 Collection = getattr(__import__('models.collection', fromlist=['']), 'Collection')
 FJMessage = getattr(__import__('backend.datastructures.fj_message', fromlist=['']), 'FJMessage')

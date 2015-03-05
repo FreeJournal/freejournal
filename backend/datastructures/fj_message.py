@@ -2,9 +2,6 @@ import datetime
 import hashlib
 import json
 import os
-from sys import path
-path.append(os.path.expanduser('~/PyBitmessage/src'))
-import addresses
 
 
 class FJMessage():
