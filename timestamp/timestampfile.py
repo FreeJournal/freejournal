@@ -22,7 +22,6 @@ class timestampfile:
         params = {'d': self.File_Hash}
         r = requests.post(status_url, data=params, timeout=10)
         if r.status_code != 200:
-            print("Error: HTTP Status Code " + r.status_code + ". " + "The request was not succeeded, expected staus code '200'. \n")
             return -1
         text = r.json()
         if text['success'] == False:
@@ -74,10 +73,8 @@ class timestampfile:
                         returnval['timestamp']=True
                     else:
                         return -1
-            elif text['status'] == 'confirmed':
+            if text['status'] == 'confirmed':
                 returnval['timestamp'] = True
-            else :
-                return -1
         if returnval['timestamp'] == True:
             returnval['time']= text['txstamp']
             returnval ["Transaction"] = text['transaction']
