@@ -5,7 +5,8 @@ from config import *
 from cache.cache import *
 
 
-sys.path.append(os.path.expanduser('~/PyBitmessage/src'))
+path = os.path.abspath(os.path.join(os.path.dirname('~/PyBitmessage/src/')))
+sys.path.insert(0, path)
 import addresses
 
 Bitmessage = getattr(__import__('bitmessage.bitmessage', fromlist=['']), 'Bitmessage')
