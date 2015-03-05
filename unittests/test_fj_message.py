@@ -20,11 +20,11 @@ class TestFJMessage(unittest.TestCase):
         self.assertEqual(self.test_fj_message.signature, '')
         self.test_fj_message.generate_signature()
         self.assertEqual(self.test_fj_message.signature,
-                         "c1c9edbf3e5d9ab913a62bfddcbf5e7ce3ed79a9edaed2de8c1d68924e24037b")
+                         "588e09c14c2ca5256780be346a3c8a1214c5e61af7c7fb9471cdd43800d561c8")
         self.test_fj_message.payload = 'notfake?'
         self.test_fj_message.generate_signature()
         self.assertEqual(self.test_fj_message.signature,
-                         'e567b7ad070a48dc36fc35288297046e66721659c414e3221f60898c9094e79b')
+                         '7f6395bbe549a884b6ea09fb0d48e4182a648678b1b713a45f08ffe5f73dd3a7')
 
     def test_to_json(self):
         test_json_encode = self.test_fj_message.to_json()

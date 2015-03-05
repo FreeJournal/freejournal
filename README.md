@@ -7,7 +7,7 @@ Example Node: http://freejournal.io/
 
 The first step to installing FreeJournal is to ensure you have:
 - A Linux-based operating systems (for security reasons, we do not support Windows)
-- Python 2.x
+- Python 2.7.3+
 - [PyBitmessage](https://github.com/Bitmessage/PyBitmessage/)
 - [python-bitcoinlib](https://github.com/petertodd/python-bitcoinlib)
 - [FreeNet](https://freenetproject.org)

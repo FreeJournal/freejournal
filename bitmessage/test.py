@@ -1,24 +1,29 @@
 import sys
-from bitmessage import Bitmessage
+from global_imports import Bitmessage, CollectionHandler, Collection, Keyword, Document
+import datetime
 
 if __name__ == '__main__':
     args = sys.argv
 
     #Create a bitmessage connection
     bitmessage_connection = Bitmessage()
+    collection_handler = CollectionHandler()
 
-    # Construct a new address (testing purposes)
-    address_label = "Test Label"
+    address_label = "Test Collection"
     address = bitmessage_connection.create_address(address_label)
 
-    # Construct a message to send
-    subject = "~Test~"
-    message = "Test Message"
+    collection_test = Collection(
+        title="Title Test",
+        description="Description Test",
+        merkle='I am a merkle',
+        address=address,
+        version=3,
+        btc="btc-123abcasdfasd",
+        keywords=[Keyword(name="First"), Keyword(name="Second")],
+        documents=[Document(collection_address=address, description="test", hash="asdfasdasdf345fasdaf",
+                            title="docTitle", filename="file name", accesses=23)],
+        creation_date=datetime.datetime.now(),
+        oldest_date=datetime.datetime.now()
+    )
 
-    print bitmessage_connection.check_inbox()
-
-    #Send a test broadcast
-    bitmessage_connection.send_broadcast(address, subject, message)
-
-    #Send a test message
-    bitmessage_connection.send_message(address, address, subject, message)
+    collection_handler.publish_collection(collection_test, address)
