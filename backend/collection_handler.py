@@ -4,6 +4,7 @@ import hashlib
 import time
 import base64
 import datetime
+from backend.bmaddresses import *
 
 
 class CollectionHandler:
@@ -13,12 +14,12 @@ class CollectionHandler:
 
     def _check_signature(self, fj_message, address):
         """
-        Checks that the signature is the correct sha256 hash of the address and payload
+        Checks that the signature is the correct sha256 hash of the address's public keys and payload
         :param fj_message: the message containing the collection and signature
         :param address:  the address this collection came from
         :return: True if the signatures match, False otherwise
         """
-        to_status, to_address_version_number, to_stream_number, to_ripe = addresses.decodeAddress(address)
+        to_status, to_address_version_number, to_stream_number, to_ripe = decodeAddress(address)
         h = hashlib.sha256(to_ripe.encode('hex') + fj_message['payload']).hexdigest()
 
         if h == fj_message["signature"]:

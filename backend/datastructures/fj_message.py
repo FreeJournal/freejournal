@@ -2,6 +2,7 @@ import datetime
 import hashlib
 import json
 import os
+from backend.bmaddresses import *
 
 
 class FJMessage():
@@ -24,10 +25,10 @@ class FJMessage():
 
     def generate_signature(self):
         """
-        Generates a sha256 signature of the address sending the message
+        Generates a sha256 signature of the public keys
         and the payload of the message
         """
-        to_status, to_address_version_number, to_stream_number, to_ripe = addresses.decodeAddress(self.original_sender)
+        to_status, to_address_version_number, to_stream_number, to_ripe = decodeAddress(self.original_sender)
         self.signature = hashlib.sha256(to_ripe.encode('hex') + self.payload).hexdigest()
 
     def to_json(self):
