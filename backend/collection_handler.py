@@ -1,10 +1,15 @@
-from global_imports import *
+from models.keyword import Keyword
+from models.document import Document
+from models.collection import Collection
+from bitmessage.bitmessage import Bitmessage
+from datastructures.fj_message import FJMessage
+from cache.cache import insert_new_collection
+from config import MAIN_CHANNEL_ADDRESS
 import json
-import hashlib
 import time
 import base64
 import datetime
-from backend.bmaddresses import *
+from bmaddresses import *
 
 
 class CollectionHandler:

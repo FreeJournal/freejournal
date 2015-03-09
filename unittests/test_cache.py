@@ -1,6 +1,8 @@
 import unittest
 import datetime
-from global_imports import Collection, Document, Keyword
+from models.collection import Collection
+from models.document import Document
+from models.keyword import Keyword
 from cache.cache import create_session
 import uuid
 

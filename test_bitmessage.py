@@ -1,5 +1,9 @@
 import sys
-from global_imports import Bitmessage, CollectionHandler, Collection, Keyword, Document
+from bitmessage.bitmessage import Bitmessage
+from backend.collection_handler import CollectionHandler
+from models.keyword import Keyword
+from models.document import Document
+from models.collection import Collection
 import datetime
 
 if __name__ == '__main__':

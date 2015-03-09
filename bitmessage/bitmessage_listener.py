@@ -1,4 +1,5 @@
-from global_imports import CollectionHandler, MAIN_CHANNEL_ADDRESS
+from backend.collection_handler import CollectionHandler
+from config import MAIN_CHANNEL_ADDRESS
 
 
 def get_collections():
@@ -7,8 +8,4 @@ def get_collections():
     collection_handler = CollectionHandler()
     new_collection = True
     while new_collection:
-       collection_handler.import_collection(MAIN_CHANNEL_ADDRESS)
-
-
-if __name__ == '__main__':
-    get_collections()
+        collection_handler.import_collection(MAIN_CHANNEL_ADDRESS)

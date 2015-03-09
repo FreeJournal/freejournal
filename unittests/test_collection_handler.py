@@ -1,5 +1,5 @@
 import unittest
-from global_imports import Collection, CollectionHandler
+from backend.collection_handler import CollectionHandler
 
 
 class TestCollectionHandler(unittest.TestCase):

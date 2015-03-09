@@ -3,8 +3,7 @@ from struct import *
 from pyelliptic import arithmetic
 
 
-
-#There is another copy of this function in Bitmessagemain.py
+# There is another copy of this function in Bitmessagemain.py
 def convertIntToString(n):
     a = __builtins__.hex(n)
     if a[-1:] == 'L':

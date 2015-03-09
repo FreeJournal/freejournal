@@ -1,4 +1,5 @@
-import fcp, uuid
+import fcp
+
 
 class FreenetConnection:
     def __init__(self):
