@@ -30,11 +30,12 @@ class FJMessage():
         Generates a sha256 signature of the public keys
         and the payload of the message
         """
-        #TODO Change this path to correct path
+
         f = open('/home/'+pwd.getpwuid(os.getuid())[0]+'/.config/PyBitmessage/keys.dat', 'r')
-        #print data
         keys = f.read()
         keys_list = keys.split('\n\n')
+        selected_key = []
+        privkey_line = []
 
         for key_info in keys_list[1:]:
             if self.original_sender in key_info:
