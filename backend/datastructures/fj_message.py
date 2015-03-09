@@ -30,7 +30,7 @@ class FJMessage():
         and the payload of the message
         """
         #TODO Change this path to correct path
-        f = open('/home/dan/.config/PyBitmessage/keys.dat', 'r')
+        f = open('~/.config/PyBitmessage/keys.dat', 'r')
         #print data
         keys = f.read()
         keys_list = keys.split('\n\n')
