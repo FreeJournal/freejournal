@@ -7,20 +7,20 @@ import datetime
 from backend.bmaddresses import *
 
 
-class CollectionHandler:
+class Controller:
 
     def __init__(self):
         self.connection = Bitmessage()
 
-    def _check_signature(self, fj_message, address):
+    def _check_signature(self, fj_message):
         """
         Checks that the signature is the correct sha256 hash of the address's public keys and payload
         :param fj_message: the message containing the collection and signature
         :param address:  the address this collection came from
         :return: True if the signatures match, False otherwise
         """
-        to_status, to_address_version_number, to_stream_number, to_ripe = decodeAddress(address)
-        h = hashlib.sha256(to_ripe.encode('hex') + fj_message['payload']).hexdigest()
+
+        h = hashlib.sha256(fj_message["pubkey"] + fj_message['payload']).hexdigest()
 
         if h == fj_message["signature"]:
             print "Signature Verified"
@@ -28,28 +28,6 @@ class CollectionHandler:
         else:
             print "Signature Not Verified"
             return False
-
-    def _collection_tojson(self, collection):
-        """
-        Encodes a Collection as a json representation so it can be sent through the bitmessage network
-
-        :param collection: The Collection to be encoded
-        :return: the json representation of the given Collection
-        """
-        docs = collection.documents
-        json_docs = []
-        for doc in docs:
-            json_docs.append((doc.collection_address, doc.description, doc.hash, doc.title))
-        keywords = collection.keywords
-        json_keywords = []
-        for key in keywords:
-            json_keywords.append((key.id, key.name))
-        return json.dumps({"type_id": 1, "title": collection.title, "description": collection.description,
-                           "keywords": json_keywords, "address": collection.address, "documents": json_docs,
-                           "merkle": collection.merkle, "btc": collection.btc, "version": collection.version,
-                           "creation_date": collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p"),
-                           "oldest_date": collection.oldest_date.strftime("%A, %d. %B %Y %I:%M%p")},
-                          sort_keys=True)
 
     def import_collection(self, address):
         """
@@ -76,7 +54,7 @@ class CollectionHandler:
                     continue
 
                 # Trying to filter out non collection messages
-                # TODO Change this filtering technique?
+                # TODO Change this?
                 if "payload" in json_decode:
 
                     payload = json_decode["payload"]
@@ -85,7 +63,8 @@ class CollectionHandler:
                     except (ValueError, TypeError):
                         print "Contents of FJ Message invalid or corrupted"
                         continue
-                    if self._check_signature(json_decode, payload["address"]):
+
+                    if self._check_signature(json_decode):
                         # Grabbing the text representations of the documents and keywords and rebuilding them
                         keywords = []
                         docs = []
@@ -106,13 +85,14 @@ class CollectionHandler:
                             creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
                             oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
                         )
-
+                        cached_collection = get_collection_with_address(payload["address"])
                         insert_new_collection(collection_model)
                         self.connection.delete_message(message['msgid'])
                         print "Collection cached"
                         return True
 
         print "Could not import collection"
+        return False
 
     def publish_collection(self, collection, address=''):
         """
@@ -121,9 +101,9 @@ class CollectionHandler:
         :param address: the address to send the collection to
         """
 
-        collection_payload = self._collection_tojson(collection)
+        collection_payload = collection.to_json()
         new_fj_message = FJMessage(1, collection.address, collection_payload)
-        new_fj_message.generate_signature()
+
         sendable_fj_message = new_fj_message.to_json()
 
         self.connection.send_message(MAIN_CHANNEL_ADDRESS, address, "subject", sendable_fj_message)

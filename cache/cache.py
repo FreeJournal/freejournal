@@ -1,4 +1,5 @@
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from db import setup_db, connect_db
 from models.collection import Collection
 
@@ -32,7 +33,12 @@ def get_collection_with_address(address):
     :return: Collection object with desired ID in latest local state
     """
     session = create_session()
-    return session.query(Collection).filter(Collection.address == address).one()
+    row = None
+    try:
+        row = session.query(Collection).filter(Collection.address == address).one()
+    except NoResultFound:
+        pass
+    return row
 
 
 def insert_new_collection(collection):

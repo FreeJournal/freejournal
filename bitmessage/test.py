@@ -1,5 +1,5 @@
 import sys
-from global_imports import Bitmessage, CollectionHandler, Collection, Keyword, Document
+from global_imports import Bitmessage, Controller, Collection, Keyword, Document
 import datetime
 
 if __name__ == '__main__':
@@ -7,7 +7,7 @@ if __name__ == '__main__':
 
     #Create a bitmessage connection
     bitmessage_connection = Bitmessage()
-    collection_handler = CollectionHandler()
+    collection_handler = Controller()
 
     address_label = "Test Collection"
     address = bitmessage_connection.create_address(address_label)
