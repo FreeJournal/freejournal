@@ -35,11 +35,21 @@ def get_collection_with_address(address):
     return session.query(Collection).filter(Collection.address == address).one()
 
 
-def insert_new_collection(collection):
+def upsert_collection(collection):
     """
-    Insert a new collection into local storage
-    :param collection: Collection object to insert into local storage
+    Insert a new collection into local storage or update existing collection
+    :param collection: Collection object to upsert
     """
     session = create_session()
     session.add(collection)
+    session.commit()
+
+
+def delete_collection(collection):
+    """
+    Delete a collection from local storage
+    :param collection: Collection object to delete
+    """
+    session = create_session()
+    session.delete(collection)
     session.commit()

@@ -7,7 +7,7 @@ def get_collections():
     collection_handler = CollectionHandler()
     new_collection = True
     while new_collection:
-       collection_handler.import_collection(MAIN_CHANNEL_ADDRESS)
+        collection_handler.import_collection(MAIN_CHANNEL_ADDRESS)
 
 
 if __name__ == '__main__':

@@ -27,3 +27,6 @@ BITMESSAGE_SERVER = "http://username:password@0.0.0.0:8442/"
 MAIN_CHANNEL_ADDRESS = "BM-2cVu82X99DgzQqUmx1NsXBabyacr2SDgfK"
 privsigningkey = "5KeTkjKDswXAnUXAoMZRaNg4Kti3MR7QdLvubaPo2ZJAUG8SQ9L"
 privencryptionkey = "5KJV16juVipDakdtjqLvjLdATN9nCnYMhXEqyPGwumuBqQfwm26"
+
+''' Web server debug mode '''
+WEB_DEBUG = True

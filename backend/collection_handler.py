@@ -107,7 +107,7 @@ class CollectionHandler:
                             oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
                         )
 
-                        insert_new_collection(collection_model)
+                        upsert_collection(collection_model)
                         self.connection.delete_message(message['msgid'])
                         print "Collection cached"
                         return True
