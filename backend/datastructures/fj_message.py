@@ -2,7 +2,6 @@ import datetime
 import hashlib
 import json
 import os
-import pwd
 from backend.pyelliptic.arithmetic import *
 
 
@@ -30,7 +29,7 @@ class FJMessage():
         and the payload of the message
         """
 
-        f = open('/home/'+pwd.getpwuid(os.getuid())[0]+'/.config/PyBitmessage/keys.dat', 'r')
+        f = open(os.path.expanduser('~/.config/PyBitmessage/keys.dat'), 'r')
         keys = f.read()
         keys_list = keys.split('\n\n')
         selected_key = []

@@ -10,6 +10,7 @@ class Controller:
 
     def __init__(self):
         self.connection = Bitmessage()
+        self.cache = Cache()
 
     def _check_signature(self, fj_message):
         """
@@ -35,15 +36,12 @@ class Controller:
         :param address: the address to import the collection from
         :return: True if the collection was imported and cached successfully, False otherwise
         """
-        self.connection.subscribe(address)
+
         # buffer time to make sure to get messages
         time.sleep(10)
         messages = self.connection.check_inbox()
-
         for message in messages["inboxMessages"]:
-
             if message["toAddress"] == address:
-
                 # decoded_message is a FJMessage
                 base64_decode = base64.b64decode(message["message"])
                 try:
@@ -55,7 +53,6 @@ class Controller:
                 # Trying to filter out non collection messages
                 # TODO Change this?
                 if "payload" in json_decode:
-
                     payload = json_decode["payload"]
                     try:
                         payload = json.loads(payload)
@@ -71,24 +68,37 @@ class Controller:
                             keywords.append(Keyword(name=key[1], id=key[0]))
                         for doc in payload["documents"]:
                             docs.append(Document(collection_address=doc[0], description=doc[1], hash=doc[2], title=doc[3]))
+                        cached_collection = self.cache.get_collection_with_address(payload["address"])
 
-                        collection_model = Collection(
-                            title=payload["title"],
-                            description=payload["description"],
-                            merkle='test',
-                            address=payload["address"],
-                            version=payload["version"],
-                            btc=payload["btc"],
-                            keywords=keywords,
-                            documents=docs,
-                            creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
-                            oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
-                        )
-                        cached_collection = get_collection_with_address(payload["address"])
-                        cached_collection = collection_model
-                        insert_new_collection(cached_collection)
+                        if cached_collection is None:
+                            collection_model = Collection(
+                                title=payload["title"],
+                                description=payload["description"],
+                                merkle=payload["merkle"],
+                                address=payload["address"],
+                                version=payload["version"],
+                                btc=payload["btc"],
+                                keywords=keywords,
+                                documents=docs,
+                                creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
+                                oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
+                            )
+                            self.cache.insert_new_collection(collection_model)
+                            print "Cached New Collection"
+                        else:
+                            cached_collection.update_keywords(keywords)
+                            cached_collection.title = payload["title"]
+                            cached_collection.description=payload["description"]
+                            cached_collection.merkle=payload['merkle']
+                            cached_collection.address=payload["address"]
+                            cached_collection.version=payload["version"]
+                            cached_collection.btc=payload["btc"]
+                            cached_collection.documents=docs
+                            cached_collection.creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p")
+                            cached_collection.oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
+                            self.cache.insert_new_collection(cached_collection)
+                            print "Cached Updated Collection"
                         self.connection.delete_message(message['msgid'])
-                        print "Collection cached"
                         return True
 
         print "Could not import collection"
@@ -100,10 +110,7 @@ class Controller:
         :param collection: the collection to be published
         :param address: the address to send the collection to
         """
-
         collection_payload = collection.to_json()
         new_fj_message = FJMessage(1, collection.address, collection_payload)
-
         sendable_fj_message = new_fj_message.to_json()
-
         self.connection.send_message(MAIN_CHANNEL_ADDRESS, address, "subject", sendable_fj_message)

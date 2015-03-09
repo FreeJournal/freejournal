@@ -77,3 +77,27 @@ class Collection(DecBase):
                            "creation_date": self.creation_date.strftime("%A, %d. %B %Y %I:%M%p"),
                            "oldest_date": self.oldest_date.strftime("%A, %d. %B %Y %I:%M%p")},
                           sort_keys=True)
+
+    def _keyword_in(self, key_id):
+        """
+        Finds if the given Keyword id is in the Collection's Keywords
+        :param key_id: the Keyword id to search for
+        :return: True if this id is in the Collection's Keywords, False otherwise
+        """
+        for key in self.keywords:
+            if key.id == key_id:
+                return True
+        return False
+
+    def update_keywords(self, new_keywords):
+        """
+        Updates the Collection's Keywords with any new Keywords in the given list.
+        :param new_keywords: a list of Keywords
+        """
+        i = 0
+        new_key_list = []
+        while i < len(self.keywords):
+            if not self._keyword_in(new_keywords[i].id):
+                new_key_list.append(new_keywords[i])
+            i += 1
+        self.keywords.extend(new_key_list)
