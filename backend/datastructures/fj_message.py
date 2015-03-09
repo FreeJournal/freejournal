@@ -3,7 +3,6 @@ import hashlib
 import json
 import os
 import pwd
-from backend.bmaddresses import *
 from backend.pyelliptic.arithmetic import *
 
 
@@ -46,7 +45,7 @@ class FJMessage():
                 privkey_line = line.split('=')
 
         privkey = privkey_line[1].strip()
-        public_signing_key = arithmetic.privtopub(privkey)
+        public_signing_key = privtopub(privkey)
         self.pubkey = public_signing_key
 
         return hashlib.sha256(public_signing_key + self.payload).hexdigest()

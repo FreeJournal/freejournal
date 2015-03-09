@@ -4,7 +4,6 @@ import hashlib
 import time
 import base64
 import datetime
-from backend.bmaddresses import *
 
 
 class Controller:
@@ -86,7 +85,8 @@ class Controller:
                             oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
                         )
                         cached_collection = get_collection_with_address(payload["address"])
-                        insert_new_collection(collection_model)
+                        cached_collection = collection_model
+                        insert_new_collection(cached_collection)
                         self.connection.delete_message(message['msgid'])
                         print "Collection cached"
                         return True
