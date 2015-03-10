@@ -40,7 +40,3 @@ class FreenetConnection:
         #dictionary in job[2]
         return job[1]
 
-#Here's a little test we can run to practice a small put
-c = FreenetConnection()
-print(c.get("CHK@XNpzyZhvxvkgIBgYuZzeJTSpRBPnR0VibpISMc8rHV4,4rsKU2MpJzpQxr91fPTV-wGpd14o~ns3hjLi0HMtwFI,AAMA--8"))
-c.put("Try this test out~")
