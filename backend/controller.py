@@ -25,6 +25,9 @@ class Controller:
         :return: True if the signatures match, False otherwise
         """
 
+        if not "pubkey" in fj_message:
+            return False
+
         h = hashlib.sha256(fj_message["pubkey"] + fj_message['payload']).hexdigest()
 
         if h == fj_message["signature"]:
