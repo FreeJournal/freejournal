@@ -1,5 +1,5 @@
 import fcp
-
+import telnetlib
 
 class FreenetConnection:
     def __init__(self):
@@ -15,14 +15,16 @@ class FreenetConnection:
     '''
     def put(self,data):
         job = self.fcpNode.put(data=data, mimetype="text/plain", async=True)
-        '''
-        Note, currently the async aspect is nullified by the wait 
-        going on below, however it is useful for debugging purposes 
-        so for now I will leave it as such.
-        '''
-        if job.isComplete(): 
+        tn = telnetlib.Telnet("localhost",2323)
+        tn.read_until("TMCI> ")
+        tn.write("GETCHK:"+data + "\n")
+        uri =tn.read_until("TMCI> ")
+        uri = uri.split('\r\n')[0]
+        print(uri)
+        if job.isComplete():
             return uri
         else:
+            print("Please wait for upload")
             job.wait()
         return uri
 
@@ -37,3 +39,8 @@ class FreenetConnection:
         #other info like header, completion time is stored in the
         #dictionary in job[2]
         return job[1]
+
+#Here's a little test we can run to practice a small put
+c = FreenetConnection()
+print(c.get("CHK@XNpzyZhvxvkgIBgYuZzeJTSpRBPnR0VibpISMc8rHV4,4rsKU2MpJzpQxr91fPTV-wGpd14o~ns3hjLi0HMtwFI,AAMA--8"))
+c.put("Try this test out~")
