@@ -1,8 +1,7 @@
 import datetime
-import hashlib
 import json
 import os
-from backend.pyelliptic.arithmetic import *
+from pyelliptic.arithmetic import *
 
 
 class FJMessage():
