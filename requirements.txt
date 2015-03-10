@@ -1,2 +1,7 @@
 sqlalchemy==0.9.8
-epydoc
+celery==3.1.17
+epydoc==3.0.1
+requests==2.5.3
+pyfcp==0.2.0
+pyelliptic==1.5.6
+flask==0.10.1

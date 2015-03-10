@@ -1,6 +1,5 @@
+from bitmessage.bitmessage import Bitmessage
 import unittest
-import sys
-import os
 import base64
 import time
 
@@ -37,7 +36,7 @@ class TestBitmessage(unittest.TestCase):
 
         ack_data = self.bitmessage.send_broadcast(address, subject, message)
 
-        timeout = 300  # 5 minutes
+        timeout = 600  # 10 minutes
         start_time = time.time()
         curr_time = time.time()
 
@@ -60,7 +59,7 @@ class TestBitmessage(unittest.TestCase):
 
         ack_data = self.bitmessage.send_message(address, address, subject, message)
 
-        timeout = 300  # 5 minutes
+        timeout = 600  # 10 minutes
         start_time = time.time()
         curr_time = time.time()
 
@@ -76,12 +75,5 @@ class TestBitmessage(unittest.TestCase):
         if not sent:
             self.fail("Failed to send message")
 
-
-if __name__ == '__main__':
-    sys.path.append("../bitmessage/")
-    path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    sys.path.insert(1, path)
-    from bitmessage.bitmessage import Bitmessage
-
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestBitmessage)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+suite = unittest.TestLoader().loadTestsFromTestCase(TestBitmessage)
+unittest.TextTestRunner(verbosity=2).run(suite)

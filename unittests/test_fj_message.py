@@ -1,11 +1,11 @@
 import unittest
-from fj_message import FJMessage
+from backend.datastructures.fj_message import FJMessage
 
 
 class TestFJMessage(unittest.TestCase):
 
     def setUp(self):
-        self.test_fj_message = FJMessage(1, 'BM-2cXbNb5UVcZndcQL6yrhm1iceGyX1KDKK5', 'fake')
+        self.test_fj_message = FJMessage(1, 'BM-2cWvQ4HqcxLhgKjc5zkuwsbqf69mryY5mr', 'fake')
 
     def tearDown(self):
         self.test_fj_message = None
@@ -13,23 +13,23 @@ class TestFJMessage(unittest.TestCase):
     def test_create_collection(self):
         self.assertIsInstance(self.test_fj_message, FJMessage)
         self.assertEqual(self.test_fj_message.type_id, 1)
-        self.assertEqual(self.test_fj_message.original_sender, 'BM-2cXbNb5UVcZndcQL6yrhm1iceGyX1KDKK5')
+        self.assertEqual(self.test_fj_message.original_sender, 'BM-2cWvQ4HqcxLhgKjc5zkuwsbqf69mryY5mr')
         self.assertEqual(self.test_fj_message.payload, 'fake')
 
     def test_generate_signature(self):
-        self.assertEqual(self.test_fj_message.signature, '')
-        self.test_fj_message.generate_signature()
-        self.assertEqual(self.test_fj_message.signature,
-                         "c1c9edbf3e5d9ab913a62bfddcbf5e7ce3ed79a9edaed2de8c1d68924e24037b")
+        test_json_encode = self.test_fj_message.to_json()
+        self.assertIn('"signature": "f4994f369c207566f49d149119169b34462833e4324c73510dd2823289edef72"',
+                      test_json_encode)
         self.test_fj_message.payload = 'notfake?'
-        self.test_fj_message.generate_signature()
-        self.assertEqual(self.test_fj_message.signature,
-                         'e567b7ad070a48dc36fc35288297046e66721659c414e3221f60898c9094e79b')
+        test_json_encode = self.test_fj_message.to_json()
+        self.assertIn('"signature": "ecd78830a89d58d3fc8529247788654158d4f4917fd590918cc944e7ea7b8fc3"',
+                         test_json_encode)
 
     def test_to_json(self):
         test_json_encode = self.test_fj_message.to_json()
-        self.assertIn('"original_sender": "BM-2cXbNb5UVcZndcQL6yrhm1iceGyX1KDKK5", "payload": "fake", '
-                      '"protocol": "FJ1.0", "signature": ""', test_json_encode,)
+        self.assertIn('"original_sender": "BM-2cWvQ4HqcxLhgKjc5zkuwsbqf69mryY5mr", "payload": "fake", "protocol": "FJ1.0", '
+                      '"pubkey": "04ea42d4b855e2cf87f9227269542c29e789fadabbaaac893a59e84f48d8e801b6e906488a3196b3e722e6f38623ef57fe505f4f38038b530371f89b03b81a07ce',
+                      test_json_encode)
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestFJMessage)

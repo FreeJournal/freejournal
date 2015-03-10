@@ -1,7 +1,29 @@
 from flask import Flask, render_template, send_from_directory
+from make_celery import make_celery
+from datetime import timedelta
 import datetime
+import config
+from cache.cache import Cache
 
-app = Flask(__name__)
+
+app = Flask(__name__, static_folder='public')
+app.config.update(
+    CELERY_BROKER_URL='amqp://',
+    CELERY_RESULT_BACKEND='amqp://',
+    CELERYBEAT_SCHEDULE={
+        'periodic_test': {
+            'task': 'periodic_test',
+            'schedule': timedelta(seconds=5),
+            'args': (16, 16)
+        },
+    },
+    CELERY_TIMEZONE='UTC'
+)
+celery = make_celery(app)
+cache = Cache()
+
+from tasks.add_task import add_together
+from tasks.periodic_test import add_test
 
 documents = [
     {
@@ -38,14 +60,19 @@ documents = [
     },
 ]
 
+
 @app.route('/')
 def index():
-    return render_template("index.html", documents=documents)
+    # TODO: Use Flask `g` object to store database connection
+    return render_template("index.html", collections=cache.get_all_collections())
+
 
 @app.route('/public/<path:path>')
 def send_static(path):
     return send_from_directory('public', path)
 
-if __name__ == '__main__':
-    app.debug = True
-    app.run()
+
+@app.route('/celerytest')
+def celery_test():
+    result = add_together.delay(23, 42)
+    return str(result.wait())

@@ -1,4 +1,5 @@
-import fcp, uuid
+import fcp
+import telnetlib
 
 class FreenetConnection:
     def __init__(self):
@@ -7,24 +8,29 @@ class FreenetConnection:
     '''
     Put a text file onto the freenode network
     
-    @param filename - String that will be used for the KSK
-                      or keyword-signed keys
+    @param filename - String that will be used for the CHK
+                      or content-hash keys
     @param data - The text data to add to freenode
     @return - complete URI for the file
     '''
-    def put(self, filename, data):
-        uri= "KSK@" + filename+ uuid.uuid4().hex
-        job = self.fcpNode.put(uri, data=data, mimetype="text/plain", async=True)
-        if job.isComplete(): 
-            print("this happens")
+    def put(self,data):
+        job = self.fcpNode.put(data=data, mimetype="text/plain", async=True)
+        tn = telnetlib.Telnet("localhost",2323)
+        tn.read_until("TMCI> ")
+        tn.write("GETCHK:"+data + "\n")
+        uri =tn.read_until("TMCI> ")
+        uri = uri.split('\r\n')[0]
+        print(uri)
+        if job.isComplete():
             return uri
         else:
+            print("Please wait for upload")
             job.wait()
         return uri
 
     '''
     Retrieve a text file from the freenode network
-    @param uri - the 'KSK@' prepended URI for the file on the network
+    @param uri - the 'CHK@' prepended URI for the file on the network
     @return - The textual data 
     '''
     def get(self, uri):
@@ -33,3 +39,4 @@ class FreenetConnection:
         #other info like header, completion time is stored in the
         #dictionary in job[2]
         return job[1]
+

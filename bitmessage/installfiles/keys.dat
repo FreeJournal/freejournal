@@ -41,4 +41,14 @@ apiport = 8442
 apiinterface = 127.0.0.1
 apiusername = username
 apipassword = password
-daemon = false
+daemon = true
+
+[BM-2cWvQ4HqcxLhgKjc5zkuwsbqf69mryY5mr]
+label = Free Journal Main Channel
+enabled = true
+decoy = false
+noncetrialsperbyte = 1000
+payloadlengthextrabytes = 1000
+privsigningkey = 5JscnTKKubbtQepFUzFjKm9SjBMQ7PZKgd8EnauXZGwLjPVF2zs
+privencryptionkey = 5K9KRL9KffdbWcBqzPeXv5Rfo2YRJFD3SASJmXJsZkEphy4Rh6q
+lastpubkeysendtime = 1425597376

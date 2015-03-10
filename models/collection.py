@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from models import DecBase
 from models.document import Document
 from models.keyword import Keyword
+import json
 
 # Define foreign keys required for joining defined tables together
 keyword_association = Table('collection_keywords', DecBase.metadata,
@@ -56,3 +57,47 @@ class Collection(DecBase):
     accesses = Column(Integer, nullable=False, default=0)
     votes = Column(Integer, nullable=False, default=0)
     votes_last_checked = Column(DateTime)
+
+    def to_json(self):
+        """
+        Encodes a Collection as a json representation so it can be sent through the bitmessage network
+
+        :return: the json representation of the given Collection
+        """
+        json_docs = []
+        for doc in self.documents:
+            json_docs.append((doc.collection_address, doc.description, doc.hash, doc.title))
+
+        json_keywords = []
+        for key in self.keywords:
+            json_keywords.append((key.id, key.name))
+        return json.dumps({"type_id": 1, "title": self.title, "description": self.description,
+                           "keywords": json_keywords, "address": self.address, "documents": json_docs,
+                           "merkle": self.merkle, "btc": self.btc, "version": self.version,
+                           "creation_date": self.creation_date.strftime("%A, %d. %B %Y %I:%M%p"),
+                           "oldest_date": self.oldest_date.strftime("%A, %d. %B %Y %I:%M%p")},
+                          sort_keys=True)
+
+    def _keyword_in(self, key_id):
+        """
+        Finds if the given Keyword id is in the Collection's Keywords
+        :param key_id: the Keyword id to search for
+        :return: True if this id is in the Collection's Keywords, False otherwise
+        """
+        for key in self.keywords:
+            if key.id == key_id:
+                return True
+        return False
+
+    def update_keywords(self, new_keywords):
+        """
+        Updates the Collection's Keywords with any new Keywords in the given list.
+        :param new_keywords: a list of Keywords
+        """
+        i = 0
+        new_key_list = []
+        while i < len(new_keywords):
+            if not self._keyword_in(new_keywords[i].id):
+                new_key_list.append(new_keywords[i])
+            i += 1
+        self.keywords.extend(new_key_list)

@@ -1,6 +1,5 @@
-from config.config import *
+from config import RUN_PYBITMESSAGE_LINUX
 import subprocess
-import sys
 import os
 import shutil
 
@@ -14,13 +13,10 @@ def check_config_creation():
     return os.path.exists(os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
 
 
-def linux_install():
-    """Generic installation for linux operating systems
-
-    Currently requires sudo to be installed
-    Needs more testing
+def apt_install():
+    """Generic installation for linux versions using apt
     """
-
+    subprocess.call(["sudo apt-get update"], shell=True)
     subprocess.call(["sudo apt-get install openssl git python-qt4"], shell=True)
 
     try:
@@ -40,18 +36,8 @@ def linux_install():
     process.kill()
 
     # Copy our modified keys.dat file to the user's ~/.config/PyBitmessage
-    shutil.copyfile(os.path.abspath(os.path.join(os.path.dirname(__file__))) + "/config/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
+    shutil.copyfile(os.path.abspath(os.path.join(os.path.dirname(__file__))) + "/installfiles/keys.dat", os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
 
 
 def windows_install():
     print 'FATAL ERROR: We detected you are using an inferior operating system to Linux...'
-
-if __name__ == '__main__':
-    os_version = sys.platform
-    if 'linux' in os_version:
-        linux_install()
-        print 'Installation Completed'
-    elif 'windows' in os_version:
-        windows_install()
-    else:
-        print "Couldn't detect a valid operating system"

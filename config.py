@@ -16,3 +16,17 @@ MIRROR_STRATEGY = 'all'
 
 ''' Max disk space to use.  Allowable units are G and M.'''
 MAX_DISKSPACE = '5G'
+
+''' Python command to start up the bitmessage daemon '''
+RUN_PYBITMESSAGE_LINUX = "python ~/PyBitmessage/src/bitmessagemain.py"
+
+''' Proxy server address following http://<username>:<password>@0.0.0.0:<api-port> '''
+BITMESSAGE_SERVER = "http://username:password@0.0.0.0:8442/"
+
+''' Don't change this unless the main channel address is changed in the future '''
+MAIN_CHANNEL_ADDRESS = "BM-2cWvQ4HqcxLhgKjc5zkuwsbqf69mryY5mr"
+privsigningkey = "5JscnTKKubbtQepFUzFjKm9SjBMQ7PZKgd8EnauXZGwLjPVF2zs"
+privencryptionkey = "5K9KRL9KffdbWcBqzPeXv5Rfo2YRJFD3SASJmXJsZkEphy4Rh6q"
+
+# Set to true at your own risk
+WEBAPP_DEBUG = True
