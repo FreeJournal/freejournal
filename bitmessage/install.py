@@ -1,7 +1,6 @@
-from global_imports import *
+from config import RUN_PYBITMESSAGE_LINUX
 import subprocess
 import os
-import platform
 import shutil
 
 
@@ -12,6 +11,7 @@ def check_config_creation():
     """
 
     return os.path.exists(os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
+
 
 def apt_install():
     """Generic installation for linux versions using apt
@@ -41,14 +41,3 @@ def apt_install():
 
 def windows_install():
     print 'FATAL ERROR: We detected you are using an inferior operating system to Linux...'
-
-if __name__ == '__main__':
-    os_version = platform.dist()[0]
-    if 'Ubuntu' in os_version:
-        apt_install()
-        print 'Installation Completed'
-    elif 'windows' in os_version:
-        windows_install()
-    else:
-        apt_install()
-        print 'Installation Completed'

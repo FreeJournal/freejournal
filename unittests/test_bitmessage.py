@@ -1,7 +1,5 @@
-from global_imports import Bitmessage
+from bitmessage.bitmessage import Bitmessage
 import unittest
-import sys
-import os
 import base64
 import time
 
