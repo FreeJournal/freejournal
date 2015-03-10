@@ -9,15 +9,22 @@ from bitmessage.install import apt_install, windows_install
 # FreeNet installer imports
 from freenet.install import linux_install
 
-# FreeJournal imports
+# FreeJournal library imports
 import config
-from cache.cache import Cache
+try:
+    from cache.cache import Cache
+except:
+    print "Warning: SQLite is not installed.  No local cache " \
+        + "functionality available."
 from models.collection import Collection
 from models.keyword import Keyword
 from models.document import Document
 from bitmessage.bitmessage_listener import get_collections
 from bitmessage.bitmessage import Bitmessage
 from backend.controller import Controller
+
+# Frontend imports
+from frontend.webapp import app as webapp
 
 try:
     # Freenet may not be installed
@@ -216,6 +223,8 @@ def process_command(command):
             publish_collection(sys.argv[2], sys.argv[3])
         else:
             print_help()
+    elif command == 'webapp':
+        webapp.app.run(debug = config.WEBAPP_DEBUG)
     else:
         print_help()
 
