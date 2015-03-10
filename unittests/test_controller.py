@@ -1,10 +1,12 @@
 import unittest
-from global_imports import *
+from backend.controller import Controller
+from models.collection import Collection
+from models.keyword import Keyword
+from models.document import Document
 import uuid
 import datetime
 import time
-import base64
-import json
+
 
 
 class TestController(unittest.TestCase):
