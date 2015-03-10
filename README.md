@@ -31,9 +31,19 @@ for output.
 
 ## Running FreeJournal
 
-Coming soon
+### Creating and publishing a collection
+
+Modify the following example commands to create and publish a collection:
+```
+./freejournal-cli putcollection whee 1,2,3 "This is a TEST" "nothing to see here" "nothing,to" btc123
+Collection inserted with address/ID [BM-2cVBBDezMcgoAHMkNzMswkc3xZRMFFvKeV
+./freejournal-cli publishcollection whee BM-2cVBBDezMcgoAHMkNzMswkc3xZRMFFvKeV
+```
+
+... more coming soon
 
 ## Running FreeJournal Unit Tests
 
 Simply `python run_tests.py` in the root directory after installing the required
 prerequisites.
+
