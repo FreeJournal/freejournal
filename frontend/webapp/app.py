@@ -1,51 +1,17 @@
 from flask import Flask, render_template, send_from_directory
 import datetime
+import config
+
+# FreeJournal imports
+from cache.cache import Cache
 
 app = Flask(__name__)
-
-documents = [
-    {
-        "name": "Company, Inc. Hiring Practices",
-        "type": "PDF",
-        "keywords": ["corporate", "hiring", "leak"],
-        "score": "1.243",
-        "date": datetime.datetime.now(),
-        "submitter": "wafflelover42"
-    },
-    {
-        "name": "Company, Inc. Hiring Practices",
-        "type": "PDF",
-        "keywords": ["corporate", "hiring", "leak"],
-        "score": "1.243",
-        "date": datetime.datetime.now(),
-        "submitter": "wafflelover42"
-    },
-    {
-        "name": "Company, Inc. Hiring Practices",
-        "type": "PDF",
-        "keywords": ["corporate", "hiring", "leak"],
-        "score": "1.243",
-        "date": datetime.datetime.now(),
-        "submitter": "wafflelover42"
-    },
-    {
-        "name": "Company, Inc. Hiring Practices",
-        "type": "PDF",
-        "keywords": ["corporate", "hiring", "leak"],
-        "score": "1.243",
-        "date": datetime.datetime.now(),
-        "submitter": "wafflelover42"
-    },
-]
+cache = Cache()
 
 @app.route('/')
 def index():
-    return render_template("index.html", documents=documents)
+    return render_template("index.html", collections=cache.get_all_collections())
 
 @app.route('/public/<path:path>')
 def send_static(path):
     return send_from_directory('public', path)
-
-if __name__ == '__main__':
-    app.debug = True
-    app.run()
