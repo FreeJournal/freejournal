@@ -58,7 +58,7 @@ class Controller:
                 address=payload["address"],
                 version=payload["version"],
                 btc=payload["btc"],
-                keywords=None, #@todo add keyword support
+                keywords=[], #@todo add keyword support
                 documents=docs,
                 creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
                 oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
