@@ -5,7 +5,7 @@ import config
 # FreeJournal imports
 from cache.cache import Cache
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder = 'public')
 cache = Cache()
 
 @app.route('/')

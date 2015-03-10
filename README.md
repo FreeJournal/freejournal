@@ -26,10 +26,9 @@ To install database, documentation, and other library requirements, run
 
 ## Generating Documentation
 
-To generate API documentation, simply `sh generate_docs.sh` and check the `docs` folder
-for output.
+To generate API documentation, simply `sh generate_docs.sh` in the `docs` folder.
 
-## Running FreeJournal
+## Running FreeJournal - Command Line
 
 ### Creating and publishing a collection
 
@@ -47,3 +46,8 @@ Collection inserted with address/ID [BM-2cVBBDezMcgoAHMkNzMswkc3xZRMFFvKeV
 Simply `python run_tests.py` in the root directory after installing the required
 prerequisites.
 
+## Running FreeJournal - Web interface
+
+After configuring the web interface in config.py, use `./freejournal-cli webapp` to run an insecure
+ development server.  Hardened deployments should use the advanced deployment guides on the Flask 
+website.
