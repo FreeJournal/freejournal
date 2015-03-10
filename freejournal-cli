@@ -28,7 +28,7 @@ def print_help():
     print "Usage: ./freejournal [command]"
     print "./freejournal_cli help [command name] - display extended command information.\n"
     print "Available commands:"
-    print "\tgetdocfile [document hash] [document output path]"
+    print "\tgetdocfile [document hash] [document output path/filename]"
     print "\tputdoc [document input path]"
     print "\tlistcollections"
     print "\tlisten"
@@ -68,15 +68,15 @@ def print_command_help(command):
         print "Unknown command!"
         print_help()
 
-def get_doc_file(document_hash, document_output_path):
+def get_doc_file(document_hash, document_output_filename):
     """ Get a document file from the Freenet network
         :param document_hash: the Freenet URI to retreive
-        :param document_output_path: path to write to
+        :param document_output_filename: path/filename to write to
     """
     freeCon = FreenetConnection()
     output=freeCon.get(document_hash)
-    open(document_output_path, 'w').write(document_hash)
-    print "File with URL " + document_hash + " written to " + document_output_path
+    open(document_output_filename, 'w').write(output)
+    print "File with URL " + document_hash + " written to " + document_output_filename
 
 def list_collections():
     """ List all collections in the local cache """
