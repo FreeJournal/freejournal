@@ -13,7 +13,7 @@ class FreenetConnection:
     @param data - The text data to add to freenode
     @return - complete URI for the file
     '''
-    def put(self, filename, data):
+    def put(self,data):
         job = self.fcpNode.put(data=data, mimetype="text/plain", async=True)
         '''
         Note, currently the async aspect is nullified by the wait 

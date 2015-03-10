@@ -14,13 +14,13 @@ class TestFreeNetConnection(unittest.TestCase):
     
     def test_put_success(self):
         freeCon = FreenetConnection()
-        uri = freeCon.put("test_string", "this is my data")
+        uri = freeCon.put("this is my data")
         self.assertIsNotNone(uri)
         self.assertTrue("test_string" in uri)
    
     def test_get_success(self):
         freeCon = FreenetConnection()
-        uri = freeCon.put("test_string", "this is my data")
+        uri = freeCon.put("this is my data2")
         output=freeCon.get(uri)
         self.assertTrue(output == "this is my data")
 
