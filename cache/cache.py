@@ -10,7 +10,7 @@ DBSession = sessionmaker(bind=engine)
 
 class Cache():
     """
-    A Cache is an object used to communicate with the sqlalchemy database.
+    A Cache is an object used to communicate with the sqlalchemy database and store FreeJournal data locally
 
     Attributes:
         session: the sqlalchemy session for this Cache
@@ -33,7 +33,7 @@ class Cache():
         """
         Retreive a specific collection as it's stored locally
         :param address: the collection BitMessage address to retreive
-        :return: Collection object with desired ID in latest local state, or None if no Collection found
+        :return: Collection object with desired ID in latest local state, or None if no matching Collection
         """
         row = None
         try:

@@ -96,7 +96,7 @@ class Collection(DecBase):
         """
         i = 0
         new_key_list = []
-        while i < len(self.keywords):
+        while i < len(new_keywords):
             if not self._keyword_in(new_keywords[i].id):
                 new_key_list.append(new_keywords[i])
             i += 1
