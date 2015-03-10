@@ -1,6 +1,6 @@
 import sys
 from bitmessage.bitmessage import Bitmessage
-from backend.collection_handler import CollectionHandler
+from backend.controller import Controller
 from models.keyword import Keyword
 from models.document import Document
 from models.collection import Collection
@@ -11,7 +11,7 @@ if __name__ == '__main__':
 
     #Create a bitmessage connection
     bitmessage_connection = Bitmessage()
-    collection_handler = CollectionHandler()
+    collection_handler = Controller()
 
     address_label = "Test Collection"
     address = bitmessage_connection.create_address(address_label)
