@@ -118,7 +118,7 @@ def put_document(file_path):
     """
     contents = open(file_path).read()
     freeCon = FreenetConnection()
-    uri = freeCon.put("FREEJOURNAL", contents)
+    uri = freeCon.put(contents)
     print "Inserted " + file_path + " successfully with URI " + uri
 
 def put_collection(address_password, document_ids, title, description, keywords, btc):
