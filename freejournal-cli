@@ -10,9 +10,7 @@ from bitmessage.install import apt_install, windows_install
 from freenet.install import linux_install
 
 # FreeJournal imports
-import freenet
 import config
-from freenet.FreenetConnection import FreenetConnection
 from cache.cache import Cache
 from models.collection import Collection
 from models.keyword import Keyword
@@ -20,6 +18,14 @@ from models.document import Document
 from bitmessage.bitmessage_listener import get_collections
 from bitmessage.bitmessage import Bitmessage
 from backend.controller import Controller
+
+try:
+    # Freenet may not be installed
+    import freenet
+    from freenet.FreenetConnection import FreenetConnection
+    freenet_installed = True
+except:
+    freenet_installed = False
 
 cache = Cache()
 
