@@ -28,5 +28,5 @@ MAIN_CHANNEL_ADDRESS = "BM-2cWvQ4HqcxLhgKjc5zkuwsbqf69mryY5mr"
 privsigningkey = "5JscnTKKubbtQepFUzFjKm9SjBMQ7PZKgd8EnauXZGwLjPVF2zs"
 privencryptionkey = "5K9KRL9KffdbWcBqzPeXv5Rfo2YRJFD3SASJmXJsZkEphy4Rh6q"
 
-''' Web server debug mode '''
-WEB_DEBUG = True
+# Set to true at your own risk
+WEBAPP_DEBUG = True
