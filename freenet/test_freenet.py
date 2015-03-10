@@ -1,5 +1,5 @@
 import unittest
-from Freenet.FreenetConnection import FreenetConnection
+from freenet.FreenetConnection import FreenetConnection
 
 
 class TestFreeNetConnection(unittest.TestCase):

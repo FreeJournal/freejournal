@@ -1,6 +1,6 @@
 import sys
 
-from Freenet.install import linux_install
+from freenet.install import linux_install
 
 if __name__ == '__main__':
     os = sys.platform
