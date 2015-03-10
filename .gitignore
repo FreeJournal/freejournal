@@ -4,4 +4,5 @@
 node_modules
 docs/*
 !docs/overview
+!docs/generate_docs.sh
 *.db
