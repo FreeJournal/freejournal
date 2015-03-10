@@ -58,7 +58,7 @@ class Controller:
                 address=payload["address"],
                 version=payload["version"],
                 btc=payload["btc"],
-                keywords=keywords,
+                keywords=None, #@todo add keyword support
                 documents=docs,
                 creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
                 oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
@@ -66,7 +66,7 @@ class Controller:
             self.cache.insert_new_collection(collection_model)
             print "Cached New Collection"
         else:
-            cached_collection.update_keywords(keywords)
+            #cached_collection.update_keywords(keywords)
             cached_collection.title = payload["title"]
             cached_collection.description = payload["description"]
             cached_collection.merkle = payload['merkle']
