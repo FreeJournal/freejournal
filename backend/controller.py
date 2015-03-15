@@ -65,6 +65,7 @@ class Controller:
                 btc=payload["btc"],
                 keywords=[], #@todo add keyword support
                 documents=docs,
+                latest_rebroadcast_date=datetime.datetime.strptime(payload["latest_rebroadcast_date"], "%A, %d. %B %Y %I:%M%p"),
                 creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
                 oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
             )
@@ -79,6 +80,8 @@ class Controller:
             cached_collection.version = payload["version"]
             cached_collection.btc = payload["btc"]
             #cached_collection.documents = docs
+            cached_collection.creation_date = datetime.datetime.strptime(payload["latest_rebroadcast_date"],
+                                                                         "%A, %d. %B %Y %I:%M%p")
             cached_collection.creation_date = datetime.datetime.strptime(payload["creation_date"],
                                                                          "%A, %d. %B %Y %I:%M%p")
             cached_collection.oldest_date = datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")

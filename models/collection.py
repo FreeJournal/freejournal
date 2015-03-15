@@ -31,6 +31,7 @@ class Collection(DecBase):
             btc: Bitcoin address for rating documents (as in message spec)
             keywords: Keywords as list of Keyword class for searching (as in message spec)
             documents: List of document classes included in the collection (as in message spec)
+            latest_broadcast_date: The date that this collection was last seen broadcasted in the Main Channel
             creation_date: Earliest known timestamp of collection, or if none earliest approximation of creation date of
                 current version of collection
             oldest_date: Earliest known timestamp of collection, or if none earliest approximation of creation date of
@@ -50,6 +51,7 @@ class Collection(DecBase):
     btc = Column(String)
     keywords = relationship(Keyword, secondary=keyword_association)
     documents = relationship(Document, cascade="all, delete-orphan")
+    latest_broadcast_date = Column(DateTime, nullable=False)
     creation_date = Column(DateTime, nullable=False)
     oldest_date = Column(DateTime, nullable=False)
     latest_btc_tx = Column(String)
@@ -73,6 +75,7 @@ class Collection(DecBase):
             json_keywords.append((key.id, key.name))
         return json.dumps({"type_id": 1, "title": self.title, "description": self.description,
                            "keywords": json_keywords, "address": self.address, "documents": json_docs,
+                           "latest_broadcast_date": self.latest_broadcast_date.strftime("%A, %d. %B %Y %I:%M%p"),
                            "merkle": self.merkle, "btc": self.btc, "version": self.version,
                            "creation_date": self.creation_date.strftime("%A, %d. %B %Y %I:%M%p"),
                            "oldest_date": self.oldest_date.strftime("%A, %d. %B %Y %I:%M%p")},
