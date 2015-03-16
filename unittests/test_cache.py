@@ -42,7 +42,8 @@ class TestCache(unittest.TestCase):
                     ),
             ],
             creation_date=datetime.datetime.now(),
-            oldest_date=datetime.datetime.now()
+            oldest_date=datetime.datetime.now(),
+            latest_broadcast_date=datetime.datetime.now()
         )
         self.cache.session.add(coll)
         coll = self.cache.session.query(Collection).filter(Collection.address == coll_address).one()
