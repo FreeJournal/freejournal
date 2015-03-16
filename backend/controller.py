@@ -25,6 +25,9 @@ class Controller:
         :return: True if the signatures match, False otherwise
         """
 
+        if not "pubkey" in fj_message:
+            return False
+
         h = hashlib.sha256(fj_message["pubkey"] + fj_message['payload']).hexdigest()
 
         if h == fj_message["signature"]:
@@ -47,7 +50,9 @@ class Controller:
         for key in payload["keywords"]:
             keywords.append(Keyword(name=key[1], id=key[0]))
         for doc in payload["documents"]:
-            docs.append(Document(collection_address=doc[0], description=doc[1], hash=doc[2], title=doc[3]))
+            pass
+            # @todo add document support
+            #docs.append(Document(collection_address=doc[0], description=doc[1], hash=doc[2], title=doc[3]))
         cached_collection = self.cache.get_collection_with_address(payload["address"])
 
         if cached_collection is None:
@@ -58,7 +63,7 @@ class Controller:
                 address=payload["address"],
                 version=payload["version"],
                 btc=payload["btc"],
-                keywords=keywords,
+                keywords=[], #@todo add keyword support
                 documents=docs,
                 creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
                 oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
@@ -66,14 +71,14 @@ class Controller:
             self.cache.insert_new_collection(collection_model)
             print "Cached New Collection"
         else:
-            cached_collection.update_keywords(keywords)
+            #cached_collection.update_keywords(keywords)
             cached_collection.title = payload["title"]
             cached_collection.description = payload["description"]
             cached_collection.merkle = payload['merkle']
             cached_collection.address = payload["address"]
             cached_collection.version = payload["version"]
             cached_collection.btc = payload["btc"]
-            cached_collection.documents = docs
+            #cached_collection.documents = docs
             cached_collection.creation_date = datetime.datetime.strptime(payload["creation_date"],
                                                                          "%A, %d. %B %Y %I:%M%p")
             cached_collection.oldest_date = datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")

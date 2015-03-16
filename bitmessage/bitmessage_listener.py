@@ -1,6 +1,7 @@
 from backend.controller import Controller
 from config import MAIN_CHANNEL_ADDRESS
 
+
 def get_collections():
     """Get collections from the main channel"""
 
