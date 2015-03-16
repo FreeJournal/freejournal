@@ -6,7 +6,7 @@ import unittest
 
 
 class TestKeepalive(unittest.TestCase):
-    def setup(self):
+    def setUp(self):
         cache = Cache()
 
 
@@ -31,7 +31,7 @@ class TestKeepalive(unittest.TestCase):
             address="bm-second",
             keywords=[],
             documents=[],
-            latest_broadcast_date=datetime.datetime.today() - datetime.timedelta(days=2),
+            latest_broadcast_date=datetime.datetime.today() - datetime.timedelta(days=3),
             creation_date=datetime.datetime.today(),
             oldest_date=datetime.datetime.today(),
             accesses=0,
@@ -69,6 +69,10 @@ class TestKeepalive(unittest.TestCase):
         )
 
         cache.insert_new_collection(collection4)
+
+    def tearDown(self):
+        cache = Cache()
+        cache.drop_database()
 
     def test_bitmessage_keepalive(self):
         num_collections = find_old_collections(3)

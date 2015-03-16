@@ -15,6 +15,7 @@ def rebroadcast(collection):
     #Connect to bitmessage and create a temporary address
     bitmessage = Bitmessage()
     from_address = bitmessage.create_address("Rebroadcast")
+    collection.address = from_address
 
     #Connect to controller and rebroadcast
     controller = Controller()

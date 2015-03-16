@@ -1,5 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import MetaData
 from db import setup_db, connect_db
 from models.collection import Collection
 from models.collection import Document
@@ -7,6 +8,7 @@ from models.collection import Document
 engine = connect_db()
 setup_db(engine)
 DBSession = sessionmaker(bind=engine)
+meta = MetaData(bind=engine)
 
 
 class Cache():
@@ -62,4 +64,11 @@ class Cache():
         """
         self.session.add(document)
         self.session.commit()
+
+    def drop_database(self):
+        """
+        Drops all of the tables in the database.
+        Currently this function is only used for unittesting.
+        """
+        meta.drop_all()
 
