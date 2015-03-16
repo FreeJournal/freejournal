@@ -2,7 +2,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from db import setup_db, connect_db
 from models.collection import Collection
-from modesl.collection import Document
+from models.collection import Document
 
 engine = connect_db()
 setup_db(engine)
@@ -44,8 +44,8 @@ class Cache():
         return row
 
     def get_documents_from_collection(self, collection_address):
-        collections = self.session.query(Document).filter(Document.collection_address == collection_address) 
-        return collections.order_by(Document.title.desc())
+        collections = self.session.query(Document).filter(Document.collection_address == collection_address).all()
+        return collections
 
     def insert_new_collection(self,collection):
         """

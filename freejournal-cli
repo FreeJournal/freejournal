@@ -107,6 +107,11 @@ def list_collections():
     for collection in cache.get_all_collections():
         print "\tID " + collection.address + "\t " + collection.title + \
             "\tCreation Date " + collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p")
+        print("\t" +"~~~~~~~~~~~~~~~Document list~~~~~~~~~~~~~~~")
+        print("\t\t" + "URI" + "\t" + "Title" + "\t" + "Description")
+        documents = cache.get_documents_from_collection(collection.address)
+        for doc in documents:
+            print("\t\t" + doc.hash + "\t" + doc.title +  "\t" + doc.description)
 
 def list_collection_details(collection_address):
     collection = cache.get_collection_with_address(collection_address)
@@ -196,11 +201,14 @@ def show_collection(collection_address):
     :param collection_address: Collection address
     '''
     collection = cache.get_collection_with_address(collection_address)
+
     print "\tID " + collection.address + "\t " + collection.title + \
             "\tCreation Date " + collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p")
+    print("\t" +"~~~~~~~~~~~~~~~"+ "Document list"+"~~~~~~~~~~~~~~~")
+    print("\t\t" + "URI" + "\t" + "Title" + "\t" + "Description")
     documents = cache.get_documents_from_collection(collection_address)
-    print(documents)
-    print(len(documents))
+    for doc in documents:
+        print("\t\t" + doc.hash + "\t" + doc.title +  "\t" + doc.description)
 
 def publish_collection(address_password, collection_address):
     bitmessage_connection = Bitmessage()
