@@ -3,6 +3,8 @@ from sqlalchemy.orm import relationship
 from models import DecBase
 from models.document import Document
 from models.keyword import Keyword
+from jsonschema import *
+from json_schemas import *
 import json
 
 # Define foreign keys required for joining defined tables together
@@ -50,6 +52,7 @@ class Collection(DecBase):
     btc = Column(String)
     keywords = relationship(Keyword, secondary=keyword_association)
     documents = relationship(Document, cascade="all, delete-orphan")
+    latest_broadcast_date = Column(DateTime, nullable=False)
     creation_date = Column(DateTime, nullable=False)
     oldest_date = Column(DateTime, nullable=False)
     latest_btc_tx = Column(String)
@@ -66,17 +69,34 @@ class Collection(DecBase):
         """
         json_docs = []
         for doc in self.documents:
-            json_docs.append((doc.collection_address, doc.description, doc.hash, doc.title))
+            json_docs.append({"address": doc.collection_address, "description": doc.description, "title": doc.title,
+                              "hash": doc.hash, "filename": doc.filename, "accesses": doc.accesses})
 
         json_keywords = []
         for key in self.keywords:
-            json_keywords.append((key.id, key.name))
-        return json.dumps({"type_id": 1, "title": self.title, "description": self.description,
-                           "keywords": json_keywords, "address": self.address, "documents": json_docs,
-                           "merkle": self.merkle, "btc": self.btc, "version": self.version,
-                           "creation_date": self.creation_date.strftime("%A, %d. %B %Y %I:%M%p"),
-                           "oldest_date": self.oldest_date.strftime("%A, %d. %B %Y %I:%M%p")},
-                          sort_keys=True)
+            json_keywords.append({"id": key.id, "name": key.name})
+        json_representation = {"type_id": 1,
+                                          "title": self.title,
+                                          "description": self.description,
+                                          "keywords": json_keywords,
+                                          "address": self.address,
+                                          "documents": json_docs,
+                                          "merkle": self.merkle,
+                                          "btc": self.btc,
+                                          "version": self.version,
+                                          "latest_broadcast_date": self.latest_broadcast_date.strftime("%A, %d. %B %Y %I:%M%p"),
+                                          "creation_date": self.creation_date.strftime("%A, %d. %B %Y %I:%M%p"),
+                                          "oldest_date": self.oldest_date.strftime("%A, %d. %B %Y %I:%M%p"),
+                                          "latest_btc_tx": self.latest_btc_tx,
+                                          "oldest_btc_tx": self.oldest_btc_tx,
+                                          "accesses": self.accesses,
+                                          "votes": self.votes,
+                                          "votes_last_checked": self.votes_last_checked.strftime("%A, %d. %B %Y %I:%M%p")}
+        try:
+            validate(json_representation, coll_schema)
+            return json.dumps(json_representation, sort_keys=True)
+        except ValidationError as m:
+            return None
 
     def _keyword_in(self, key_id):
         """
