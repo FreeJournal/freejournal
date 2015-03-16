@@ -9,7 +9,6 @@ class TestKeepalive(unittest.TestCase):
     def setUp(self):
         cache = Cache()
 
-
         collection1 = Collection(
             title="First Collection",
             merkle="Test",
@@ -20,7 +19,8 @@ class TestKeepalive(unittest.TestCase):
             creation_date=datetime.datetime.today(),
             oldest_date=datetime.datetime.today(),
             accesses=0,
-            votes=0
+            votes=0,
+            votes_last_checked=datetime.datetime.today()
         )
 
         cache.insert_new_collection(collection1)
@@ -35,7 +35,8 @@ class TestKeepalive(unittest.TestCase):
             creation_date=datetime.datetime.today(),
             oldest_date=datetime.datetime.today(),
             accesses=0,
-            votes=0
+            votes=0,
+            votes_last_checked=datetime.datetime.today()
         )
 
         cache.insert_new_collection(collection2)
@@ -50,7 +51,8 @@ class TestKeepalive(unittest.TestCase):
             creation_date=datetime.datetime.today(),
             oldest_date=datetime.datetime.today(),
             accesses=0,
-            votes=0
+            votes=0,
+            votes_last_checked=datetime.datetime.today()
         )
 
         cache.insert_new_collection(collection3)
@@ -65,14 +67,15 @@ class TestKeepalive(unittest.TestCase):
             creation_date=datetime.datetime.today(),
             oldest_date=datetime.datetime.today(),
             accesses=0,
-            votes=0
+            votes=0,
+            votes_last_checked=datetime.datetime.today()
         )
 
         cache.insert_new_collection(collection4)
 
     def tearDown(self):
         cache = Cache()
-        cache.drop_database()
+        cache.reset_database()
 
     def test_bitmessage_keepalive(self):
         num_collections = find_old_collections(3)

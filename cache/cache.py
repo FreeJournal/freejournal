@@ -65,10 +65,12 @@ class Cache():
         self.session.add(document)
         self.session.commit()
 
-    def drop_database(self):
+    def reset_database(self):
         """
         Drops all of the tables in the database.
         Currently this function is only used for unittesting.
         """
+        meta.reflect()
         meta.drop_all()
+        meta.create_all()
 
