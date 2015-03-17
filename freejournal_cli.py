@@ -50,13 +50,13 @@ def print_help():
     print ("Usage: ./freejournal [command]")
     print ("./freejournal_cli help [command name] - display extended command information.\n")
     print ("Available commands:")
-    print ("\tgetdocfile [document hash] [document output path/filename]")
+    print ("\tgetdoc [document hash] [document output path/filename]")
     print ("\tputdoc [document input path] [collection address] [title] [description]")
     print ("\tlistcollections")
     print ("\tlisten")
     print ("\tinstall [freenet|bitmessage|all]")
     print ("\tshowcollection [index bitmessage ID]")
-    print ("\tputcollection [address password] [document IDs, comma separated] [title] [description] [keywords] " \
+    print ("\tputcollection [address password] [title] [description] [keywords] " \
             + "[Bitcoin address (for rating)]")
     print ("\tpublishcollection [address password] [index bitmessage ID]")
     print ("\twebapp")
@@ -67,7 +67,7 @@ def print_command_help(command):
     """ Display extended help information for CLI command
         :param command: FreeJournal command name"""
     COMMANDS = \
-        { "getdocfile": \
+        { "getdoc": \
             "Get a document with given hash from the FreeJournal network storage.", \
           "putdoc": \
             "Add a document to the FreeJournal network storage and create the local" \
@@ -172,12 +172,11 @@ def put_document(file_path, collection_address, title, description):
     print ("Inserted " + file_path + " successfully with URI " + uri)
     print ("Allow up to 10 minutes for file to propogate on the freenet network")
 
-def put_collection(address_password, document_ids, title, description, keywords, btc):
+def put_collection(address_password, title, description, keywords, btc):
     """ Create a collection in local cache
         :param address_password: The password with which to protect the collection.
         Should be at least 20 characters for optimal security and unique.  Generates 
         the unique collection ID deterministically
-        :param document_ids: A list of document object IDs to include in the collection
         :param title: The title of the created collection
         :param description: The description of the created collection
         :param keywords: Comma-separated keywords for the resulting collection
@@ -196,13 +195,7 @@ def put_collection(address_password, document_ids, title, description, keywords,
         votes=0,
         btc=btc,
         keywords=keywords,
-        documents=[Document(collection_address=address, description="test", hash=str(uuid.uuid4()),
-                            title="docTitle", filename="file name", accesses=23),
-                   Document(collection_address=address, description="testing", hash=str(uuid.uuid4()),
-                            title="docTitle2", filename="file name", accesses=23),
-                    Document(collection_address=address, description="test2", hash=str(uuid.uuid4()),
-                            title="document two", filename="file name", accesses=30),
-        ],
+        documents=[],
         creation_date=datetime.datetime.now(),
         oldest_date=datetime.datetime.now(),
         votes_last_checked=datetime.datetime.now(),
@@ -252,7 +245,7 @@ def process_command(command):
             print_command_help(sys.argv[2])
         else:
             print_help()
-    elif command == 'getdocfile':
+    elif command == 'getdoc':
         if (len(sys.argv) == 4):
             get_doc_file(sys.argv[2], sys.argv[3])
         else:
@@ -278,11 +271,10 @@ def process_command(command):
         else:
             print_help()
     elif command == 'putcollection':
-        if (len(sys.argv) == 8):
+        if (len(sys.argv) == 7):
             put_collection(sys.argv[2], \
                 sys.argv[3], sys.argv[4], \
-                sys.argv[5], sys.argv[6], \
-                sys.argv[7])
+                sys.argv[5], sys.argv[6])
         else:
             print_help()
     elif command == 'publishcollection':
