@@ -291,7 +291,7 @@ def process_command(command):
         else:
             print_help()
     elif command == 'webapp':
-        webapp.run(debug = config.WEBAPP_DEBUG)
+        webapp.run(debug = config.WEBAPP_DEBUG, port = config.WEBAPP_PORT)
     elif command == 'uploader':
         from frontend.uploader import FreeJournal
         FreeJournal.run()

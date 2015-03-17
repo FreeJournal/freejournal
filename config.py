@@ -30,3 +30,4 @@ privencryptionkey = "5K9KRL9KffdbWcBqzPeXv5Rfo2YRJFD3SASJmXJsZkEphy4Rh6q"
 
 # Set to true at your own risk
 WEBAPP_DEBUG = True
+WEBAPP_PORT  = 5000
