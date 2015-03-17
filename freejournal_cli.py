@@ -51,7 +51,7 @@ def print_help():
     print ("./freejournal_cli help [command name] - display extended command information.\n")
     print ("Available commands:")
     print ("\tgetdocfile [document hash] [document output path/filename]")
-    print ("\tputdoc [document input path]")
+    print ("\tputdoc [document input path] [collection address] [title] [description]")
     print ("\tlistcollections")
     print ("\tlisten")
     print ("\tinstall [freenet|bitmessage|all]")
