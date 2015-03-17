@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'NewCollection_UI.ui'
 #
-# Created: Sun Mar 15 19:21:00 2015
+# Created: Tue Mar 17 14:10:57 2015
 #      by: PyQt4 UI code generator 4.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,13 +26,13 @@ except AttributeError:
 class Ui_DialogNewCollection(object):
     def setupUi(self, DialogNewCollection):
         DialogNewCollection.setObjectName(_fromUtf8("DialogNewCollection"))
-        DialogNewCollection.resize(440, 371)
+        DialogNewCollection.resize(450, 500)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(DialogNewCollection.sizePolicy().hasHeightForWidth())
         DialogNewCollection.setSizePolicy(sizePolicy)
-        DialogNewCollection.setMinimumSize(QtCore.QSize(375, 275))
+        DialogNewCollection.setMinimumSize(QtCore.QSize(450, 500))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         DialogNewCollection.setWindowIcon(icon)
@@ -74,6 +74,17 @@ class Ui_DialogNewCollection(object):
         self.toolButtonAddDirectory.setObjectName(_fromUtf8("toolButtonAddDirectory"))
         self.horizontalLayout.addWidget(self.toolButtonAddDirectory)
         self.verticalLayout_4.addLayout(self.horizontalLayout)
+        self.line_5 = QtGui.QFrame(DialogNewCollection)
+        self.line_5.setFrameShape(QtGui.QFrame.HLine)
+        self.line_5.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_5.setObjectName(_fromUtf8("line_5"))
+        self.verticalLayout_4.addWidget(self.line_5)
+        self.label_3 = QtGui.QLabel(DialogNewCollection)
+        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.verticalLayout_4.addWidget(self.label_3)
+        self.lineEditPassword = QtGui.QLineEdit(DialogNewCollection)
+        self.lineEditPassword.setObjectName(_fromUtf8("lineEditPassword"))
+        self.verticalLayout_4.addWidget(self.lineEditPassword)
         self.verticalLayout_2 = QtGui.QVBoxLayout()
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.line_2 = QtGui.QFrame(DialogNewCollection)
@@ -81,6 +92,17 @@ class Ui_DialogNewCollection(object):
         self.line_2.setFrameShadow(QtGui.QFrame.Sunken)
         self.line_2.setObjectName(_fromUtf8("line_2"))
         self.verticalLayout_2.addWidget(self.line_2)
+        self.label_2 = QtGui.QLabel(DialogNewCollection)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.verticalLayout_2.addWidget(self.label_2)
+        self.plainTextEditDescription = QtGui.QPlainTextEdit(DialogNewCollection)
+        self.plainTextEditDescription.setObjectName(_fromUtf8("plainTextEditDescription"))
+        self.verticalLayout_2.addWidget(self.plainTextEditDescription)
+        self.line_4 = QtGui.QFrame(DialogNewCollection)
+        self.line_4.setFrameShape(QtGui.QFrame.HLine)
+        self.line_4.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_4.setObjectName(_fromUtf8("line_4"))
+        self.verticalLayout_2.addWidget(self.line_4)
         self.labelAddKeywords = QtGui.QLabel(DialogNewCollection)
         self.labelAddKeywords.setObjectName(_fromUtf8("labelAddKeywords"))
         self.verticalLayout_2.addWidget(self.labelAddKeywords)
@@ -124,10 +146,11 @@ class Ui_DialogNewCollection(object):
         self.labelCollectionName.setText(_translate("DialogNewCollection", "Collection Name:", None))
         self.labelUploadDocument.setText(_translate("DialogNewCollection", "Upload Document:", None))
         self.toolButtonAddDirectory.setText(_translate("DialogNewCollection", "...", None))
+        self.label_3.setText(_translate("DialogNewCollection", "Password:", None))
+        self.label_2.setText(_translate("DialogNewCollection", "Description:", None))
         self.labelAddKeywords.setText(_translate("DialogNewCollection", "Add Keywords:", None))
         self.labelPrivacy.setText(_translate("DialogNewCollection", "Collection Privacy Setting:", None))
         self.radioButtonPublic.setText(_translate("DialogNewCollection", "Public", None))
         self.radioButtonPrivate.setText(_translate("DialogNewCollection", "Private", None))
 
 from frontend.uploader import resources_rc
-
