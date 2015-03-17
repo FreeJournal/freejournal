@@ -90,7 +90,7 @@ def print_command_help(command):
           "webapp": \
             "Run the FreeJournal web application (webapp).", \
           "uploader": \
-            "Run the FreeJournal graphical desktop application/uploader." \
+            "Run the FreeJournal graphical desktop application/uploader.", \
           "keepalive": \
             "Run network keepalive functionality (republish indexes to the BitMessage network)." \
         }
