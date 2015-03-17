@@ -100,7 +100,6 @@ class Controller:
             except IntegrityError as m:
                 #print m.message
                 return False
-        self.connection.delete_message(message['msgid'])
 
     def import_collection(self, address):
         """
@@ -123,6 +122,7 @@ class Controller:
                 except (ValueError, TypeError, ValidationError) as m:
                     #print m.message
                     print "Not a FJ Message or Invalid FJ Message"
+                    self.connection.delete_message(message['msgid'])
                     continue
 
                 # Trying to filter out non collection messages
@@ -135,10 +135,12 @@ class Controller:
                     except (ValueError, TypeError, ValidationError) as m:
                         #print m.message
                         print "Contents of FJ Message invalid or corrupted"
+                        self.connection.delete_message(message['msgid'])
                         continue
 
                     if self._check_signature(json_decode):
                         self._cache_collection(message, payload)
+                        self.connection.delete_message(message['msgid'])
                         return True
 
         #print "Could not import collection"

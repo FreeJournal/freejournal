@@ -21,7 +21,11 @@ def rebroadcast(collection):
     controller = Controller()
     print("Rebroadcasting collection: " + collection.title)
 
-    controller.publish_collection(collection, MAIN_CHANNEL_ADDRESS, from_address)
+    success = controller.publish_collection(collection, MAIN_CHANNEL_ADDRESS, from_address)
+    if not success:
+        return False
+
+    return True
 
 
 def find_old_collections(keepalive_constant):
@@ -41,9 +45,13 @@ def find_old_collections(keepalive_constant):
         age = today - collection.latest_broadcast_date
         if age.days >= keepalive_constant:
             collection.latest_broadcast_date = datetime.today()
-            rebroadcast(collection)
-            print("Updating collection in cache")
-            cache.insert_new_collection(collection)
-            counter += 1
+            success = rebroadcast(collection)
+
+            if success:
+                print("Updating collection in cache")
+                cache.insert_new_collection(collection)
+                counter += 1
+            else:
+                print("Sending rebroadcast failed")
 
     return counter
