@@ -68,7 +68,9 @@ class Controller:
                 documents=docs,
                 creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
                 oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p"),
-                latest_broadcast_date=datetime.datetime.strptime(payload["latest_broadcast_date"], "%A, %d. %B %Y %I:%M%p")
+                latest_broadcast_date=datetime.datetime.strptime(payload["latest_broadcast_date"], "%A, %d. %B %Y %I:%M%p"),
+                votes=payload['votes'],
+                votes_last_checked=datetime.datetime.strptime(payload["votes_last_checked"], "%A, %d. %B %Y %I:%M%p"),
             )
             try:
                 self.cache.insert_new_collection(collection_model)
@@ -89,7 +91,9 @@ class Controller:
                                                                          "%A, %d. %B %Y %I:%M%p")
             cached_collection.oldest_date = datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
             cached_collection.latest_broadcast_date = datetime.datetime.strptime(payload["latest_broadcast_date"],
-                                                                         "%A, %d. %B %Y %I:%M%p")
+                                                                                 "%A, %d. %B %Y %I:%M%p")
+            cached_collection.votes = payload['votes']
+            cached_collection.votes_last_checked = datetime.datetime.strptime(payload["votes_last_checked"], "%A, %d. %B %Y %I:%M%p")
             try:
                 self.cache.insert_new_collection(cached_collection)
                 print "Cached Updated Collection"

@@ -33,6 +33,7 @@ class Collection(DecBase):
             btc: Bitcoin address for rating documents (as in message spec)
             keywords: Keywords as list of Keyword class for searching (as in message spec)
             documents: List of document classes included in the collection (as in message spec)
+            latest_broadcast_date: The date that this collection was last seen broadcasted in the Main Channel
             creation_date: Earliest known timestamp of collection, or if none earliest approximation of creation date of
                 current version of collection
             oldest_date: Earliest known timestamp of collection, or if none earliest approximation of creation date of
@@ -64,7 +65,6 @@ class Collection(DecBase):
     def to_json(self):
         """
         Encodes a Collection as a json representation so it can be sent through the bitmessage network
-
         :return: the json representation of the given Collection
         """
         json_docs = []
@@ -76,22 +76,22 @@ class Collection(DecBase):
         for key in self.keywords:
             json_keywords.append({"id": key.id, "name": key.name})
         json_representation = {"type_id": 1,
-                                          "title": self.title,
-                                          "description": self.description,
-                                          "keywords": json_keywords,
-                                          "address": self.address,
-                                          "documents": json_docs,
-                                          "merkle": self.merkle,
-                                          "btc": self.btc,
-                                          "version": self.version,
-                                          "latest_broadcast_date": self.latest_broadcast_date.strftime("%A, %d. %B %Y %I:%M%p"),
-                                          "creation_date": self.creation_date.strftime("%A, %d. %B %Y %I:%M%p"),
-                                          "oldest_date": self.oldest_date.strftime("%A, %d. %B %Y %I:%M%p"),
-                                          "latest_btc_tx": self.latest_btc_tx,
-                                          "oldest_btc_tx": self.oldest_btc_tx,
-                                          "accesses": self.accesses,
-                                          "votes": self.votes,
-                                          "votes_last_checked": self.votes_last_checked.strftime("%A, %d. %B %Y %I:%M%p")}
+                               "title": self.title,
+                               "description": self.description,
+                               "keywords": json_keywords,
+                               "address": self.address,
+                               "documents": json_docs,
+                               "merkle": self.merkle,
+                               "btc": self.btc,
+                               "version": self.version,
+                               "latest_broadcast_date": self.latest_broadcast_date.strftime("%A, %d. %B %Y %I:%M%p"),
+                               "creation_date": self.creation_date.strftime("%A, %d. %B %Y %I:%M%p"),
+                               "oldest_date": self.oldest_date.strftime("%A, %d. %B %Y %I:%M%p"),
+                               "latest_btc_tx": self.latest_btc_tx,
+                               "oldest_btc_tx": self.oldest_btc_tx,
+                               "accesses": self.accesses,
+                               "votes": self.votes,
+                               "votes_last_checked": self.votes_last_checked.strftime("%A, %d. %B %Y %I:%M%p")}
         try:
             validate(json_representation, coll_schema)
             return json.dumps(json_representation, sort_keys=True)
