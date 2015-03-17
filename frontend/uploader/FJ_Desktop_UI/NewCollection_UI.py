@@ -129,4 +129,5 @@ class Ui_DialogNewCollection(object):
         self.radioButtonPublic.setText(_translate("DialogNewCollection", "Public", None))
         self.radioButtonPrivate.setText(_translate("DialogNewCollection", "Private", None))
 
-import resources_rc
+from frontend.uploader import resources_rc
+

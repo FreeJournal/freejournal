@@ -253,4 +253,5 @@ class Ui_FJ_Main_Window(object):
         self.actionGitHub_Source.setText(_translate("FJ_Main_Window", "View Source Code", None))
         self.actionPrefernces.setText(_translate("FJ_Main_Window", "Preferences...", None))
 
-import resources_rc
+from frontend.uploader import resources_rc
+

@@ -165,9 +165,13 @@ class NewCollecWindow(QtGui.QDialog):
              message.setIcon(QtGui.QMessageBox.Warning)
              message.addButton("OK", QtGui.QMessageBox.AcceptRole)
              message.exec_() 
-            
-if __name__ == "__main__":
+
+def run():
     app = QtGui.QApplication(sys.argv)
     myapp = StartQT4()
     myapp.show()
     sys.exit(app.exec_())
+
+            
+if __name__ == "__main__":
+    run()

@@ -68,4 +68,4 @@ class Ui_Form(object):
         self.label_3.setText(_translate("Form", "Version 0.0.1                                        MIT License", None))
         self.label_2.setText(_translate("Form", "Free Journal", None))
 
-import resources_rc
+from frontend.uploader import resources_rc
