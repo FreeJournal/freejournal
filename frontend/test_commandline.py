@@ -60,11 +60,11 @@ class TestCommandLine(unittest.TestCase):
         self.assertFalse("exception" in list_collections_new.lower())
         self.assertTrue("available collections, cached locally" in list_collections_new.lower())
 
-        self.assertTrue(len(list_collections_new.splitlines()) > len(list_collections_old.splitlines()))
+        self.assertTrue(len(list_collections_new.splitlines()) > len(list_collections_original.splitlines()))
         
         # Check that new collection title, document list appears
         self.assertTrue("document list" in list_collections_new.lower())
-        self.assertTrue("This is a TEST" in list_collections_new.lower())
+        self.assertTrue("This is a TEST" in list_collections_new)
 
         # Try publishing the collection
         upload_output = run_with_timeout("./freejournal_cli.py publishcollection " + inserted_collection_id, 60)
