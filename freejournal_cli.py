@@ -29,6 +29,7 @@ try:
     from bitmessage.bitmessage_listener import get_collections
     from bitmessage.bitmessage import Bitmessage
     from backend.controller import Controller
+    from bitmessage.bitmessage_keepalive import find_old_collections
 except:
     print ("Error: could not import BitMessage dependencies.")
 
@@ -60,6 +61,8 @@ def print_help():
     print ("\tputcollection [address password] [document IDs, comma separated] [title] [description] [keywords] " \
             + "[Bitcoin address (for rating)]")
     print ("\tpublishcollection [address password] [index bitmessage ID]")
+    print ("\twebapp")
+    print ("\tuploader")
 
 def print_command_help(command):
     """ Display extended help information for CLI command
@@ -83,7 +86,11 @@ def print_command_help(command):
           "putcollection": \
             "Create a new collection and store it locally.", \
           "publishcollection": \
-            "Publish a local collection to the world (other FreeJournal nodes)." \
+            "Publish a local collection to the world (other FreeJournal nodes).", \
+          "webapp": \
+            "Run the FreeJournal web application (webapp).", \
+          "uploader": \
+            "Run the FreeJournal graphical desktop application/uploader." \
         }
     if command in COMMANDS:
         print (COMMANDS[command])
@@ -274,6 +281,9 @@ def process_command(command):
             print_help()
     elif command == 'webapp':
         webapp.app.run(debug = config.WEBAPP_DEBUG)
+    elif command == 'uploader':
+        from frontend.uploader import FreeJournal
+        FreeJournal.run()
     else:
         print_help()
 

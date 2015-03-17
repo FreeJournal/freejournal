@@ -94,4 +94,4 @@ class Ui_DialogPreferences(object):
         self.listWidgetPreferences.setSortingEnabled(__sortingEnabled)
         self.pushButtonPreferences.setText(_translate("DialogPreferences", "Apply", None))
 
-import resources_rc
+from frontend.uploader import resources_rc

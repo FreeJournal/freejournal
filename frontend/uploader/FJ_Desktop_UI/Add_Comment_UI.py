@@ -84,4 +84,5 @@ class Ui_DialogAddComment(object):
         self.labelAddComment.setText(_translate("DialogAddComment", "Add Comment to :", None))
         self.labelWordCount.setText(_translate("DialogAddComment", "Max Word Count: 100", None))
 
-import resources_rc
+from frontend.uploader import resources_rc
+
