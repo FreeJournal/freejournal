@@ -22,9 +22,10 @@ class FreenetConnection:
     @return - The textual data 
     '''
     def get(self, uri):
-        job = self.fcpNode.get(uri, async=True)
+        job = self.fcpNode.get(uri)
         #Note, this currently returns just the data
         #other info like header, completion time is stored in the
         #dictionary in job[2]
-        return job[1]
+        return job[1] 
+
 
