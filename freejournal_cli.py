@@ -29,7 +29,6 @@ try:
     from bitmessage.bitmessage_listener import get_collections
     from bitmessage.bitmessage import Bitmessage
     from backend.controller import Controller
-    from bitmessage.bitmessage_keepalive import find_old_collections
 except:
     print ("Error: could not import BitMessage dependencies.")
 
@@ -63,6 +62,7 @@ def print_help():
     print ("\tpublishcollection [address password] [index bitmessage ID]")
     print ("\twebapp")
     print ("\tuploader")
+    print ("\tkeepalive")
 
 def print_command_help(command):
     """ Display extended help information for CLI command
@@ -91,6 +91,8 @@ def print_command_help(command):
             "Run the FreeJournal web application (webapp).", \
           "uploader": \
             "Run the FreeJournal graphical desktop application/uploader." \
+          "keepalive": \
+            "Run network keepalive functionality (republish indexes to the BitMessage network)." \
         }
     if command in COMMANDS:
         print (COMMANDS[command])
@@ -191,12 +193,20 @@ def put_collection(address_password, document_ids, title, description, keywords,
         merkle='I am a merkle',
         address=address,
         version=3,
+        accesses=0,
+        votes=0,
         btc=btc,
         keywords=keywords,
         documents=[Document(collection_address=address, description="test", hash="asdfasdasdf345fasdaf",
-                            title="docTitle", filename="file name", accesses=23)],
+                            title="docTitle", filename="file name", accesses=23),
+                   Document(collection_address=address, description="test", hash="asdfasdasdf345fasdaf",
+                            title="docTitle", filename="file name", accesses=23),
+                    Document(collection_address=address, description="test", hash="asdfasdasdf345fasdaf",
+                            title="docTitle", filename="file name", accesses=23),
+        ],
         creation_date=datetime.datetime.now(),
-        oldest_date=datetime.datetime.now()
+        oldest_date=datetime.datetime.now(),
+        votes_last_checked=datetime.datetime.now()
     )
     cache.insert_new_collection(collection)
     print ("Collection inserted with address/ID " + address)
@@ -284,6 +294,9 @@ def process_command(command):
     elif command == 'uploader':
         from frontend.uploader import FreeJournal
         FreeJournal.run()
+    elif command == 'keepalive':
+        from bitmessage.bitmessage_keepalive import find_old_collections
+        find_old_collections(3)
     else:
         print_help()
 
