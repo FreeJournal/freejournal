@@ -9,15 +9,15 @@ class TestCommandLine(unittest.TestCase):
 
     def test_getdocfile(self):
         # Download sample file
-        out = run_with_timeout("./freejournal_cli.py getdocfile " + \
-               "CHK@XNpzyZhvxvkgIBgYuZzeJTSpRBPnR0VibpISMc8rHV4,4rsKU2MpJzpQxr91fPTV-wGpd14o~ns3hjLi0HMtwFI,AAMA--8 1", 
+        out = run_with_timeout("./freejournal_cli.py getdoc " + \
+               "CHK@XNpzyZhvxvkgIBgYuZzeJTSpRBPnR0VibpISMc8rHV4,4rsKU2MpJzpQxr91fPTV-wGpd14o~ns3hjLi0HMtwFI,AAMA--8 /tmp/1-freejournal", 
               10)
 
         self.assertFalse("traceback" in out.lower())
         self.assertFalse("error" in out.lower())
-        self.assertFalse("exception" in out.lower())
-        file_output = open("1").read().splitlines()
-        self.assertTrue("demo" in file_output.lower())
+        # self.assertFalse("exception" in out.lower())
+        file_output = open("/tmp/1-freejournal").read()
+        self.assertTrue("iteration meeting" in file_output.lower())
     
     def test_listcollections(self):
         list_collections = run_with_timeout("./freejournal_cli.py listcollections", 10)
@@ -37,7 +37,7 @@ class TestCommandLine(unittest.TestCase):
         self.assertTrue("available collections, cached locally" in list_collections_original.lower())
 
         # Add new collection to local cache
-        out = run_with_timeout('./freejournal_cli.py putcollection whee 1,2,3 "This is a TEST" "nothing to see here" "nothing,to" btc123', 10)
+        out = run_with_timeout('./freejournal_cli.py putcollection whee "This is a TEST" "nothing to see here" "nothing,to" btc123', 10)
 
         self.assertFalse("traceback" in out.lower())
         self.assertFalse("error" in out.lower())
@@ -67,12 +67,12 @@ class TestCommandLine(unittest.TestCase):
         self.assertTrue("This is a TEST" in list_collections_new)
 
         # Try publishing the collection
-        upload_output = run_with_timeout("./freejournal_cli.py publishcollection " + inserted_collection_id, 60)
+        upload_output = run_with_timeout("./freejournal_cli.py publishcollection whee " + inserted_collection_id, 60)
 
         self.assertFalse("traceback" in upload_output.lower())
         self.assertFalse("error" in upload_output.lower())
         self.assertFalse("exception" in upload_output.lower())
-        self.assertTrue("collection published successfully!" in upload_output.lower())
+        self.assertTrue("published success" in upload_output.lower())
 
 
     def test_fail_publish_collection(self):
