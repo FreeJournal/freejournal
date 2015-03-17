@@ -15,28 +15,28 @@ try:
     from cache.cache import Cache
     cache = Cache()
 except:
-    print "Warning: SQLite is not installed.  No local cache " \
-        + "functionality available."
+    print ("Warning: SQLite is not installed.  No local cache " \
+        + "functionality available.")
 
 try:
     from models.collection import Collection
     from models.keyword import Keyword
     from models.document import Document
 except:
-    print "Error: could not import models."
+    print ("Error: could not import models.")
 
 try:
     from bitmessage.bitmessage_listener import get_collections
     from bitmessage.bitmessage import Bitmessage
     from backend.controller import Controller
 except:
-    print "Error: could not import BitMessage dependencies."
+    print ("Error: could not import BitMessage dependencies.")
 
 # Frontend imports
 try:
     from frontend.webapp import app as webapp
 except:
-    print "Error: could not import webapp."
+    print ("Error: could not import webapp.")
 
 try:
     # Freenet may not be installed
@@ -48,18 +48,18 @@ except:
 
 def print_help():
     """ Print usage instructions for the command-line library. """
-    print "Usage: ./freejournal [command]"
-    print "./freejournal_cli help [command name] - display extended command information.\n"
-    print "Available commands:"
-    print "\tgetdocfile [document hash] [document output path/filename]"
-    print "\tputdoc [document file path] [collection address] [title] [description]"
-    print "\tlistcollections"
-    print "\tlisten"
-    print "\tinstall [freenet|bitmessage|all]"
-    print "\tshowcollection [index bitmessage ID]"
-    print "\tputcollection [address password] [document IDs, comma separated] [title] [description] [keywords] " \
-            + "[Bitcoin address (for rating)]"
-    print "\tpublishcollection [address password] [index bitmessage ID]"
+    print ("Usage: ./freejournal [command]")
+    print ("./freejournal_cli help [command name] - display extended command information.\n")
+    print ("Available commands:")
+    print ("\tgetdocfile [document hash] [document output path/filename]")
+    print ("\tputdoc [document input path]")
+    print ("\tlistcollections")
+    print ("\tlisten")
+    print ("\tinstall [freenet|bitmessage|all]")
+    print ("\tshowcollection [index bitmessage ID]")
+    print ("\tputcollection [address password] [document IDs, comma separated] [title] [description] [keywords] " \
+            + "[Bitcoin address (for rating)]")
+    print ("\tpublishcollection [address password] [index bitmessage ID]")
 
 def print_command_help(command):
     """ Display extended help information for CLI command
@@ -86,9 +86,9 @@ def print_command_help(command):
             "Publish a local collection to the world (other FreeJournal nodes)." \
         }
     if command in COMMANDS:
-        print COMMANDS[command]
+        print (COMMANDS[command])
     else:
-        print "Unknown command!"
+        print ("Unknown command!")
         print_help()
 
 def get_doc_file(document_hash, document_output_filename):
@@ -99,26 +99,26 @@ def get_doc_file(document_hash, document_output_filename):
     freeCon = FreenetConnection()
     output=freeCon.get(document_hash)
     open(document_output_filename, 'w').write(output)
-    print "File with URL " + document_hash + " written to " + document_output_filename
+    print ("File with URL " + document_hash + " written to " + document_output_filename)
 
 def list_collections():
     """ List all collections in the local cache """
-    print "Available collections, cached locally: "
+    print ("Available collections, cached locally: ")
     for collection in cache.get_all_collections():
-        print "\tID " + collection.address + "\t " + collection.title + \
-            "\tCreation Date " + collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p")
-        print("\t" +"~~~~~~~~~~~~~~~Document list~~~~~~~~~~~~~~~")
-        print("\t\t" + "URI" + "\t" + "Title" + "\t" + "Description")
+        print ("\tID " + collection.address + "\t " + collection.title + \
+            "\tCreation Date " + collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p"))
+        print ("\t" +"~~~~~~~~~~~~~~~Document list~~~~~~~~~~~~~~~")
+        print ("\t\t" + "URI" + "\t" + "Title" + "\t" + "Description")
         documents = cache.get_documents_from_collection(collection.address)
         for doc in documents:
-            print("\t\t" + doc.hash + "\t" + doc.title +  "\t" + doc.description)
+            print ("\t\t" + doc.hash + "\t" + doc.title +  "\t" + doc.description)
 
 def list_collection_details(collection_address):
     collection = cache.get_collection_with_address(collection_address)
     if collection is not None:
-        print collection.to_json()
+        print (collection.to_json())
     else:
-        print "Collection not found in local cache."
+        print ("Collection not found in local cache.")
 
 def install_dependencies(dependency):
     """ Install a prerequisite (dependency) for deploying a FreeJournal
@@ -138,7 +138,7 @@ def install_dependencies(dependency):
             windows_install()
         else:
             apt_install()
-            print 'Installation Completed'
+            print ('Installation Completed')
 
 def put_document(file_path, collection_address, title, description):
     """ Insert a document into the local cache with associated information
@@ -161,8 +161,8 @@ def put_document(file_path, collection_address, title, description):
         accesses = 0
     )
     cache.insert_new_document(document)
-    print "Inserted " + file_path + " successfully with URI " + uri
-    print "Allow up to 10 minutes for file to propogate on the freenet network"
+    print ("Inserted " + file_path + " successfully with URI " + uri)
+    print ("Allow up to 10 minutes for file to propogate on the freenet network")
 
 def put_collection(address_password, document_ids, title, description, keywords, btc):
     """ Create a collection in local cache
@@ -192,7 +192,7 @@ def put_collection(address_password, document_ids, title, description, keywords,
         oldest_date=datetime.datetime.now()
     )
     cache.insert_new_collection(collection)
-    print "Collection inserted with address/ID " + address
+    print ("Collection inserted with address/ID " + address)
 
 
 def show_collection(collection_address):
@@ -201,14 +201,13 @@ def show_collection(collection_address):
     :param collection_address: Collection address
     '''
     collection = cache.get_collection_with_address(collection_address)
-
-    print "\tID " + collection.address + "\t " + collection.title + \
-            "\tCreation Date " + collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p")
-    print("\t" +"~~~~~~~~~~~~~~~"+ "Document list"+"~~~~~~~~~~~~~~~")
-    print("\t\t" + "URI" + "\t" + "Title" + "\t" + "Description")
+    print ("\tID " + collection.address + "\t " + collection.title + \
+            "\tCreation Date " + collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p"))
+    print ("\t" +"~~~~~~~~~~~~~~~"+ "Document list"+"~~~~~~~~~~~~~~~")
+    print ("\t\t" + "URI" + "\t" + "Title" + "\t" + "Description")
     documents = cache.get_documents_from_collection(collection_address)
     for doc in documents:
-        print("\t\t" + doc.hash + "\t" + doc.title +  "\t" + doc.description)
+        print ("\t\t" + doc.hash + "\t" + doc.title +  "\t" + doc.description)
 
 def publish_collection(address_password, collection_address):
     bitmessage_connection = Bitmessage()
@@ -217,9 +216,9 @@ def publish_collection(address_password, collection_address):
     if collection is not None:
         collection_handler = Controller()
         collection_handler.publish_collection(collection, config.MAIN_CHANNEL_ADDRESS, address)
-        print "Collection published successfully!"
+        print ("Collection published successfully!")
     else:
-        print "Collection not found in local cache."
+        print ("Collection not found in local cache.")
 
 
 def process_command(command):

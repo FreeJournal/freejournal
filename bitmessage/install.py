@@ -22,7 +22,7 @@ def apt_install():
     try:
         subprocess.call(["git clone https://github.com/Bitmessage/PyBitmessage $HOME/PyBitmessage"], shell=True)
     except:
-        print 'PyBitmessage already installed or we received a permission denied error'
+        print ('PyBitmessage already installed or we received a permission denied error')
 
     devnull = open(os.devnull, 'wb')  # Used to ignore the enormous amount of output from PyBitmessage
 
@@ -40,4 +40,4 @@ def apt_install():
 
 
 def windows_install():
-    print 'FATAL ERROR: We detected you are using an inferior operating system to Linux...'
+    print ('FATAL ERROR: We detected you are using an inferior operating system to Linux...')
