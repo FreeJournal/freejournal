@@ -1,10 +1,10 @@
 import sys
 from PyQt4 import QtCore, QtGui
-import FJ_Desktop_UI.FreeJournal_UI as FreeJournal_UI
-import FJ_Desktop_UI.NewCollection_UI as NewCollection_UI
-import FJ_Desktop_UI.About_UI as About_UI
-import FJ_Desktop_UI.Add_Comment_UI as Add_Comment_UI
-import FJ_Desktop_UI.Preferences_UI as Preferences_UI
+import frontend.uploader.FJ_Desktop_UI.FreeJournal_UI as FreeJournal_UI
+import frontend.uploader.FJ_Desktop_UI.NewCollection_UI as NewCollection_UI
+import frontend.uploader.FJ_Desktop_UI.About_UI as About_UI
+import frontend.uploader.FJ_Desktop_UI.Add_Comment_UI as Add_Comment_UI
+import frontend.uploader.FJ_Desktop_UI.Preferences_UI as Preferences_UI
 import webbrowser
 import freejournal_cli as CLI
 from os.path import isfile
@@ -132,8 +132,13 @@ class NewCollecWindow(QtGui.QDialog):
         global filepath
         self.filepath = ''
         self.title = ''
+        self.description = ''
+        self.keywords = ''
+        self.btc = ''
+        self.address_password = ''
+        self.collection_address = ''
         self.ui.toolButtonAddDirectory.clicked.connect(self.AddDirectory)
-        self.ui.buttonBoxConfirm.accepted.connect(self.PutDoc)
+        self.ui.buttonBoxConfirm.accepted.connect(self.PutCollection)
 
       def AddDirectory(self):
          fd = QtGui.QFileDialog(self)
@@ -150,6 +155,15 @@ class NewCollecWindow(QtGui.QDialog):
              message.addButton("OK", QtGui.QMessageBox.AcceptRole)
              message.exec_()
              
+      def PutCollection(self):
+          self.address_password = self.ui.lineEditPassword.text()
+          self.title = self.ui.lineEditCollectionName.text()
+          self.description = self.ui.plainTextEditDescription.toPlainText()
+          self.keywords = self.ui.plainTextEditAddKeywords.toPlainText()
+          #self.btc = 
+          #CLI.put_collection(self.address_password, self.title, self.description, self.keywords, self.btc)
+          self.PutDoc()
+          
       def PutDoc(self):
           self.filepath = self.ui.lineEditAddDirectory.text()
           self.title = self.ui.lineEditCollectionName.text()
@@ -157,7 +171,7 @@ class NewCollecWindow(QtGui.QDialog):
              self.filepath = self.ui.lineEditAddDirectory.text()
              if not self.title == '':
                  main_UI.model.mkdir(main_UI.index, self.title)
-             CLI.put_document(self.filepath)
+             CLI.put_document(self.filepath, self.collection_address, self.title, self.description)
           else:
              message = QtGui.QMessageBox(self)
              message.setText("Please enter a vaild directory path.")
