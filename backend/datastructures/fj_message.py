@@ -2,6 +2,8 @@ import datetime
 import json
 import os
 from pyelliptic.arithmetic import *
+from jsonschema import *
+from models.json_schemas import *
 
 
 class FJMessage():
@@ -37,11 +39,13 @@ class FJMessage():
         for key_info in keys_list[1:]:
             if self.original_sender in key_info:
                 selected_key = key_info.split('\n')
-
+        if selected_key is None:
+            return None
         for line in selected_key:
             if 'privsigningkey' in line:
                 privkey_line = line.split('=')
-
+        if privkey_line is None:
+            return None
         privkey = privkey_line[1].strip()
         public_signing_key = privtopub(privkey)
         self.pubkey = public_signing_key
@@ -54,6 +58,14 @@ class FJMessage():
         :return: the json encoding of the message
         """
         signature = self._generate_signature()
-        return json.dumps({"protocol": self.protocol, "type_id": self.type_id, "original_sender": self.original_sender,
-                           "signature": signature, "time_created": self.time_created.strftime("%A, %d. %B %Y %I:%M%p"),
-                           "payload": self.payload, "pubkey": self.pubkey}, sort_keys=True)
+        if signature is None:
+            return False
+        json_representation = {"protocol": self.protocol, "type_id": self.type_id, "original_sender": self.original_sender,
+                               "signature": signature, "time_created": self.time_created.strftime("%A, %d. %B %Y %I:%M%p"),
+                               "payload": self.payload, "pubkey": self.pubkey}
+        try:
+            validate(json_representation, fj_schema)
+            return json.dumps(json_representation, sort_keys=True)
+        except ValidationError as m:
+            print m.message
+            return None

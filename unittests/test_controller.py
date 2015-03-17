@@ -8,12 +8,12 @@ import datetime
 import time
 
 
-
 class TestController(unittest.TestCase):
 
     def setUp(self):
         self.controller = Controller()
         self.address = self.controller.connection.create_address('Controller Test address')
+
         coll_address = str(uuid.uuid1())
         doc_hash_1 = str(uuid.uuid1())
         doc_hash_2 = str(uuid.uuid1())
@@ -26,23 +26,35 @@ class TestController(unittest.TestCase):
             version=1,
             btc="123456789",
             keywords=[
-                Keyword(name="Keyword A", id=109),
-                Keyword(name="Keyword B", id=110),
+                Keyword(name="Keyword A", id=1099),
+                Keyword(name="Keyword B", id=111),
             ],
             documents=[
                 Document(
                     description="Test document A",
                     hash=doc_hash_1,
                     title="Test A",
+                    accesses=0,
+                    filename="joe.txt",
+                    collection_address="afgagahhsgh"
                     ),
                 Document(
                     description="Test document B",
                     hash=doc_hash_2,
                     title="Test B",
+                    accesses=3,
+                    filename="gile.txt",
+                    collection_address="afgagasghhhss"
                     ),
             ],
             creation_date=datetime.datetime.now(),
-            oldest_date=datetime.datetime.now()
+            oldest_date=datetime.datetime.now(),
+            latest_broadcast_date=datetime.datetime.now(),
+            latest_btc_tx="btctx1",
+            oldest_btc_tx="btctx12",
+            accesses=2,
+            votes=3,
+            votes_last_checked=datetime.datetime.now()
         )
 
         self.test_collection_updated = Collection(
@@ -53,29 +65,44 @@ class TestController(unittest.TestCase):
             version=1,
             btc="123456789",
             keywords=[
-                Keyword(name="Keyword A", id=109),
-                Keyword(name="Keyword B", id=110),
-                Keyword(name="Keyword C", id=111)
+                Keyword(name="Keyword A", id=1099),
+                Keyword(name="Keyword B", id=111),
+                Keyword(name="key3", id=222)
             ],
             documents=[
                 Document(
                     description="Test document A",
                     hash=doc_hash_1,
                     title="Test A",
+                    accesses=0,
+                    filename="joe.txt",
+                    collection_address="afgagahhsgh"
                     ),
                 Document(
                     description="Test document B",
                     hash=doc_hash_2,
                     title="Test B",
+                    accesses=3,
+                    filename="gile.txt",
+                    collection_address="afgagasghhhss"
                     ),
-                Document(
-                    description="Test document C",
+                 Document(
+                    description="Test document B",
                     hash=doc_hash_3,
-                    title="Test B",
-                    )
+                    title="Test C",
+                    accesses=5,
+                    filename="gileww.txt",
+                    collection_address="afgagawwwsghhhss"
+                    ),
             ],
             creation_date=datetime.datetime.now(),
-            oldest_date=datetime.datetime.now()
+            oldest_date=datetime.datetime.now(),
+            latest_broadcast_date=datetime.datetime.now(),
+            latest_btc_tx="btctx1",
+            oldest_btc_tx="btctx12",
+            accesses=2,
+            votes=3,
+            votes_last_checked=datetime.datetime.now()
         )
 
     def tearDown(self):

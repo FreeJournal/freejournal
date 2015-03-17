@@ -1,4 +1,4 @@
-from webapp import celery
+from frontend.webapp import celery
 
 @celery.task(name="periodic_test")
 def add_test(a, b):
