@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, datetime
+import sys, datetime, uuid
 
 # BitMessage installer imports
 import platform
@@ -26,7 +26,6 @@ except:
     print ("Error: could not import models.")
 
 try:
-    from bitmessage.bitmessage_listener import get_collections
     from bitmessage.bitmessage import Bitmessage
     from backend.controller import Controller
 except:
@@ -114,7 +113,7 @@ def list_collections():
     """ List all collections in the local cache """
     print ("Available collections, cached locally: ")
     for collection in cache.get_all_collections():
-        print ("\tID " + collection.address + "\t " + collection.title + \
+        print ("\n\tID " + collection.address + "\t " + collection.title + \
             "\tCreation Date " + collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p"))
         print ("\t" +"~~~~~~~~~~~~~~~Document list~~~~~~~~~~~~~~~")
         print ("\t\t" + "URI" + "\t" + "Title" + "\t" + "Description")
@@ -197,16 +196,17 @@ def put_collection(address_password, document_ids, title, description, keywords,
         votes=0,
         btc=btc,
         keywords=keywords,
-        documents=[Document(collection_address=address, description="test", hash="asdfasdasdf345fasdaf",
+        documents=[Document(collection_address=address, description="test", hash=str(uuid.uuid4()),
                             title="docTitle", filename="file name", accesses=23),
-                   Document(collection_address=address, description="test", hash="asdfasdasdf345fasdaf",
-                            title="docTitle", filename="file name", accesses=23),
-                    Document(collection_address=address, description="test", hash="asdfasdasdf345fasdaf",
-                            title="docTitle", filename="file name", accesses=23),
+                   Document(collection_address=address, description="testing", hash=str(uuid.uuid4()),
+                            title="docTitle2", filename="file name", accesses=23),
+                    Document(collection_address=address, description="test2", hash=str(uuid.uuid4()),
+                            title="document two", filename="file name", accesses=30),
         ],
         creation_date=datetime.datetime.now(),
         oldest_date=datetime.datetime.now(),
-        votes_last_checked=datetime.datetime.now()
+        votes_last_checked=datetime.datetime.now(),
+        latest_broadcast_date=datetime.datetime.now()
     )
     cache.insert_new_collection(collection)
     print ("Collection inserted with address/ID " + address)
@@ -270,6 +270,7 @@ def process_command(command):
         else:
             print_help()
     elif command == 'listen':
+        from bitmessage.bitmessage_listener import get_collections
         get_collections()
     elif command == 'install':
         if (len(sys.argv) == 3):
