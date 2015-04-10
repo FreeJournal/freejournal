@@ -13,7 +13,7 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-  - python -m unittest discover unittests
+  - coverage run -m unittest discover unittests
 
 after_success:
   coveralls
