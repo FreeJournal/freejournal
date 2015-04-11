@@ -42,7 +42,11 @@ class Controller:
             return False
 
     def _download_documents(self, collection, documents):
-        freenet_connection = FreenetConnection()
+        try:
+            freenet_connection = FreenetConnection()
+        except:
+            print("Couldn't connect to freenet")
+            return
 
         print("Downloading documents for " + collection.title)
         print("Number of Documents to download: " + str(len(documents)))
