@@ -4,6 +4,7 @@ from sqlalchemy import MetaData
 from db import setup_db, connect_db
 from models.collection import Collection
 from models.collection import Document
+from models.keyword import Keyword
 
 engine = connect_db()
 setup_db(engine)
@@ -45,6 +46,20 @@ class Cache():
             pass
         return row
 
+    def get_keyword_by_id(self, cur_id):
+        """
+        Retrieve a specific keyword
+        :param cur_id:
+        :return:
+        """
+
+        row = None
+        try:
+            row = self.session.query(Keyword).filter(Keyword.id == cur_id).one()
+        except NoResultFound:
+            pass
+        return row
+
     def get_documents_from_collection(self, collection_address):
         collections = self.session.query(Document).filter(Document.collection_address == collection_address).all()
         return collections
@@ -63,6 +78,14 @@ class Cache():
         :param document: Document object to insert into local storage
         """
         self.session.add(document)
+        self.session.commit()
+
+    def insert_new_document(self,keyword):
+        """
+        Insert a new keyword into local storage
+        :param document: Document object to insert into local storage
+        """
+        self.session.add(keyword)
         self.session.commit()
 
     def reset_database(self):

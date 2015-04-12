@@ -1,18 +1,19 @@
-from models.keyword import Keyword
-from models.document import Document
-from models.collection import Collection
-from bitmessage.bitmessage import Bitmessage
-from datastructures.fj_message import FJMessage
-from cache.cache import Cache
-from config import MAIN_CHANNEL_ADDRESS
-from jsonschema import *
-from models.json_schemas import *
-from sqlalchemy.exc import IntegrityError
 import json
 import time
 import base64
 import datetime
 import hashlib
+
+from jsonschema import *
+from sqlalchemy.exc import IntegrityError
+
+from models.keyword import Keyword
+from models.document import Document
+from models.collection import Collection
+from bitmessage.bitmessage import Bitmessage
+from models.fj_message import FJMessage
+from cache.cache import Cache
+from models.json_schemas import *
 
 
 class Controller:
@@ -50,7 +51,11 @@ class Controller:
         keywords = []
         docs = []
         for key in payload["keywords"]:
-            keywords.append(Keyword(name=key["name"], id=key["id"]))
+            db_key = self.cache.get_keyword_by_id(key["id"])
+            if db_key is not None:
+                keywords.append(db_key)
+            else:
+                keywords.append(Keyword(name=key["name"], id=key["id"]))
         for doc in payload["documents"]:
             docs.append(Document(collection_address=doc["address"], description=doc["description"], hash=doc["hash"],
                                  title=doc["title"]))
@@ -75,11 +80,12 @@ class Controller:
             try:
                 self.cache.insert_new_collection(collection_model)
                 print "Cached New Collection"
+                return True
             except IntegrityError as m:
-                #print m.message
+                print m.message
                 return False
         else:
-            cached_collection.update_keywords(keywords)
+            cached_collection.keywords = keywords
             cached_collection.title = payload["title"]
             cached_collection.description = payload["description"]
             cached_collection.merkle = payload['merkle']
@@ -97,8 +103,9 @@ class Controller:
             try:
                 self.cache.insert_new_collection(cached_collection)
                 print "Cached Updated Collection"
+                return True
             except IntegrityError as m:
-                #print m.message
+                print m.message
                 return False
 
     def import_collection(self, address):
@@ -120,7 +127,7 @@ class Controller:
                     json_decode = json.loads(base64_decode)
                     validate(json_decode, fj_schema)
                 except (ValueError, TypeError, ValidationError) as m:
-                    #print m.message
+                    print m.message
                     print "Not a FJ Message or Invalid FJ Message"
                     self.connection.delete_message(message['msgid'])
                     continue
@@ -133,20 +140,20 @@ class Controller:
                         payload = json.loads(payload)
                         validate(payload, coll_schema)
                     except (ValueError, TypeError, ValidationError) as m:
-                        #print m.message
+                        print m.message
                         print "Contents of FJ Message invalid or corrupted"
                         self.connection.delete_message(message['msgid'])
                         continue
 
                     if self._check_signature(json_decode):
-                        self._cache_collection(message, payload)
-                        self.connection.delete_message(message['msgid'])
-                        return True
+                        if self._cache_collection(message, payload):
+                            self.connection.delete_message(message['msgid'])
+                            return True
 
-        #print "Could not import collection"
+        print "Could not import collection"
         return False
 
-    def publish_collection(self, collection, to_address, from_address):
+    def publish_collection(self, collection, to_address, from_address=None):
         """
         Publishes the given to collection to the bitmessage network
         :param collection: the collection to be published
@@ -154,6 +161,10 @@ class Controller:
         :param from_address: the address to send the collection from
         :return: True if the collection is published successfully, False otherwise
         """
+
+        if from_address is None:
+            from_address = self.connection.create_address("new address")
+            print "created address: ",from_address
         collection_payload = collection.to_json()
         if collection_payload is None:
             return False

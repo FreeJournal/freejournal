@@ -27,7 +27,7 @@ except:
 
 try:
     from bitmessage.bitmessage import Bitmessage
-    from backend.controller import Controller
+    from controllers.controller import Controller
 except:
     print ("Error: could not import BitMessage dependencies.")
 

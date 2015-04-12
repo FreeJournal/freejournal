@@ -1,5 +1,5 @@
 import unittest
-from backend.controller import Controller
+from controllers.controller import Controller
 from models.collection import Collection
 from models.keyword import Keyword
 from models.document import Document
