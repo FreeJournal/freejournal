@@ -42,6 +42,16 @@ class Controller:
             return False
 
     def _download_documents(self, collection, documents):
+        """
+        A function that downloads documents from a collection.
+        NOTE: This function should only be called in its own thread
+        since this is a blocking call and can take awhile to execute
+
+        :param collection: the collection object associated with documents to download
+        :param documents: the list of document objects to download
+        """
+
+        #Try obtaining a freenet connection
         try:
             freenet_connection = FreenetConnection()
         except:
@@ -51,21 +61,31 @@ class Controller:
         print("Downloading documents for " + collection.title)
         print("Number of Documents to download: " + str(len(documents)))
 
+        doc_counter = 0
         for document in documents:
+            #Store and validate that the document has a file name
+            file_name = document.filename
+            if not file_name:
+                file_name = collection.title + str(doc_counter)
+                doc_counter += 1
+
+            #Try obtaining the file data from freenet
             try:
                 data = freenet_connection.get(document.hash)
             except Exception as e:
-                print("Couldn't download " + document.filename + " from freenet")
+                print("Couldn't download " + file_name + " from freenet")
                 continue
 
+            #If the file data was successfully downloaded, save the data to disk
             try:
-                file_path = os.path.expanduser(DOCUMENT_DIRECTORY_PATH) + document.filename
+                file_path = os.path.expanduser(DOCUMENT_DIRECTORY_PATH) + file_name
                 open(file_path, 'w').write(data)
             except Exception as e:
                 print("Couldn't save document data to disk (check that the document"
                       + "directory path exists and appropriate permissions set")
                 continue
-            print("Successfully downloaded " + document.filename + " from freenet")
+
+            print("Successfully downloaded " + file_name + " from freenet")
 
         sys.exit()  # Exit current thread
 
