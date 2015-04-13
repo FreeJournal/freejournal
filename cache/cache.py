@@ -48,14 +48,26 @@ class Cache():
 
     def get_keyword_by_id(self, cur_id):
         """
-        Retrieve a specific keyword
-        :param cur_id:
-        :return:
+        Retrieve a specific keyword by it's id
+        :param cur_id: The id of the requested keyword
+        :return: The Keyword object if in the cache, None otherwise
         """
-
         row = None
         try:
             row = self.session.query(Keyword).filter(Keyword.id == cur_id).one()
+        except NoResultFound:
+            pass
+        return row
+
+    def get_document_by_hash(self, hash):
+        """
+        Retrieve a specific Document by it's hash
+        :param hash: The hash of the requested Document
+        :return: The Document object if in the cache, None otherwise.
+        """
+        row = None
+        try:
+            row = self.session.query(Document).filter(Document.hash == hash).one()
         except NoResultFound:
             pass
         return row
@@ -78,14 +90,6 @@ class Cache():
         :param document: Document object to insert into local storage
         """
         self.session.add(document)
-        self.session.commit()
-
-    def insert_new_document(self,keyword):
-        """
-        Insert a new keyword into local storage
-        :param document: Document object to insert into local storage
-        """
-        self.session.add(keyword)
         self.session.commit()
 
     def reset_database(self):

@@ -3,10 +3,9 @@ import time
 import base64
 import datetime
 import hashlib
-
+import os
 from jsonschema import *
 from sqlalchemy.exc import IntegrityError
-
 from models.keyword import Keyword
 from models.document import Document
 from models.collection import Collection
@@ -28,9 +27,6 @@ class Controller:
         :param fj_message: the message containing the collection and signature
         :return: True if the signatures match, False otherwise
         """
-
-
-
         h = hashlib.sha256(fj_message["pubkey"] + fj_message['payload']).hexdigest()
 
         if h == fj_message["signature"]:
@@ -40,14 +36,13 @@ class Controller:
             print "Signature Not Verified"
             return False
 
-    def _cache_collection(self, message, payload):
+    def _build_docs_keywords(self, payload):
         """
-        Checks to see if this collection is already in the cache. If it is we update the collection with the new data.
-        Otherwise a new collection is made and cached.
-        :param message: the Bitmessage message containing an FJ_message
-        :param payload: the contents of the FJ_message
+        Builds a list of Keyword objects and a list of Document objects from the received json.
+
+        :param payload: The payload of the FJ Message including the documents and keywords
+        :return: Two lists representing the documents and keywords of the FJ Message
         """
-        # Grabbing the text representations of the documents and keywords and rebuilding them
         keywords = []
         docs = []
         for key in payload["keywords"]:
@@ -56,9 +51,25 @@ class Controller:
                 keywords.append(db_key)
             else:
                 keywords.append(Keyword(name=key["name"], id=key["id"]))
+
         for doc in payload["documents"]:
-            docs.append(Document(collection_address=doc["address"], description=doc["description"], hash=doc["hash"],
-                                 title=doc["title"]))
+            db_doc = self.cache.get_document_by_hash(doc["hash"])
+            if db_doc is not None:
+                docs.append(db_doc)
+            else:
+                docs.append(Document(collection_address=doc["address"], description=doc["description"],
+                                     hash=doc["hash"], title=doc["title"]))
+        return docs, keywords
+
+    def _cache_collection(self, message, payload):
+        """
+        Checks to see if this collection is already in the cache. If it is we update the collection with the new data.
+        Otherwise a new collection is made and cached.
+        :param message: the Bitmessage message containing an FJ_message
+        :param payload: the contents of the FJ_message
+        """
+        # Grabbing the text representations of the documents and keywords and rebuilding them
+        docs, keywords = self._build_docs_keywords(payload)
         cached_collection = self.cache.get_collection_with_address(payload["address"])
 
         if cached_collection is None:
@@ -69,7 +80,7 @@ class Controller:
                 address=payload["address"],
                 version=payload["version"],
                 btc=payload["btc"],
-                keywords=keywords, #@todo add keyword support
+                keywords=keywords,
                 documents=docs,
                 creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
                 oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p"),
@@ -108,6 +119,16 @@ class Controller:
                 print m.message
                 return False
 
+    def _find_address_in_keysdat(self, address):
+        f = open(os.path.expanduser('~/.config/PyBitmessage/keys.dat'), 'r')
+        keys = f.read()
+        keys_list = keys.split('\n\n')
+
+        for key_info in keys_list[1:]:
+            if address in key_info:
+                return True
+        return False
+
     def import_collection(self, address):
         """
         Imports a Collection from the given Bit Message address and checks if its signature is valid.
@@ -127,7 +148,7 @@ class Controller:
                     json_decode = json.loads(base64_decode)
                     validate(json_decode, fj_schema)
                 except (ValueError, TypeError, ValidationError) as m:
-                    print m.message
+                    #print m.message
                     print "Not a FJ Message or Invalid FJ Message"
                     self.connection.delete_message(message['msgid'])
                     continue
@@ -140,7 +161,7 @@ class Controller:
                         payload = json.loads(payload)
                         validate(payload, coll_schema)
                     except (ValueError, TypeError, ValidationError) as m:
-                        print m.message
+                        #print m.message
                         print "Contents of FJ Message invalid or corrupted"
                         self.connection.delete_message(message['msgid'])
                         continue
@@ -150,7 +171,7 @@ class Controller:
                             self.connection.delete_message(message['msgid'])
                             return True
 
-        print "Could not import collection"
+        #print "Could not import collection"
         return False
 
     def publish_collection(self, collection, to_address, from_address=None):
@@ -164,7 +185,11 @@ class Controller:
 
         if from_address is None:
             from_address = self.connection.create_address("new address")
-            print "created address: ",from_address
+            print "created address: ", from_address
+        if not self._find_address_in_keysdat(from_address):
+            print "This address is not in keys.dat, can not send message"
+            return False
+
         collection_payload = collection.to_json()
         if collection_payload is None:
             return False
