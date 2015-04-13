@@ -67,7 +67,6 @@ class Collection(DecBase):
     votes = Column(Integer, nullable=False, default=0)
     votes_last_checked = Column(DateTime)
     hashes = relationship(Hash,  backref="collection", lazy='dynamic', secondary=hash_association)
-
     def to_json(self):
         """
         Encodes a Collection as a json representation so it can be sent through the bitmessage network
