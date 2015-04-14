@@ -1,12 +1,10 @@
-{% extends "base.html" %}
+{% extends "container.html" %}
 
 {% block title %}
 FreeJournal
 {% endblock %}
 
-{% block content %}
-<div class="container">
-	<img src="public/img/logo.png" class="logo"/>
+{% block container_content %}
 	{% for collection in collections %}
 	<div class="listing">
 		<div class="listing-vote">
@@ -14,7 +12,7 @@ FreeJournal
 			<div class="vote-score">+200</div>
 			<a href="#" class="vote-triangle vote-triangle-down"></a>
 		</div>
-		<img src="public/img/document.png" class="listing-icon"/>
+		<!--img src="public/img/document.png" class="listing-icon"/-->
 		<div class="listing-info-block">
 			<div class="listing-title">
 				<a href="#">{{collection.title}}</a>
@@ -35,5 +33,4 @@ FreeJournal
 		</div>
 	</div>
 	{% endfor %}
-</div>
 {% endblock %}

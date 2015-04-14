@@ -1,10 +1,16 @@
+@import "mixins";
+
 body {
-  background-color: #0a395e;
+  background-color: #FFF;
   margin: 0;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
-.bagel {
-  background-color: red;
+a {
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .container {
@@ -23,24 +29,20 @@ body {
 $listing-height: 40px;
 
 .listing {
-  background-color: white;
-  height: $listing-height;
-  border: black 1px solid;
-  padding: 3px;
-  margin-bottom: 5px;
+  border: #CCC 1px solid;
+  @include box-shadow(0, 1px, 3px, 1px, #DDD);
+  padding: 10px;
+  margin-bottom: 15px;
   &:last-of-type {
     margin-bottom: 0;
   }
 }
 
 .listing-info-block {
-  //line-height: $listing-height;
   display: inline-block;
-  //vertical-align: bottom;
 }
 
 .listing-title {
-  margin-bottom: 3px;
 }
 
 .listing-info {
@@ -49,17 +51,20 @@ $listing-height: 40px;
 
 .listing-date {
   display: inline-block;
+  margin-right: 10px;
 }
 
 .listing-submitter {
   display: inline-block;
-  margin-left: 10px;
 }
 
 .listing-keywords {
   display: inline-block;
   line-height: $listing-height;
   float: right;
+  @media screen and (max-width: 700px) {
+    float: none;
+  }
 }
 
 .listing-vote {
@@ -77,12 +82,16 @@ $listing-height: 40px;
   border-right: 5px solid transparent;
 }
 
+$voting-arrow-color: #555;
+
 .vote-triangle-up {
-  border-bottom: 10px solid red;
+  border-bottom: 10px solid $voting-arrow-color;
+  margin-bottom: 5px;
 }
 
 .vote-triangle-down {
-  border-top: 10px solid red;
+  margin-top: 5px;
+  border-top: 10px solid $voting-arrow-color;
 }
 
 .vote-score {
@@ -93,4 +102,40 @@ $listing-height: 40px;
 
 .listing-icon {
 
+}
+
+.collection {
+  border: #CCC 1px solid;
+  @include box-shadow(0, 1px, 3px, 1px, #DDD);
+}
+
+.collection-title {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-bottom: #CCC 1px solid;;
+}
+
+.document {
+  padding: 10px;
+  margin-bottom: 15px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.document-title-block {
+}
+
+.document-title {
+  vertical-align: top;
+  display: inline-block;
+}
+
+.document-icon {
+  display: inline-block;
+}
+
+.document-description {
+  font-size: 13px;
+  color: #777;
 }

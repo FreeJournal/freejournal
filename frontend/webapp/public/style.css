@@ -1,9 +1,12 @@
 body {
-  background-color: #0a395e;
-  margin: 0; }
+  background-color: #FFF;
+  margin: 0;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
 
-.bagel {
-  background-color: red; }
+a {
+  text-decoration: none; }
+  a:hover {
+    text-decoration: underline; }
 
 .container {
   margin: 0 auto;
@@ -16,34 +19,35 @@ body {
   width: 100%; }
 
 .listing {
-  background-color: white;
-  height: 40px;
-  border: black 1px solid;
-  padding: 3px;
-  margin-bottom: 5px; }
+  border: #CCC 1px solid;
+  -webkit-box-shadow: 0 1px 3px 1px #DDD;
+  -moz-box-shadow: 0 1px 3px 1px #DDD;
+  box-shadow: 0 1px 3px 1px #DDD;
+  padding: 10px;
+  margin-bottom: 15px; }
   .listing:last-of-type {
     margin-bottom: 0; }
 
 .listing-info-block {
   display: inline-block; }
 
-.listing-title {
-  margin-bottom: 3px; }
-
 .listing-info {
   font-size: 11px; }
 
 .listing-date {
-  display: inline-block; }
+  display: inline-block;
+  margin-right: 10px; }
 
 .listing-submitter {
-  display: inline-block;
-  margin-left: 10px; }
+  display: inline-block; }
 
 .listing-keywords {
   display: inline-block;
   line-height: 40px;
   float: right; }
+  @media screen and (max-width: 700px) {
+    .listing-keywords {
+      float: none; } }
 
 .listing-vote {
   display: inline-block;
@@ -58,16 +62,45 @@ body {
   border-right: 5px solid transparent; }
 
 .vote-triangle-up {
-  border-bottom: 10px solid red; }
+  border-bottom: 10px solid #555;
+  margin-bottom: 5px; }
 
 .vote-triangle-down {
-  border-top: 10px solid red; }
+  margin-top: 5px;
+  border-top: 10px solid #555; }
 
 .vote-score {
   height: 20px;
   line-height: 20px;
   font-size: 15px; }
 
+.collection {
+  border: #CCC 1px solid;
+  -webkit-box-shadow: 0 1px 3px 1px #DDD;
+  -moz-box-shadow: 0 1px 3px 1px #DDD;
+  box-shadow: 0 1px 3px 1px #DDD; }
+
+.collection-title {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-bottom: #CCC 1px solid; }
+
+.document {
+  padding: 10px;
+  margin-bottom: 15px; }
+  .document:last-of-type {
+    margin-bottom: 0; }
+
+.document-title {
+  vertical-align: top;
+  display: inline-block; }
+
+.document-icon {
+  display: inline-block; }
+
+.document-description {
+  font-size: 13px;
+  color: #777; }
 
 
 /*# sourceMappingURL=style.css.map */
