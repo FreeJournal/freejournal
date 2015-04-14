@@ -162,7 +162,6 @@ class Controller:
             cached_collection.update_keywords(keywords)
             cached_collection.title = payload["title"]
             cached_collection.description = payload["description"]
-            cached_collection.merkle = payload['merkle']
             cached_collection.address = payload["address"]
             cached_collection.btc = payload["btc"]
             cached_collection.documents = docs
