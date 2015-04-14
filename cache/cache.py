@@ -107,3 +107,5 @@ class Cache():
         meta.drop_all()
         meta.create_all()
 
+    def close(self):
+        self.session.close()
