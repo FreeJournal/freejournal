@@ -1,7 +1,7 @@
-timestamp
-=========
+controllers
+===========
 
 .. toctree::
    :maxdepth: 4
 
-   timestamp
+   controllers
