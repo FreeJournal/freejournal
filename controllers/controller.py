@@ -12,9 +12,7 @@ from models.collection import Collection
 from bitmessage.bitmessage import Bitmessage
 from models.fj_message import FJMessage
 from cache.cache import Cache
-<<<<<<< HEAD:controllers/controller.py
 from models.json_schemas import *
-=======
 from config import DOCUMENT_DIRECTORY_PATH
 from freenet.FreenetConnection import FreenetConnection
 from jsonschema import *
