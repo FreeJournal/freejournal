@@ -5,6 +5,8 @@ from models.document import Document
 from models.keyword import Keyword
 from jsonschema import *
 from json_schemas import *
+from timestamp.timestampfile import TimestampFile
+import time
 import json
 
 # Define foreign keys required for joining defined tables together
@@ -121,3 +123,26 @@ class Collection(DecBase):
                 new_key_list.append(new_keywords[i])
             i += 1
         self.keywords.extend(new_key_list)
+
+
+    def update_timestamp (self):
+        timestamp_obj = TimestampFile(self.merkle)
+        date_check = timestamp_obj.check_timestamp()
+        curr_time = date_check['time']
+        split_time = curr_time[0:4]+" "+curr_time[5:7]+" "+curr_time[8:10]+" "+curr_time[11:13]+" "+curr_time[14:16]+" "+curr_time[17:19]
+        cmp_curr_time = time.strptime(split_time, "%Y %m %d %H %M %S")
+        curr_txs= curr_time + ";" + date_check['Transaction']
+        if self.oldest_date == None:
+            self.oldest_date = cmp_curr_time
+            self.oldest_btc_tx = curr_txs
+            self.latest_btc_tx = curr_txs
+            return
+        split_time = self.latest_btc_tx.split(";")
+        latest_time = split_time[0]
+        latest_time_str = latest_time[0:4]+" "+latest_time[5:7]+" "+latest_time[8:10]+" "+latest_time[11:13]+" "+latest_time[14:16]+" "+latest_time[17:19]
+        cmp_latest = time.strptime(latest_time_str, "%Y %m %d %H %M %S")
+        if cmp_curr_time < self.oldest_date:
+            self.oldest_date = cmp_curr_time
+            self.oldest_btc_tx = curr_txs
+        if cmp_curr_time > cmp_latest:
+            self.latest_btc_tx = curr_txs
