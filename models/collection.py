@@ -4,6 +4,7 @@ from models import DecBase
 from models.document import Document
 from jsonschema import *
 from json_schemas import *
+from models.collection_version import CollectionVersion 
 from timestamp.timestampfile import TimestampFile
 import time
 import json
@@ -11,9 +12,13 @@ import json
 # Define foreign keys required for joining defined tables together
 collection_keywords = Table('collection_keywords', DecBase.metadata,
                             Column('keyword_id', Integer, ForeignKey('keyword.id')),
-                            Column('collection_address', String, ForeignKey('collection.address'))
+                            Column('collection_address', String, ForeignKey('collection.address'))                           
                             )
 
+hash_association = Table('collection_hashes', DecBase.metadata,
+                            Column('hash', String, ForeignKey('collection_version.root_hash')),
+                            Column('collection_address', String, ForeignKey('collection.address'))                           
+                            )
 
 class Collection(DecBase):
     """ A Collection is the fundamental unit of organization in the FreeJournal network.
@@ -28,9 +33,7 @@ class Collection(DecBase):
         Attributes:
             title: Title of collection (as in message spec)
             description: Collection description (as in message spec)
-            merkle: Merkle hash of latest known version (as in message spec)
             address: Bitmessage address uniquely ID'ing collection (as in message spec)
-            version: Current collection version (as in message spec)
             btc: Bitcoin address for rating documents (as in message spec)
             keywords: Keywords as list of Keyword class for searching (as in message spec)
             documents: List of document classes included in the collection (as in message spec)
@@ -48,9 +51,7 @@ class Collection(DecBase):
     __tablename__ = 'collection'
     title = Column(Text, nullable=False)
     description = Column(String)
-    merkle = Column(String, nullable=False)
     address = Column(String, primary_key=True)
-    version = Column(Integer)
     btc = Column(String)
     keywords = relationship("Keyword", secondary=collection_keywords, backref='collection')
     documents = relationship(Document, cascade="all, delete-orphan")
@@ -62,7 +63,7 @@ class Collection(DecBase):
     accesses = Column(Integer, nullable=False, default=0)
     votes = Column(Integer, nullable=False, default=0)
     votes_last_checked = Column(DateTime)
-
+    version_list = relationship(CollectionVersion,  backref="collection", lazy='dynamic', secondary=hash_association)
     def to_json(self):
         """
         Encodes a Collection as a json representation so it can be sent through the bitmessage network
@@ -82,9 +83,7 @@ class Collection(DecBase):
                                "keywords": json_keywords,
                                "address": self.address,
                                "documents": json_docs,
-                               "merkle": self.merkle,
                                "btc": self.btc,
-                               "version": self.version,
                                "latest_broadcast_date": self.latest_broadcast_date.strftime("%A, %d. %B %Y %I:%M%p"),
                                "creation_date": self.creation_date.strftime("%A, %d. %B %Y %I:%M%p"),
                                "oldest_date": self.oldest_date.strftime("%A, %d. %B %Y %I:%M%p"),
@@ -99,8 +98,48 @@ class Collection(DecBase):
         except ValidationError as m:
             return None
 
+    def _keyword_in(self, key_id):
+        """
+        Finds if the given Keyword id is in the Collection's Keywords
+        :param key_id: the Keyword id to search for
+        :return: True if this id is in the Collection's Keywords, False otherwise
+        """
+        for key in self.keywords:
+            if key.id == key_id:
+                return True
+        return False
+
+    def get_latest_version(self):
+        latest_version = self.version_list.order_by(CollectionVersion.collection_version.desc()).first() 
+        if latest_version is None:
+            return 0
+        else:
+            return latest_version.collection_version
+
+    def get_latest_collection_version(self):
+        latest_version = self.version_list.order_by(CollectionVersion.collection_version.desc()).first() 
+        return latest_version
+
+    def update_keywords(self, new_keywords):
+        """
+        Updates the Collection's Keywords with any new Keywords in the given list.
+        :param new_keywords: a list of Keywords
+        """
+        i = 0
+        new_key_list = []
+        while i < len(new_keywords):
+            if not self._keyword_in(new_keywords[i].id):
+                new_key_list.append(new_keywords[i])
+            i += 1
+        self.keywords.extend(new_key_list)
+
     def update_timestamp (self):
-        timestamp_obj = TimestampFile(self.merkle)
+        collection_version = get_latest_version()
+        if(collection_version == None):
+            print("Timestamp called on empty collection, CollectionVersion not in Cache")
+            return
+        
+        timestamp_obj = TimestampFile(collection_version.root_hash)
         date_check = timestamp_obj.check_timestamp()
         curr_time = date_check['time']
         split_time = curr_time[0:4]+" "+curr_time[5:7]+" "+curr_time[8:10]+" "+curr_time[11:13]+" "+curr_time[14:16]+" "+curr_time[17:19]

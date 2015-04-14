@@ -3,7 +3,8 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import MetaData
 from db import setup_db, connect_db
 from models.collection import Collection
-from models.collection import Document
+from models.document import Document
+from models.collection_version import CollectionVersion
 from models.keyword import Keyword
 
 engine = connect_db()
@@ -76,6 +77,10 @@ class Cache():
         collections = self.session.query(Document).filter(Document.collection_address == collection_address).all()
         return collections
 
+    def get_versions_for_collection(self, collection_address):
+        versions = self.session.query(CollectionVersion).filter(CollectionVersion.collection_address== collection_address).all()
+        return versions
+
     def insert_new_collection(self,collection):
         """
         Insert a new collection into local storage
@@ -84,6 +89,7 @@ class Cache():
         self.session.add(collection)
         self.session.commit()
 
+    #Note, if this is called manually(and not via cli/api) the collection root hash will not be updated
     def insert_new_document(self,document):
         """
         Insert a new document associated with an existing collection into local storage
