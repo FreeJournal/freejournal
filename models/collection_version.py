@@ -1,15 +1,14 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String
 from models import DecBase
 
 
 class CollectionVersion(DecBase):
-	'''
-	As new collections get added to the Freejournal network, the old collections are
-	stored in the cache. When a collection is updated, or modified, a new master hash
-	is generated to identify the collection. When this happens, a CollectionVersion
-	object is made to store the state of the old collection
-	'''
-	__tablename__ = 'collectionversion'
-	rootHash = Column(String, primary_key=True)
-	documentString = Column(String, nullable = False)
-	CollectionVersion = Column(Integer, nullable =False)
+    """
+    A hash associated with a collection  
+    """
+    __tablename__ = 'collection_version'
+    collection_version = Column(Integer)
+    root_hash = Column(String, primary_key=True)
+    document_ids = Column (String)
+    collection_address = Column(String, ForeignKey('collection.address'))
+    

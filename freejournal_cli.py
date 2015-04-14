@@ -5,7 +5,7 @@ import sys, datetime, uuid
 # BitMessage installer imports
 import platform
 from bitmessage.install import apt_install, windows_install
-
+from controllers import collections
 # FreeNet installer imports
 from freenet.install import linux_install
 
@@ -22,6 +22,7 @@ try:
     from models.collection import Collection
     from models.keyword import Keyword
     from models.document import Document
+    from controllers.collections import *
 except:
     print ("Error: could not import models.")
 
@@ -53,6 +54,7 @@ def print_help():
     print ("\tgetdoc [document hash] [document output path/filename]")
     print ("\tputdoc [document input path] [collection address] [title] [description]")
     print ("\tlistcollections")
+    print ("\tlistversions [collection address] [(optional) 'documents' to print document_ids]")
     print ("\tlisten")
     print ("\tinstall [freenet|bitmessage|all]")
     print ("\tshowcollection [index bitmessage ID]")
@@ -76,6 +78,8 @@ def print_command_help(command):
             + " call pubcollection with the returned document ID.", \
           "listcollections": \
             "List all document indexes currently known to this FreeJournal instance.", \
+          "listversions": \
+            "List all the versions of a particular collection", \
           "showcollection": \
             "Display all known details of a given collection, including all documents it indexes.", \
           "listen": \
@@ -128,6 +132,20 @@ def list_collection_details(collection_address):
     else:
         print ("Collection not found in local cache.")
 
+def list_collection_version(collection_address, document_ids):
+    versions = cache.get_versions_for_collection(collection_address)
+    if(len(versions)!=0):
+        print("Collection Versions for " + collection_address + ":" )
+        print ("\t" + "Root hash" + "\t\t\t\t\t\t\t\t" + "Collection Version")
+    else:
+        print("Collection not found")
+    for version in versions:
+        print("\t" + version.root_hash + "\t" + str(version.collection_version))
+        if(document_ids == 'documents'):
+            print("document_ids:")
+            print(version.document_ids)
+            print("")
+
 def install_dependencies(dependency):
     """ Install a prerequisite (dependency) for deploying a FreeJournal
         node.  Rerun with each FreeJournal upgrade.
@@ -169,6 +187,8 @@ def put_document(file_path, collection_address, title, description):
         accesses = 0
     )
     cache.insert_new_document(document)
+    collection = cache.get_collection_with_address(collection_address)
+    collections.update_hash(collection)
     print ("Inserted " + file_path + " successfully with URI " + uri)
     print ("Allow up to 10 minutes for file to propogate on the freenet network")
 
@@ -188,9 +208,7 @@ def put_collection(address_password, title, description, keywords, btc):
     collection = Collection(
         title=title,
         description=description,
-        merkle='I am a merkle',
         address=address,
-        version=3,
         accesses=0,
         votes=0,
         btc=btc,
@@ -280,6 +298,13 @@ def process_command(command):
     elif command == 'publishcollection':
         if (len(sys.argv) == 4):
             publish_collection(sys.argv[2], sys.argv[3])
+        else:
+            print_help()
+    elif command == 'listversions':
+        if (len(sys.argv) ==3):
+            list_collection_version(sys.argv[2],None)
+        elif (len(sys.argv)==4 and sys.argv[3]=='documents'):
+            list_collection_version(sys.argv[2],sys.argv[3])    
         else:
             print_help()
     elif command == 'webapp':

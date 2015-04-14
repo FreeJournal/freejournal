@@ -11,14 +11,8 @@ coll_schema = {
             "description": {
                 "type": "string"
             },
-            "merkle": {
-                "type": "string"
-            },
             "address": {
                 "type": "string"
-            },
-            "version": {
-                "type": "integer"
             },
             "btc": {
                 "type": "string"
@@ -91,7 +85,7 @@ coll_schema = {
                 "type": "string"
             }
         },
-        "required": ["type_id", "title", "description", "documents", "keywords", "version", "merkle", "address", "btc",
+        "required": ["type_id", "title", "description", "documents", "keywords", "address", "btc",
                      "creation_date", "oldest_date", "latest_btc_tx", "oldest_btc_tx",
                      "latest_broadcast_date", "accesses", "votes", "votes_last_checked"]
 

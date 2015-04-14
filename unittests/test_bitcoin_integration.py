@@ -16,9 +16,7 @@ class TestBitcoinIntegration(unittest.TestCase):
         self.collection = Collection(
             title="Test",
             description="This is a collection!",
-            merkle="f61504ae086c136511e7982c5d638a155c8a88832cd35c35c32f7de23ca5ce54",
             address=coll_address,
-            version=1,
             btc="123456789",
             keywords=[
                 Keyword(name="Keyword A", id=90909090),

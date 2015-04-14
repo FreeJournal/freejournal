@@ -3,8 +3,8 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import MetaData
 from db import setup_db, connect_db
 from models.collection import Collection
-from models.collection import Document
-
+from models.document import Document
+from models.collection_version import CollectionVersion
 engine = connect_db()
 setup_db(engine)
 DBSession = sessionmaker(bind=engine)
@@ -48,6 +48,10 @@ class Cache():
     def get_documents_from_collection(self, collection_address):
         collections = self.session.query(Document).filter(Document.collection_address == collection_address).all()
         return collections
+
+    def get_versions_for_collection(self, collection_address):
+        versions = self.session.query(CollectionVersion).filter(CollectionVersion.collection_address== collection_address).all()
+        return versions
 
     def insert_new_collection(self,collection):
         """

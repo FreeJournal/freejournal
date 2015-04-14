@@ -60,9 +60,7 @@ class Controller:
             collection_model = Collection(
                 title=payload["title"],
                 description=payload["description"],
-                merkle=payload["merkle"],
                 address=payload["address"],
-                version=payload["version"],
                 btc=payload["btc"],
                 keywords=keywords, #@todo add keyword support
                 documents=docs,
@@ -84,7 +82,6 @@ class Controller:
             cached_collection.description = payload["description"]
             cached_collection.merkle = payload['merkle']
             cached_collection.address = payload["address"]
-            cached_collection.version = payload["version"]
             cached_collection.btc = payload["btc"]
             cached_collection.documents = docs
             cached_collection.creation_date = datetime.datetime.strptime(payload["creation_date"],

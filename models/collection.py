@@ -5,7 +5,7 @@ from models.document import Document
 from models.keyword import Keyword
 from jsonschema import *
 from json_schemas import *
-from models.hash import Hash 
+from models.collection_version import CollectionVersion 
 import json
 
 # Define foreign keys required for joining defined tables together
@@ -15,7 +15,7 @@ keyword_association = Table('collection_keywords', DecBase.metadata,
                             )
 
 hash_association = Table('collection_hashes', DecBase.metadata,
-                            Column('hash', String, ForeignKey('hash.hash')),
+                            Column('hash', String, ForeignKey('collection_version.root_hash')),
                             Column('collection_address', String, ForeignKey('collection.address'))                           
                             )
 
@@ -32,9 +32,7 @@ class Collection(DecBase):
         Attributes:
             title: Title of collection (as in message spec)
             description: Collection description (as in message spec)
-            merkle: Merkle hash of latest known version (as in message spec)
             address: Bitmessage address uniquely ID'ing collection (as in message spec)
-            version: Current collection version (as in message spec)
             btc: Bitcoin address for rating documents (as in message spec)
             keywords: Keywords as list of Keyword class for searching (as in message spec)
             documents: List of document classes included in the collection (as in message spec)
@@ -52,9 +50,7 @@ class Collection(DecBase):
     __tablename__ = 'collection'
     title = Column(Text, nullable=False)
     description = Column(String)
-    merkle = Column(String, nullable=False)
     address = Column(String, primary_key=True)
-    version = Column(Integer)
     btc = Column(String)
     keywords = relationship(Keyword, secondary=keyword_association)
     documents = relationship(Document, cascade="all, delete-orphan")
@@ -66,7 +62,7 @@ class Collection(DecBase):
     accesses = Column(Integer, nullable=False, default=0)
     votes = Column(Integer, nullable=False, default=0)
     votes_last_checked = Column(DateTime)
-    hashes = relationship(Hash,  backref="collection", lazy='dynamic', secondary=hash_association)
+    version_list = relationship(CollectionVersion,  backref="collection", lazy='dynamic', secondary=hash_association)
     def to_json(self):
         """
         Encodes a Collection as a json representation so it can be sent through the bitmessage network
@@ -86,9 +82,7 @@ class Collection(DecBase):
                                "keywords": json_keywords,
                                "address": self.address,
                                "documents": json_docs,
-                               "merkle": self.merkle,
                                "btc": self.btc,
-                               "version": self.version,
                                "latest_broadcast_date": self.latest_broadcast_date.strftime("%A, %d. %B %Y %I:%M%p"),
                                "creation_date": self.creation_date.strftime("%A, %d. %B %Y %I:%M%p"),
                                "oldest_date": self.oldest_date.strftime("%A, %d. %B %Y %I:%M%p"),
@@ -113,6 +107,13 @@ class Collection(DecBase):
             if key.id == key_id:
                 return True
         return False
+
+    def get_latest_version(self):
+        latest_version = self.version_list.order_by(CollectionVersion.collection_version.desc()).first() 
+        if latest_version is None:
+            return 0
+        else:
+            return latest_version.collection_version
 
     def update_keywords(self, new_keywords):
         """

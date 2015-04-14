@@ -1,5 +1,5 @@
 import hashlib
-from models.hash import Hash
+from models.collection_version import CollectionVersion
 from timestamp.timestampfile import TimestampFile
 from cache.cache import DBSession, Cache
 import time
@@ -60,17 +60,18 @@ def update_hash(collection):
     if collection is None:
       return None
     #check whether the version hashed already collection.version
-    previous_hash = collection.hashes.filter_by(collection_ver = collection.version).first()
-    if previous_hash is None:
-      for document in collection.documents:
-          string+=document.hash+"|"
-          if len(string) ==0:
-              return None
-      string = string[:-1]
-      h = hashlib.sha256()
-      h.update(string)
-      collection_hash = Hash(hash=h.hexdigest(), document_ids = string, collection_ver = collection.version)
-      session = DBSession.object_session(collection)
-      session.add(collection_hash)
-      collection.hashes.append(collection_hash)
-      session.commit()
+    if collection.version_list is not None:
+        previous_hash = collection.version_list.order_by(CollectionVersion.collection_version.desc()).first()
+    for document in collection.documents:
+        string+=document.hash+"|"
+        if len(string) ==0:
+            return None
+    string = string[:-1]
+    h = hashlib.sha256()
+    h.update(string)
+    collection_hash = CollectionVersion(root_hash=h.hexdigest(), document_ids = string, collection_version = collection.get_latest_version()+1,
+                        collection_address = collection.address)
+    session = DBSession.object_session(collection)
+    session.add(collection_hash)
+    collection.version_list.append(collection_hash)
+    session.commit()
