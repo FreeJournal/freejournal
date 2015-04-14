@@ -65,8 +65,6 @@ def update_hash(collection):
     if collection is None:
       return None
     #check whether the version hashed already collection.version
-    if collection.version_list is not None:
-        previous_hash = collection.version_list.order_by(CollectionVersion.collection_version.desc()).first()
     for document in collection.documents:
         string+=document.hash+"|"
         if len(string) ==0:
