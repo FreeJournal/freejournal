@@ -66,7 +66,7 @@ def getDocument(hash):
 '''
 Outward Facing
 Create document is the outward facing function to add a document to the FreeJournal Network
-To do this backend, the document is first uploaded to FreeNet. Once there, the file 
+To do this controllers, the document is first uploaded to FreeNet. Once there, the file
 is associated with a freeNetAddress (like a URL) which is stored with the additional indexing 
 information and is distrubted (via a broadcast on Bitmessage) to the FreeJournal network.  
 

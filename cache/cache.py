@@ -4,6 +4,7 @@ from sqlalchemy import MetaData
 from db import setup_db, connect_db
 from models.collection import Collection
 from models.collection import Document
+from models.keyword import Keyword
 
 engine = connect_db()
 setup_db(engine)
@@ -41,6 +42,32 @@ class Cache():
         row = None
         try:
             row = self.session.query(Collection).filter(Collection.address == address).one()
+        except NoResultFound:
+            pass
+        return row
+
+    def get_keyword_by_id(self, cur_id):
+        """
+        Retrieve a specific keyword by it's id
+        :param cur_id: The id of the requested keyword
+        :return: The Keyword object if in the cache, None otherwise
+        """
+        row = None
+        try:
+            row = self.session.query(Keyword).filter(Keyword.id == cur_id).one()
+        except NoResultFound:
+            pass
+        return row
+
+    def get_document_by_hash(self, hash):
+        """
+        Retrieve a specific Document by it's hash
+        :param hash: The hash of the requested Document
+        :return: The Document object if in the cache, None otherwise.
+        """
+        row = None
+        try:
+            row = self.session.query(Document).filter(Document.hash == hash).one()
         except NoResultFound:
             pass
         return row

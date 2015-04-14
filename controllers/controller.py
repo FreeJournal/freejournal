@@ -1,9 +1,20 @@
+import json
+import time
+import base64
+import datetime
+import hashlib
+import os
+from jsonschema import *
+from sqlalchemy.exc import IntegrityError
 from models.keyword import Keyword
 from models.document import Document
 from models.collection import Collection
 from bitmessage.bitmessage import Bitmessage
-from datastructures.fj_message import FJMessage
+from models.fj_message import FJMessage
 from cache.cache import Cache
+<<<<<<< HEAD:controllers/controller.py
+from models.json_schemas import *
+=======
 from config import DOCUMENT_DIRECTORY_PATH
 from freenet.FreenetConnection import FreenetConnection
 from jsonschema import *
@@ -19,6 +30,7 @@ import sys
 import os
 
 
+
 class Controller:
 
     def __init__(self):
@@ -31,7 +43,6 @@ class Controller:
         :param fj_message: the message containing the collection and signature
         :return: True if the signatures match, False otherwise
         """
-
         h = hashlib.sha256(fj_message["pubkey"] + fj_message['payload']).hexdigest()
 
         if h == fj_message["signature"]:
@@ -40,6 +51,32 @@ class Controller:
         else:
             print "Signature Not Verified"
             return False
+
+
+    def _build_docs_keywords(self, payload):
+        """
+        Builds a list of Keyword objects and a list of Document objects from the received json.
+
+        :param payload: The payload of the FJ Message including the documents and keywords
+        :return: Two lists representing the documents and keywords of the FJ Message
+        """
+        keywords = []
+        docs = []
+        for key in payload["keywords"]:
+            db_key = self.cache.get_keyword_by_id(key["id"])
+            if db_key is not None:
+                keywords.append(db_key)
+            else:
+                keywords.append(Keyword(name=key["name"], id=key["id"]))
+
+        for doc in payload["documents"]:
+            db_doc = self.cache.get_document_by_hash(doc["hash"])
+            if db_doc is not None:
+                docs.append(db_doc)
+            else:
+                docs.append(Document(collection_address=doc["address"], description=doc["description"],
+                                     hash=doc["hash"], title=doc["title"]))
+        return docs, keywords
 
     def _save_document(self, data, file_name):
         """
@@ -128,13 +165,7 @@ class Controller:
         :param payload: the contents of the FJ_message
         """
         # Grabbing the text representations of the documents and keywords and rebuilding them
-        keywords = []
-        docs = []
-        for key in payload["keywords"]:
-            keywords.append(Keyword(name=key["name"], id=key["id"]))
-        for doc in payload["documents"]:
-            docs.append(Document(collection_address=doc["address"], description=doc["description"], hash=doc["hash"],
-                                 title=doc["title"]))
+        docs, keywords = self._build_docs_keywords(payload)
         cached_collection = self.cache.get_collection_with_address(payload["address"])
 
         if cached_collection is None:
@@ -145,7 +176,7 @@ class Controller:
                 address=payload["address"],
                 version=payload["version"],
                 btc=payload["btc"],
-                keywords=keywords, #@todo add keyword support
+                keywords=keywords,
                 documents=docs,
                 creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
                 oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p"),
@@ -157,11 +188,12 @@ class Controller:
                 self.cache.insert_new_collection(collection_model)
                 thread.start_new_thread(self._download_documents, (collection_model.title, collection_model.documents))
                 print "Cached New Collection"
+                return True
             except IntegrityError as m:
-                #print m.message
+                print m.message
                 return False
         else:
-            cached_collection.update_keywords(keywords)
+            cached_collection.keywords = keywords
             cached_collection.title = payload["title"]
             cached_collection.description = payload["description"]
             cached_collection.merkle = payload['merkle']
@@ -180,9 +212,25 @@ class Controller:
                 self.cache.insert_new_collection(cached_collection)
                 thread.start_new_thread(self._download_documents, (cached_collection.title, cached_collection.documents))
                 print "Cached Updated Collection"
+                return True
             except IntegrityError as m:
-                #print m.message
+                print m.message
                 return False
+
+    def _find_address_in_keysdat(self, address):
+        """
+        Checks if this bitmessage address is in our keys.dat
+        :param address: The address to look for
+        :return: True if the address is in keys.dat, false otherwise
+        """
+        f = open(os.path.expanduser('~/.config/PyBitmessage/keys.dat'), 'r')
+        keys = f.read()
+        keys_list = keys.split('\n\n')
+
+        for key_info in keys_list[1:]:
+            if address in key_info:
+                return True
+        return False
 
     def import_collection(self, address):
         """
@@ -221,14 +269,14 @@ class Controller:
                         continue
 
                     if self._check_signature(json_decode):
-                        self._cache_collection(message, payload)
-                        self.connection.delete_message(message['msgid'])
-                        return True
+                        if self._cache_collection(message, payload):
+                            self.connection.delete_message(message['msgid'])
+                            return True
 
         #print "Could not import collection"
         return False
 
-    def publish_collection(self, collection, to_address, from_address):
+    def publish_collection(self, collection, to_address, from_address=None):
         """
         Publishes the given to collection to the bitmessage network
         :param collection: the collection to be published
@@ -236,6 +284,14 @@ class Controller:
         :param from_address: the address to send the collection from
         :return: True if the collection is published successfully, False otherwise
         """
+
+        if from_address is None:
+            from_address = self.connection.create_address("new address")
+            print "created address: ", from_address
+        if not self._find_address_in_keysdat(from_address):
+            print "This address is not in keys.dat, can not send message"
+            return False
+
         collection_payload = collection.to_json()
         if collection_payload is None:
             return False
@@ -244,5 +300,6 @@ class Controller:
         if sendable_fj_message is None:
             return False
         self.connection.send_message(to_address, from_address, "subject", sendable_fj_message)
-
         return True
+
+

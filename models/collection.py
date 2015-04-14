@@ -1,8 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from models import DecBase
 from models.document import Document
-from models.keyword import Keyword
 from jsonschema import *
 from json_schemas import *
 from timestamp.timestampfile import TimestampFile
@@ -10,7 +9,7 @@ import time
 import json
 
 # Define foreign keys required for joining defined tables together
-keyword_association = Table('collection_keywords', DecBase.metadata,
+collection_keywords = Table('collection_keywords', DecBase.metadata,
                             Column('keyword_id', Integer, ForeignKey('keyword.id')),
                             Column('collection_address', String, ForeignKey('collection.address'))
                             )
@@ -53,7 +52,7 @@ class Collection(DecBase):
     address = Column(String, primary_key=True)
     version = Column(Integer)
     btc = Column(String)
-    keywords = relationship(Keyword, secondary=keyword_association)
+    keywords = relationship("Keyword", secondary=collection_keywords, backref='collection')
     documents = relationship(Document, cascade="all, delete-orphan")
     latest_broadcast_date = Column(DateTime, nullable=False)
     creation_date = Column(DateTime, nullable=False)
@@ -100,31 +99,6 @@ class Collection(DecBase):
         except ValidationError as m:
             return None
 
-    def _keyword_in(self, key_id):
-        """
-        Finds if the given Keyword id is in the Collection's Keywords
-        :param key_id: the Keyword id to search for
-        :return: True if this id is in the Collection's Keywords, False otherwise
-        """
-        for key in self.keywords:
-            if key.id == key_id:
-                return True
-        return False
-
-    def update_keywords(self, new_keywords):
-        """
-        Updates the Collection's Keywords with any new Keywords in the given list.
-        :param new_keywords: a list of Keywords
-        """
-        i = 0
-        new_key_list = []
-        while i < len(new_keywords):
-            if not self._keyword_in(new_keywords[i].id):
-                new_key_list.append(new_keywords[i])
-            i += 1
-        self.keywords.extend(new_key_list)
-
-
     def update_timestamp (self):
         timestamp_obj = TimestampFile(self.merkle)
         date_check = timestamp_obj.check_timestamp()
@@ -146,3 +120,4 @@ class Collection(DecBase):
             self.oldest_btc_tx = curr_txs
         if cmp_curr_time > cmp_latest:
             self.latest_btc_tx = curr_txs
+
