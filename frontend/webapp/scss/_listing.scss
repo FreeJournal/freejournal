@@ -1,0 +1,46 @@
+.listing {
+  border: #CCC 1px solid;
+  @include box-shadow(0, 1px, 3px, 1px, #DDD);
+  padding: 10px;
+  margin-bottom: 15px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.listing-info-block {
+  display: inline-block;
+}
+
+.listing-title {
+}
+
+.listing-info {
+  font-size: 11px;
+}
+
+.listing-date {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.listing-submitter {
+  display: inline-block;
+}
+
+.listing-keywords {
+  display: inline-block;
+  float: right;
+  @media screen and (max-width: 700px) {
+    float: none;
+  }
+}
+
+.listing-vote {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.listing-icon {
+
+}

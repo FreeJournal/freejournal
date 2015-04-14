@@ -1,0 +1,37 @@
+@import "variables";
+
+.collection {
+  border: $box-border-color 1px solid;
+  @include box-shadow(0, 1px, 3px, 1px, #DDD);
+}
+
+.collection-title {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-bottom: $box-border-color 1px solid;;
+}
+
+.document {
+  padding: 10px;
+  margin-bottom: 15px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.document-title-block {
+}
+
+.document-title {
+  vertical-align: top;
+  display: inline-block;
+}
+
+.document-icon {
+  display: inline-block;
+}
+
+.document-description {
+  font-size: 13px;
+  color: #777;
+}
