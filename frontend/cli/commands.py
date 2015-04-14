@@ -303,8 +303,8 @@ def process_command(command):
     elif command == 'webapp':
         webapp.run(debug = config.WEBAPP_DEBUG, port = config.WEBAPP_PORT)
     elif command == 'uploader':
-        from frontend.uploader import FreeJournal
-        FreeJournal.run()
+        from frontend.uploader import fjUploaderGUI
+        fjUploaderGUI.run()
     elif command == 'keepalive':
         from bitmessage.bitmessage_keepalive import find_old_collections
         find_old_collections(3)
