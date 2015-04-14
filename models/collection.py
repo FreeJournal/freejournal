@@ -115,6 +115,10 @@ class Collection(DecBase):
         else:
             return latest_version.collection_version
 
+    def get_latest_collection_version(self):
+        latest_version = self.version_list.order_by(CollectionVersion.collection_version.desc()).first() 
+        return latest_version
+
     def update_keywords(self, new_keywords):
         """
         Updates the Collection's Keywords with any new Keywords in the given list.

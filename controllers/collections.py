@@ -49,7 +49,12 @@ def update_timestamp (collection):
     Used to update collection timestamp information by new hash
     :param collection:
     """
-    timestamp = TimestampFile(collection.merkle).check_timestamp()
+    collection_version = collection.get_latest_collection_version()
+    if(collection_version == None):
+        print("Timestamp called on empty collection, CollectionVersion not in Cache")
+        return
+
+    timestamp = TimestampFile(collection_version.root_hash).check_timestamp()
     curr_time=time.strptime(timestamp['time'], "%Y-%m-%d %H:%M:%S")
     curr_txs= timestamp['time'] + ";" + timestamp['Transaction']
     edit_time (collection, curr_time, curr_txs)
