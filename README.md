@@ -26,7 +26,9 @@ To install database, documentation, and other library requirements, run
 
 ## Generating Documentation
 
-To generate API documentation, simply `sh generate_docs.sh` in the `docs` folder.
+To generate API documentation, simply run
+``make install`` in the ``docs`` subfolder to install required dependencies, then run
+``make html`` to generate documentation in HTML form, output to the build directory.
 
 ## Running FreeJournal - Command Line
 

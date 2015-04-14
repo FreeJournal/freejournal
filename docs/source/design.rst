@@ -77,6 +77,11 @@ considered by many security experts to be a security hole, `unacceptable in a sy
 The freejournal project attempts to bridge this gap by providing a system for public document release that is not controlled
 by any particular third party, and is open to all users in a document-agnostic fashion.
 
+Terminology
+~~~~~~~~~~~
+
+Documents and collections
+
 Components
 ~~~~~~~~~~
 

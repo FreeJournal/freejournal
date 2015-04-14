@@ -21,7 +21,7 @@ documentation you encounter there.
    protocol
    architecture
    future
-
+   freejournal.models
 
 Indices and tables
 ==================
