@@ -70,6 +70,11 @@ def index():
     return render_template("index.html", collections=cache.get_all_collections())
 
 
+@app.route('/c/<string:collection>')
+def collection_page(collection):
+    return render_template("collection.html", collection=cache.get_collection_with_address(collection))
+
+
 @app.route('/itest')
 def index_test():
     c1 = get_test_collection()
