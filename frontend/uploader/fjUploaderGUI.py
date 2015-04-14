@@ -55,8 +55,14 @@ class StartQT4(QtGui.QMainWindow):
         filepath = str(self.model.filePath(self.index))
         selectedItem = self.ui.treeWidgetCollections.currentItem()
         collection_address = str(selectedItem.text(1))
-        title = 'temp'
-        description = 'temp'
+        title = "None"
+        description = "None"
+        (titleGet, truth) = QtGui.QInputDialog.getText(self, "Doc Title", "Title:", QtGui.QLineEdit.Normal, "None")
+        if truth == True:
+            title = str(titleGet)
+        (Desc, truthD) = QtGui.QInputDialog.getText(self, "Doc Description", "Description:", QtGui.QLineEdit.Normal, "None")
+        if truthD == True:
+            description = str(Desc)
         if isfile(filepath):
             if not title == '':
                 CLI.put_document(filepath, collection_address, title, description)
