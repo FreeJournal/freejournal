@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, datetime, uuid
-
+from controllers import collections
 # BitMessage installer imports
 import platform
 from bitmessage.install import apt_install, windows_install
@@ -53,6 +53,7 @@ def print_help():
     print ("\tgetdoc [document hash] [document output path/filename]")
     print ("\tputdoc [document input path] [collection address] [title] [description]")
     print ("\tlistcollections")
+    print ("\tlistversions [collection address] [(optional) 'documents' to print document_ids]")
     print ("\tlisten")
     print ("\tinstall [freenet|bitmessage|all]")
     print ("\tshowcollection [index bitmessage ID]")
@@ -76,6 +77,8 @@ def print_command_help(command):
             + " call pubcollection with the returned document ID.", \
           "listcollections": \
             "List all document indexes currently known to this FreeJournal instance.", \
+          "listversions": \
+            "List all the versions of a particular collection", \
           "showcollection": \
             "Display all known details of a given collection, including all documents it indexes.", \
           "listen": \
@@ -128,6 +131,21 @@ def list_collection_details(collection_address):
     else:
         print ("Collection not found in local cache.")
 
+
+def list_collection_version(collection_address, document_ids):
+    versions = cache.get_versions_for_collection(collection_address)
+    if(len(versions)!=0):
+        print("Collection Versions for " + collection_address + ":" )
+        print ("\t" + "Root hash" + "\t\t\t\t\t\t\t\t" + "Collection Version")
+    else:
+        print("Collection not found")
+    for version in versions:
+        print("\t" + version.root_hash + "\t" + str(version.collection_version))
+        if(document_ids == 'documents'):
+            print("document_ids:")
+            print(version.document_ids)
+            print("")
+
 def install_dependencies(dependency):
     """ Install a prerequisite (dependency) for deploying a FreeJournal
         node.  Rerun with each FreeJournal upgrade.
@@ -169,6 +187,8 @@ def put_document(file_path, collection_address, title, description):
         accesses = 0
     )
     cache.insert_new_document(document)
+    collection = cache.get_collection_with_address(collection_address)
+    collections.update_hash(collection)
     print ("Inserted " + file_path + " successfully with URI " + uri)
     print ("Allow up to 10 minutes for file to propogate on the freenet network")
 
@@ -256,6 +276,13 @@ def process_command(command):
             put_document(sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5])
     elif command == 'listcollections':
         list_collections()
+    elif command == 'listversions':
+        if (len(sys.argv) ==3):
+            list_collection_version(sys.argv[2],None)
+        elif (len(sys.argv)==4 and sys.argv[3]=='documents'):
+            list_collection_version(sys.argv[2],sys.argv[3])    
+        else:
+            print_help()
     elif command == 'showcollection':
         if (validate_cli_arguments(3)):
             show_collection(sys.argv[2])
