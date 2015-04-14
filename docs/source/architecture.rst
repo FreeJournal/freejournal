@@ -63,7 +63,8 @@ the current session to allow for session reuse.
 Controllers
 -----------
 
-.. uml:: ../../backend/controller.py
+.. uml:: ../../controllers/collections.py
+.. uml:: ../../controllers/controller.py
 .. uml:: ../../backend/datastructures/fj_message.py
 
 The controller files provide for an API for packages using the core freejournal 

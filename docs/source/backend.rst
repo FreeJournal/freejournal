@@ -8,26 +8,6 @@ Subpackages
 
     backend.datastructures
 
-Submodules
-----------
-
-backend.api module
-------------------
-
-.. automodule:: backend.api
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-backend.controller module
--------------------------
-
-.. automodule:: backend.controller
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
 Module contents
 ---------------
 
