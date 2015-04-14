@@ -1,6 +1,7 @@
-@import "mixins";
 @import "listing";
 @import "variables";
+@import "documents";
+@import "vote";
 
 body {
   background-color: $background-color;

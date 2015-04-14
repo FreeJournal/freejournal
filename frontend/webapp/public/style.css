@@ -32,6 +32,55 @@
   display: inline-block;
   vertical-align: top; }
 
+.collection {
+  border: #CCC 1px solid;
+  -webkit-box-shadow: 0 1px 3px 1px #DDD;
+  -moz-box-shadow: 0 1px 3px 1px #DDD;
+  box-shadow: 0 1px 3px 1px #DDD; }
+
+.collection-title {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-bottom: #CCC 1px solid; }
+
+.document {
+  padding: 10px;
+  margin-bottom: 15px; }
+  .document:last-of-type {
+    margin-bottom: 0; }
+
+.document-title {
+  vertical-align: top;
+  display: inline-block; }
+
+.document-icon {
+  display: inline-block; }
+
+.document-description {
+  font-size: 13px;
+  color: #777; }
+
+.vote-triangle {
+  display: block;
+  margin: 0 auto;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent; }
+
+.vote-triangle-up {
+  border-bottom: 10px solid #555;
+  margin-bottom: 5px; }
+
+.vote-triangle-down {
+  margin-top: 5px;
+  border-top: 10px solid #555; }
+
+.vote-score {
+  height: 20px;
+  line-height: 20px;
+  font-size: 15px; }
+
 body {
   background-color: #FFF;
   margin: 0;
