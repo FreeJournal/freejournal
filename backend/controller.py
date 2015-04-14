@@ -4,7 +4,8 @@ from models.collection import Collection
 from bitmessage.bitmessage import Bitmessage
 from datastructures.fj_message import FJMessage
 from cache.cache import Cache
-from config import MAIN_CHANNEL_ADDRESS
+from config import DOCUMENT_DIRECTORY_PATH
+from freenet.FreenetConnection import FreenetConnection
 from jsonschema import *
 from models.json_schemas import *
 from sqlalchemy.exc import IntegrityError
@@ -13,6 +14,9 @@ import time
 import base64
 import datetime
 import hashlib
+import thread
+import sys
+import os
 
 
 class Controller:
@@ -28,8 +32,6 @@ class Controller:
         :return: True if the signatures match, False otherwise
         """
 
-
-
         h = hashlib.sha256(fj_message["pubkey"] + fj_message['payload']).hexdigest()
 
         if h == fj_message["signature"]:
@@ -38,6 +40,85 @@ class Controller:
         else:
             print "Signature Not Verified"
             return False
+
+    def _save_document(self, data, file_name):
+        """
+        Private helper function for writing file data to disk.
+        Creates the file to the directory specified in config.py.
+
+        :param data: the file data
+        :param file_name: the name of the file
+        :return: a boolean indicating success
+        """
+
+        try:
+            file_path = os.path.expanduser(DOCUMENT_DIRECTORY_PATH) + file_name
+            open(file_path, 'w').write(data)
+            return True
+        except Exception as e:
+            return False
+
+    def _get_document(self, hash):
+        """
+        Private helper function for getting document data
+        from freenet.
+
+        :param hash: the Content Hash Key for a document
+        :return: the file data if successful, None otherwise
+        """
+        
+        data = None
+
+        #Try obtaining a freenet connection
+        try:
+            freenet_connection = FreenetConnection()
+        except Exception as e:
+            print("Couldn't connect to freenet")
+            return data
+
+        try:
+            data = freenet_connection.get(hash)
+        except Exception as e:
+            pass
+
+        return data
+
+    def _download_documents(self, collection_title, documents):
+        """
+        A function that downloads documents from a collection.
+        NOTE: This function should only be called in its own thread
+        since this is a blocking call and can take awhile to execute.
+
+        :param collection_title: the title of the collection
+        :param documents: the list of document objects to download
+        """
+
+        print("Downloading documents for " + collection_title)
+        print("Number of Documents to download: " + str(len(documents)))
+
+        doc_counter = 0
+        for document in documents:
+            #Store and validate that the document has a file name
+            file_name = document.filename
+            if not file_name:
+                file_name = collection_title + str(doc_counter)
+                doc_counter += 1
+
+            #Try obtaining the file data from freenet
+            data = self._get_document(document.hash)
+            if not data:
+                print("Couldn't download " + file_name + " from freenet")
+                continue
+
+            #If the file data was successfully downloaded, save the data to disk
+            success = self._save_document(data, file_name)
+            if success:
+                print("Successfully downloaded " + file_name + " from freenet")
+            else:
+                print("Couldn't save document data to disk (check that the document"
+                      + " directory path exists and appropriate permissions are set")
+
+        sys.exit()  # Exit current thread
 
     def _cache_collection(self, message, payload):
         """
@@ -72,6 +153,7 @@ class Controller:
             )
             try:
                 self.cache.insert_new_collection(collection_model)
+                thread.start_new_thread(self._download_documents, (collection_model.title, collection_model.documents))
                 print "Cached New Collection"
             except IntegrityError as m:
                 #print m.message
@@ -93,6 +175,7 @@ class Controller:
             cached_collection.votes_last_checked = datetime.datetime.strptime(payload["votes_last_checked"], "%A, %d. %B %Y %I:%M%p")
             try:
                 self.cache.insert_new_collection(cached_collection)
+                thread.start_new_thread(self._download_documents, (cached_collection.title, cached_collection.documents))
                 print "Cached Updated Collection"
             except IntegrityError as m:
                 #print m.message
@@ -130,7 +213,6 @@ class Controller:
                         payload = json.loads(payload)
                         validate(payload, coll_schema)
                     except (ValueError, TypeError, ValidationError) as m:
-                        #print m.message
                         print "Contents of FJ Message invalid or corrupted"
                         self.connection.delete_message(message['msgid'])
                         continue
@@ -159,4 +241,5 @@ class Controller:
         if sendable_fj_message is None:
             return False
         self.connection.send_message(to_address, from_address, "subject", sendable_fj_message)
+
         return True
