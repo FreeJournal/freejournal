@@ -7,3 +7,4 @@ pyelliptic==1.5.6
 flask==0.10.1
 jsonschema==2.4.0
 coverage==3.7.1
+sphinx==1.2.3

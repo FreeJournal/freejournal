@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/FreeJournal/freejournal.svg?branch=develop)](https://travis-ci.org/FreeJournal/freejournal) [![Coverage Status](https://coveralls.io/repos/FreeJournal/freejournal/badge.svg?branch=coveralls)](https://coveralls.io/r/FreeJournal/freejournal?branch=coveralls)
+[![Build Status](https://travis-ci.org/FreeJournal/freejournal.svg?branch=develop)](https://travis-ci.org/FreeJournal/freejournal) [![Coverage Status](https://coveralls.io/repos/FreeJournal/freejournal/badge.svg?branch=develop)](https://coveralls.io/r/FreeJournal/freejournal?branch=coveralls)
 # Free-Journal
 Project Homepage: http://freejournal.org/
 Example Node: http://freejournal.io/
@@ -26,7 +26,9 @@ To install database, documentation, and other library requirements, run
 
 ## Generating Documentation
 
-To generate API documentation, simply `sh generate_docs.sh` in the `docs` folder.
+To generate API documentation, simply run
+``make install`` in the ``docs`` subfolder to install required dependencies, then run
+``make html`` to generate documentation in HTML form, output to the build directory.
 
 ## Running FreeJournal - Command Line
 
