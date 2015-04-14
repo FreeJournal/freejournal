@@ -2,7 +2,7 @@
 *.iml
 *.pyc
 node_modules
-docs/*
-!docs/overview
-!docs/generate_docs.sh
+docs/build
+docs/fj.db
+docs/src
 *.db
