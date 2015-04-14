@@ -208,9 +208,7 @@ def put_collection(address_password, title, description, keywords, btc):
     collection = Collection(
         title=title,
         description=description,
-        merkle='I am a merkle',
         address=address,
-        version=3,
         accesses=0,
         votes=0,
         btc=btc,
