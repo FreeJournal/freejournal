@@ -28,6 +28,10 @@ MAIN_CHANNEL_ADDRESS = "BM-2cWvQ4HqcxLhgKjc5zkuwsbqf69mryY5mr"
 privsigningkey = "5JscnTKKubbtQepFUzFjKm9SjBMQ7PZKgd8EnauXZGwLjPVF2zs"
 privencryptionkey = "5K9KRL9KffdbWcBqzPeXv5Rfo2YRJFD3SASJmXJsZkEphy4Rh6q"
 
+''' Directory to store documents that are downloaded
+(Make sure to keep the last '/' at the end of the path)'''
+DOCUMENT_DIRECTORY_PATH = "~/Documents/"
+
 # Set to true at your own risk
 WEBAPP_DEBUG = True
 WEBAPP_PORT  = 5000

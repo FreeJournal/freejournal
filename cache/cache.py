@@ -3,7 +3,9 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import MetaData
 from db import setup_db, connect_db
 from models.collection import Collection
-from models.collection import Document
+from models.document import Document
+from models.collection_version import CollectionVersion
+from models.keyword import Keyword
 
 engine = connect_db()
 setup_db(engine)
@@ -45,9 +47,39 @@ class Cache():
             pass
         return row
 
+    def get_keyword_by_id(self, cur_id):
+        """
+        Retrieve a specific keyword by it's id
+        :param cur_id: The id of the requested keyword
+        :return: The Keyword object if in the cache, None otherwise
+        """
+        row = None
+        try:
+            row = self.session.query(Keyword).filter(Keyword.id == cur_id).one()
+        except NoResultFound:
+            pass
+        return row
+
+    def get_document_by_hash(self, hash):
+        """
+        Retrieve a specific Document by it's hash
+        :param hash: The hash of the requested Document
+        :return: The Document object if in the cache, None otherwise.
+        """
+        row = None
+        try:
+            row = self.session.query(Document).filter(Document.hash == hash).one()
+        except NoResultFound:
+            pass
+        return row
+
     def get_documents_from_collection(self, collection_address):
         collections = self.session.query(Document).filter(Document.collection_address == collection_address).all()
         return collections
+
+    def get_versions_for_collection(self, collection_address):
+        versions = self.session.query(CollectionVersion).filter(CollectionVersion.collection_address== collection_address).all()
+        return versions
 
     def insert_new_collection(self,collection):
         """
@@ -57,6 +89,7 @@ class Cache():
         self.session.add(collection)
         self.session.commit()
 
+    #Note, if this is called manually(and not via cli/api) the collection root hash will not be updated
     def insert_new_document(self,document):
         """
         Insert a new document associated with an existing collection into local storage

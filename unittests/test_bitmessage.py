@@ -75,5 +75,10 @@ class TestBitmessage(unittest.TestCase):
         if not sent:
             self.fail("Failed to send message")
 
+    def test_check_inbox(self):
+        self.test_send_message()
+        inbox = self.bitmessage.check_inbox(trash=True)
+        self.assertTrue(len(inbox) >= 1)
+
 suite = unittest.TestLoader().loadTestsFromTestCase(TestBitmessage)
 unittest.TextTestRunner(verbosity=2).run(suite)
