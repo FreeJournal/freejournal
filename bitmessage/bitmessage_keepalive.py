@@ -1,4 +1,4 @@
-from backend.controller import Controller
+from controllers.controller import Controller
 from bitmessage import Bitmessage
 from config import MAIN_CHANNEL_ADDRESS
 from cache.cache import Cache

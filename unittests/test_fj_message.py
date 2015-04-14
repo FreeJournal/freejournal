@@ -1,5 +1,6 @@
 import unittest
-from backend.datastructures.fj_message import FJMessage
+
+from models.fj_message import FJMessage
 
 
 class TestFJMessage(unittest.TestCase):

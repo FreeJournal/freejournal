@@ -1,8 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from models import DecBase
 from models.document import Document
-from models.keyword import Keyword
 from jsonschema import *
 from json_schemas import *
 from models.collection_version import CollectionVersion 
@@ -11,7 +10,7 @@ import time
 import json
 
 # Define foreign keys required for joining defined tables together
-keyword_association = Table('collection_keywords', DecBase.metadata,
+collection_keywords = Table('collection_keywords', DecBase.metadata,
                             Column('keyword_id', Integer, ForeignKey('keyword.id')),
                             Column('collection_address', String, ForeignKey('collection.address'))                           
                             )
@@ -54,7 +53,7 @@ class Collection(DecBase):
     description = Column(String)
     address = Column(String, primary_key=True)
     btc = Column(String)
-    keywords = relationship(Keyword, secondary=keyword_association)
+    keywords = relationship("Keyword", secondary=collection_keywords, backref='collection')
     documents = relationship(Document, cascade="all, delete-orphan")
     latest_broadcast_date = Column(DateTime, nullable=False)
     creation_date = Column(DateTime, nullable=False)
@@ -160,3 +159,4 @@ class Collection(DecBase):
             self.oldest_btc_tx = curr_txs
         if cmp_curr_time > cmp_latest:
             self.latest_btc_tx = curr_txs
+
