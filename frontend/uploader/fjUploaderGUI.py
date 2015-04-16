@@ -5,7 +5,7 @@ import frontend.uploader.FJ_Desktop_UI.NewCollection_UI as NewCollection_UI
 import frontend.uploader.FJ_Desktop_UI.About_UI as About_UI
 import frontend.uploader.FJ_Desktop_UI.Preferences_UI as Preferences_UI
 import webbrowser
-import freejournal_cli as CLI
+from frontend.cli import commands as CLI
 from os.path import isfile
 import os.path
 

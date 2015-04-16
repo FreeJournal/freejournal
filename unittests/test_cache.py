@@ -21,9 +21,7 @@ class TestCache(unittest.TestCase):
         coll = Collection(
             title="Test",
             description="This is a collection!",
-            merkle="123456789",
             address=coll_address,
-            version=1,
             btc="123456789",
             keywords=[
                 Keyword(name="Keyword A", id=90909090),

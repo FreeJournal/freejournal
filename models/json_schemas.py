@@ -11,17 +11,11 @@ coll_schema = {
             "description": {
                 "type": "string"
             },
-            "merkle": {
-                "type": "string"
-            },
             "address": {
                 "type": "string"
             },
-            "version": {
-                "type": "integer"
-            },
             "btc": {
-                "type": "string"
+                "type": ["string", "null"]
             },
             "keywords": {
                 "type": "array",
@@ -76,10 +70,10 @@ coll_schema = {
                 "type": "string"
             },
             "latest_btc_tx": {
-                "type": "string"
+                "type": ["string", "null"]
             },
             "oldest_btc_tx": {
-                "type": "string"
+                "type": ["string", "null"]
             },
             "accesses": {
                 "type": "integer"
@@ -88,13 +82,12 @@ coll_schema = {
                 "type": "integer"
             },
             "votes_last_checked": {
-                "type": "string"
+                "type": ["string", "null"]
             }
         },
-        "required": ["type_id", "title", "description", "documents", "keywords", "version", "merkle", "address", "btc",
-                     "creation_date", "oldest_date", "latest_btc_tx", "oldest_btc_tx",
-                     "latest_broadcast_date", "accesses", "votes", "votes_last_checked"]
-
+        "required": ["type_id", "title", "description", "documents", "keywords", "address",
+                     "creation_date", "oldest_date",
+                     "latest_broadcast_date", "accesses", "votes"]
 }
 
 fj_schema = {
