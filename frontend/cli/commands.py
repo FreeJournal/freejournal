@@ -1,13 +1,18 @@
 #!/usr/bin/python
 
 import sys, datetime, uuid
-from controllers import collections
+
 # BitMessage installer imports
 import platform
 from bitmessage.install import apt_install, windows_install
 
 # FreeNet installer imports
 from freenet.install import linux_install
+
+try:
+    from controllers import collections
+except:
+    print('SQLAlchemy import error')
 
 # FreeJournal library imports
 import config
