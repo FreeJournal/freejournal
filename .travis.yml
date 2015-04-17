@@ -8,8 +8,8 @@ before_install:
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-  - pip install -r requirements.txt
-  - pip install coveralls
+  - pip install --upgrade -r requirements.txt
+  - pip install --upgrade coveralls
   - ./freejournal_cli.py install bitmessage
 
 # command to run tests, e.g. python setup.py test
