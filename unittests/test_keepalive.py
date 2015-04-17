@@ -8,6 +8,7 @@ import unittest
 class TestKeepalive(unittest.TestCase):
     def setUp(self):
         cache = Cache()
+        cache.reset_database()
 
         collection1 = Collection(
             title="First Collection",
