@@ -52,7 +52,8 @@ def get_doc_file(document_hash, document_output_filename):
     """
     free_conn = FreenetConnection()
     output = free_conn.get(document_hash)
-    open(document_output_filename, 'w').write(output)
+    with open(document_output_filename, 'w') as f:
+        f.write(output)
     print ("File with URL " + document_hash + " written to " + document_output_filename)
 
 
@@ -137,6 +138,7 @@ def put_document(file_path, collection_address, title, description):
     collections.update_hash(collection)
     print ("Inserted " + file_path + " successfully with URI " + uri)
     print ("Allow up to 10 minutes for file to propogate on the freenet network")
+
 
 def put_collection(address_password, title, description, keywords, btc):
     """ Create a collection in local cache
