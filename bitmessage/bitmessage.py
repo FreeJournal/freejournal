@@ -93,13 +93,26 @@ class Bitmessage():
     def delete_message(self, message_id):
         self.api.trashMessage(message_id)
 
-    def create_address(self, label):
-        """Creates a random address for the user
-        :param label: text to associate with the address
+    def create_address(self, password, random=False):
+        """Creates a deterministic address for the user
+        :param password: text to use to create the deterministic address
+        Will act as a label instead if random is set to True
+        :param random: flag indicating whether the address should be deterministic
+        or random (default is deterministic)
         :return: the bitmessage address
         """
-        encoded_label = base64.b64encode(label)
-        return self.api.createRandomAddress(encoded_label)
+        encoded_password = base64.b64encode(password)
+
+        if random:
+            return self.api.createRandomAddress(encoded_password)
+        else:
+            my_addresses = self.get_addresses()
+            target_address = self.api.getDeterministicAddress(encoded_password, 3, 1)
+            for address in my_addresses['addresses']:
+                if address['address'] == target_address:
+                    return target_address
+
+            return json.loads(self.api.createDeterministicAddresses(encoded_password, 1, 3, 1))['addresses'][0]
 
     def get_addresses(self):
         """Get a list of addresses for the user
