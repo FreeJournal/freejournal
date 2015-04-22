@@ -15,9 +15,13 @@ class TestDocumentDownload(unittest.TestCase):
 
     def test_get_document_invalid(self):
         controller = Controller()
-        data = controller._get_document("CHK@SjQPY2GVWNnkjTXse68DnE0u5WpH-sFHdpKHamFwAasdfasdj6UN~uJfBSQoSg8NEV6JsR-aPkCevDnSURvUnS9A")
+        d = controller._get_document(
+                "CHK@SjQPY2GVWNnkjTXse68DnE0u5WpH-" +
+                "sFHdpKHamFwAasdfasdj6UN~uJfBSQoSg" +
+                "8NEV6JsR-aPkCevDnSURvUnS9A"
+        )
 
-        self.assertTrue(data == None)
+        self.assertTrue(d is None)
 
     def test_save_document(self):
         controller = Controller()
@@ -25,16 +29,27 @@ class TestDocumentDownload(unittest.TestCase):
         file_name = "Test1.txt"
 
         controller._save_document(data, file_name)
-        self.assertTrue(os.path.exists(os.path.expanduser(DOCUMENT_DIRECTORY_PATH + "Test1.txt")))
+        self.assertTrue(
+            os.path.exists(
+                os.path.expanduser(DOCUMENT_DIRECTORY_PATH + "Test1.txt")
+            )
+        )
 
     def test_get_document(self):
         controller = Controller()
-        data = controller._get_document("CHK@SjQPY2GVWNnkjTXse68DnE0u5WpH-sFHdpKHamFwA0U,IX8j6UN~uJfBSQoSg8NEV6JsR-aPkCevDnSURvUnS9A,AAMC--8")
+        data = controller._get_document(
+            "CHK@SjQPY2GVWNnkjTXse68DnE0u5WpH-sFHdpKHa" +
+            "mFwA0U,IX8j6UN~uJfBSQoSg8NEV6JsR-aPkCevDnSURvUnS9A,AAMC--8"
+        )
 
-        self.assertTrue(data != None)
+        self.assertTrue(data is not None)
 
     def test_config_path_exists(self):
-        self.assertTrue(os.path.exists(os.path.expanduser(DOCUMENT_DIRECTORY_PATH)))
+        self.assertTrue(
+            os.path.exists(
+                os.path.expanduser(DOCUMENT_DIRECTORY_PATH)
+            )
+        )
 
     def test_config_path_ending_slash(self):
         self.assertTrue(DOCUMENT_DIRECTORY_PATH[-1] == '/')

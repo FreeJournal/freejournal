@@ -2,7 +2,8 @@ import xmlrpclib
 import subprocess
 import os
 import sys
-from config import MAIN_CHANNEL_ADDRESS, BITMESSAGE_SERVER, RUN_PYBITMESSAGE_LINUX
+from config import MAIN_CHANNEL_ADDRESS, BITMESSAGE_SERVER
+from config import RUN_PYBITMESSAGE_LINUX
 import base64
 import json
 
@@ -15,7 +16,7 @@ class Bitmessage():
         self.subscribe(MAIN_CHANNEL_ADDRESS, "FreeJournal Main Channel")
 
     def __startup(self):
-        #Try connecting via the api first to see if PyBitmessage is already running
+        # Try connecting via the api first, check if PyBitmessage is running
         try:
             self._api_connect()
             assert(5 == self.api.add(2, 3))
@@ -23,7 +24,7 @@ class Bitmessage():
             self._launch_bitmessage()
             self._api_connect()
 
-        #Wait for api to connect to the bitmessage client
+        # Wait for api to connect to the bitmessage client
         connected = False
         while not connected:
             try:
@@ -50,7 +51,10 @@ class Bitmessage():
             devnull = open(os.devnull, 'wb')
 
             # Start up PyBitmessage
-            subprocess.Popen([RUN_PYBITMESSAGE_LINUX], shell=True, stdout=devnull, stderr=devnull)
+            subprocess.Popen(
+                [RUN_PYBITMESSAGE_LINUX], shell=True,
+                stdout=devnull, stderr=devnull
+            )
 
     def subscribe(self, address, label=None):
         """Subscribes to an address and gives it an optional label
@@ -58,16 +62,16 @@ class Bitmessage():
         :param label: (optional) text to associate with address
         :return boolean noting success of adding the subscription
         """
-        #Retrieve a list of current subscriptions
+        # Retrieve a list of current subscriptions
         subs = self.api.listSubscriptions()
 
-        #Ensure user isn't already subscribed to the address
+        # Ensure user isn't already subscribed to the address
         sub_dict = json.loads(subs)
         for sub in sub_dict["subscriptions"]:
             if sub['address'] == address:
                 return False
 
-        #Create subscription
+        # Create subscription
         if label:
             encoded_label = base64.b64encode(label)
             self.api.addSubscription(address, encoded_label)
@@ -77,8 +81,10 @@ class Bitmessage():
         return True
 
     def check_inbox(self, trash=False):
-        """Returns a json object of all the messages currently in the user's inbox
-        :param trash: boolean indicating whether the messages should be deleted (default is false)
+        """Returns a json object of all the messages currently in the user's
+             inbox
+        :param trash: boolean indicating whether the messages
+            should be deleted (default is false)
         :return: json object of messages
         """
         messages = self.api.getAllInboxMessages()
@@ -97,7 +103,7 @@ class Bitmessage():
         """Creates a deterministic address for the user
         :param password: text to use to create the deterministic address
         Will act as a label instead if random is set to True
-        :param random: flag indicating whether the address should be deterministic
+        :param random: flag indicating whether the address is deterministic
         or random (default is deterministic)
         :return: the bitmessage address
         """
@@ -107,12 +113,18 @@ class Bitmessage():
             return self.api.createRandomAddress(encoded_password)
         else:
             my_addresses = self.get_addresses()
-            target_address = self.api.getDeterministicAddress(encoded_password, 3, 1)
+            target_address = self.api.getDeterministicAddress(
+                encoded_password, 3, 1
+            )
             for address in my_addresses['addresses']:
                 if address['address'] == target_address:
                     return target_address
 
-            return json.loads(self.api.createDeterministicAddresses(encoded_password, 1, 3, 1))['addresses'][0]
+            return json.loads(
+                self.api.createDeterministicAddresses(
+                    encoded_password, 1, 3, 1
+                )
+            )['addresses'][0]
 
     def get_addresses(self):
         """Get a list of addresses for the user
@@ -137,7 +149,9 @@ class Bitmessage():
 
         encoded_subject = base64.b64encode(subject)
         encoded_message = base64.b64encode(message)
-        ack_data = self.api.sendMessage(to_address, from_address, encoded_subject, encoded_message)
+        ack_data = self.api.sendMessage(
+            to_address, from_address, encoded_subject, encoded_message
+        )
 
         print('Sending Message...')
 
@@ -153,7 +167,9 @@ class Bitmessage():
         encoded_subject = base64.b64encode(subject)
         encoded_message = base64.b64encode(message)
 
-        ack_data = self.api.sendBroadcast(from_address, encoded_subject, encoded_message)
+        ack_data = self.api.sendBroadcast(
+            from_address, encoded_subject, encoded_message
+        )
 
         print('Sending Broadcast...')
 
