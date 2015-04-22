@@ -6,5 +6,3 @@ docs/build
 docs/fj.db
 docs/src
 *.db
-.vagrant
-Vagrantfile
