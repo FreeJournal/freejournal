@@ -7,7 +7,7 @@ import config
 
 # Base parser
 parser = argparse.ArgumentParser(description="FreeJournal Client")
-subparsers = parser.add_subparsers(help="FreeJournal client commands", dest="command")
+subparsers = parser.add_subparsers(help="FreeJournal client commands", dest="command", metavar="<command>")
 
 # Subcommand parsers
 # getdoc
@@ -40,6 +40,7 @@ parser_listversions.add_argument("-d", "--documents", action="store_true", dest=
 # listen
 parser_listen = subparsers.add_parser("listen", help="start the long-running FreeJournal listener")
 
+# install
 parser_install = subparsers.add_parser("install", help="install FreeJournal dependencies")
 parser_install.add_argument("deps", choices=["freenet", "bitmessage", "all"], help="dependencies to install")
 
