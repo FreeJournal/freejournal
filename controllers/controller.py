@@ -1,23 +1,15 @@
-import json
-import time
-import base64
-import datetime
-import hashlib
-import os
-from jsonschema import *
-from sqlalchemy.exc import IntegrityError
 from models.keyword import Keyword
 from models.document import Document
 from models.collection import Collection
 from bitmessage.bitmessage import Bitmessage
 from models.fj_message import FJMessage
 from cache.cache import Cache
-from models.json_schemas import *
 from config import DOCUMENT_DIRECTORY_PATH
 from freenet.FreenetConnection import FreenetConnection
 from jsonschema import *
 from models.json_schemas import *
 from sqlalchemy.exc import IntegrityError
+from random import randint
 import json
 import time
 import base64
@@ -26,7 +18,6 @@ import hashlib
 import thread
 import sys
 import os
-
 
 
 class Controller:
@@ -118,6 +109,29 @@ class Controller:
 
         return data
 
+    def _hash_document_filenames(self, documents):
+        """
+        Private helper function for hashing a collection of
+        documents file names so that file name conflicts will be
+        rare.
+
+        :param documents: a list of document objects
+        """
+
+        for document in documents:
+            #Create a new file name out of a hash to deal with possible naming conflicts
+            file_name = document.filename
+            if not document.filename:
+                file_name = document.title + str(randint(0, 100))
+
+            name, extension = os.path.splitext(file_name)
+            hash_name = hashlib.sha256(name + str(randint(0, 100))).hexdigest()
+            new_file_name = hash_name + extension
+
+            #Save the new file name to the cache so it can be viewed later
+            document.filename = new_file_name
+            self.cache.insert_new_document(document)
+
     def _download_documents(self, collection_title, documents):
         """
         A function that downloads documents from a collection.
@@ -182,6 +196,7 @@ class Controller:
             )
             try:
                 self.cache.insert_new_collection(collection_model)
+                self._hash_document_filenames(collection_model.documents)
                 thread.start_new_thread(self._download_documents, (collection_model.title, collection_model.documents))
                 print "Cached New Collection"
                 return True
@@ -204,6 +219,7 @@ class Controller:
             cached_collection.votes_last_checked = datetime.datetime.strptime(payload["votes_last_checked"], "%A, %d. %B %Y %I:%M%p")
             try:
                 self.cache.insert_new_collection(cached_collection)
+                self._hash_document_filenames(cached_collection.documents)
                 thread.start_new_thread(self._download_documents, (cached_collection.title, cached_collection.documents))
                 print "Cached Updated Collection"
                 return True

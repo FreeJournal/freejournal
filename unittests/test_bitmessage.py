@@ -17,7 +17,7 @@ class TestBitmessage(unittest.TestCase):
     def test_create_address(self):
         label = "Test"
         encoded_label = base64.b64encode(label) + '\n'
-        address = self.bitmessage.create_address(label)
+        address = self.bitmessage.create_address(label, random=True)
         addresses = self.bitmessage.get_addresses()
 
         found = False
@@ -32,7 +32,7 @@ class TestBitmessage(unittest.TestCase):
     def test_broadcast(self):
         message = "Hello World"
         subject = "Test Broadcast"
-        address = self.bitmessage.create_address("Unit Test: Broadcast")
+        address = self.bitmessage.create_address("Unit Test: Broadcast", random=True)
 
         ack_data = self.bitmessage.send_broadcast(address, subject, message)
 
