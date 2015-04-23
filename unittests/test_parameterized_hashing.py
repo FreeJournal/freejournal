@@ -39,9 +39,9 @@ def add_collection():
     return coll
 
 param_arr = []
-for i in range(0, 5):
+for i in range(0, 3):
     collection = add_collection()
-    param_arr.append([ "update_hash", collection, str(collection.get_latest_collection_version().root_hash)])
+    param_arr.append([ "update_hash_%d" % (i), collection, str(collection.get_latest_collection_version().root_hash)])
 
 class TestSequense(unittest.TestCase):
     pass
@@ -55,6 +55,7 @@ def test_generator(test_coll, prev_value):
                     collection_address=test_coll.address,
                     title=str(uuid.uuid4()),
         )
+        our_cache.insert_new_collection(test_coll)
         our_cache.insert_new_document_in_collection(d, test_coll)
         collections.update_hash(test_coll)
         curr_value = test_coll.get_latest_collection_version().root_hash
