@@ -80,10 +80,10 @@ by any particular third party, and is open to all users in a document-agnostic f
 Terminology
 ~~~~~~~~~~~
 
-- **Documents** : Documents are files that are leaked to the FreeJournal network.  Documents have an associated name, description,
+**Documents** : Documents are files that are leaked to the FreeJournal network.  Documents have an associated name, description,
 timestamp, and file that can be viewed.
 
-- **Collections** : Collections are groups of documents, published together by the same user.  Collections can be updated (documents
+**Collections** : Collections are groups of documents, published together by the same user.  Collections can be updated (documents
 added, removed), timestamped, and browsed together.  Nodes can blacklist or whitelist which connections they wish to mirror.
 
 

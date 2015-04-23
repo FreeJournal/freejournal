@@ -8,25 +8,25 @@ The goal of this project is to facilitate the publication of documents without p
 
 If successful, this project will fulfill the following goals:
 
-- **Deniability**: An omnipotent network observer gains no knowledge on a source publishing documents other than that they are 
+**Deniability**: An omnipotent network observer gains no knowledge on a source publishing documents other than that they are 
 using anonymity software (BitMessage, Tor, etc).  No conclusive evidence of the document publication is possible through 
 exclusively network analysis.
 
-- **Transparency**: Any interested users can view all details about the operation of the network, participate in the network, 
+**Transparency**: Any interested users can view all details about the operation of the network, participate in the network, 
 and check the validity of network data themselves.  Developers can develop tools around these purposes.
 
-- **Inclusiveness**: Participation in the protocol will be open to all, with no financial or significant computational upstart 
+**Inclusiveness**: Participation in the protocol will be open to all, with no financial or significant computational upstart 
 requirements.
 
-- **Integrity and Availability**: Documents sent to the network will be maintained for a reasonable time period given enough 
+**Integrity and Availability**: Documents sent to the network will be maintained for a reasonable time period given enough 
 node/user interest, allowing other users to save them for public record and archival purposes.  Documents will be accessible for 
 the entire network long as they are hosted by a single node.
 
-- **Fine-grained Control**: Nodes have the right to decide how to allocate their computational resources.  By allowing for 
+**Fine-grained Control**: Nodes have the right to decide how to allocate their computational resources.  By allowing for 
 optional whitelisting and blacklisting policies, we allow nodes to remove resources they do not wish to support from their 
 drives.  This allows the content of the overall network to be democratic and to depend on a set of nodes.
 
-- **Built-in Trust**: Users can rank and vote on the popularity of documents in a trusted way using the Bitcoin blockchain or 
+**Built-in Trust**: Users can rank and vote on the popularity of documents in a trusted way using the Bitcoin blockchain or 
 other machine-verifiable tokens.  Users can sort by a variety of ranking systems to expose controversial documents and hedge 
 against manipulation of this system.
 

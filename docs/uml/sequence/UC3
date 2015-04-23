@@ -1,0 +1,13 @@
+title Document Removal from Collection
+
+note left of Frontend (commands.py): The adding of a document\nis handled by the\ndocument upload use case.
+
+Frontend (commands.py)->Cache: get_document(document hash, collection ID)
+
+Cache->Frontend (commands.py): models.Document object
+
+Frontend (commands.py)->Cache: delete_document(models.Document object)
+
+Frontend (commands.py)->Collections Controller:update_collection_hash(models.Collection object)
+note right of Collections Controller: Updating the hash \nalso increments the\ncollection's version in the cache
+

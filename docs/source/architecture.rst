@@ -45,10 +45,14 @@ The following are the freejournal database objects:
 .. uml:: ../../models/document.py
 .. uml:: ../../models/collection.py
 .. uml:: ../../models/keyword.py
+.. uml:: ../../models/fj_message.py
 
 Each Column is a database column in our local cache.  Each file represents a type
 of database table and therefore entry.  These models also form the base classes 
 for the backend of the freejournal API.
+
+The fj_message model does not represent a database object, instead serving as the interface
+between JSON messages described on the Protocol page and the database representation of the objects in the cache.
 
 Cache
 ------
@@ -65,7 +69,6 @@ Controllers
 
 .. uml:: ../../controllers/collections.py
 .. uml:: ../../controllers/controller.py
-.. uml:: ../../backend/datastructures/fj_message.py
 
 The controller files provide for an API for packages using the core freejournal 
 library to manipulate the models.
@@ -108,6 +111,27 @@ timestamps for given collection hashes.  The timestamp library currently uses th
 Sequence Diagrams
 -----------------
 
-(coming next iteration)
+The following are the sequence diagrams for the primary use cases implemented in the FreeJournal system,
+corresponding to use cases 1-5 on the architecture page (and subsuming several of the remaining use cases).
+
+Use Case 1
+----------
+
+.. image:: ../uml/sequence/UC1.png
+
+Use Case 2
+----------
+
+.. image:: ../uml/sequence/UC2.png
+
+Use Case 3
+----------
+
+.. image:: ../uml/sequence/UC3.png
+
+Use Case 4
+----------
+
+.. image:: ../uml/sequence/UC4.png
 
 
