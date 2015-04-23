@@ -26,7 +26,10 @@ def repeat_periodic(interval):
             @run_as_thread
             def loop():
                 while not stop_event.wait(interval):
-                    func(*args, **kwargs)
+                    try:
+                        func(*args, **kwargs)
+                    except Exception as e:
+                        print "Repeated job error'd with message:", e.message
             loop()
             return stop_event
         return wrapper
