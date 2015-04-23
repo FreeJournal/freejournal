@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+import os
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -28,8 +29,8 @@ class Ui_FJ_Uploader_Main_Window(object):
         FJ_Uploader_Main_Window.setObjectName(_fromUtf8("FJ_Uploader_Main_Window"))
         FJ_Uploader_Main_Window.resize(673, 567)
         FJ_Uploader_Main_Window.setMinimumSize(QtCore.QSize(400, 300))
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = QtGui.QIcon(os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_icon.jpg')
+        #icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         FJ_Uploader_Main_Window.setWindowIcon(icon)
         FJ_Uploader_Main_Window.setAutoFillBackground(False)
         FJ_Uploader_Main_Window.setDocumentMode(False)

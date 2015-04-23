@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+import os
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -33,8 +34,8 @@ class Ui_DialogNewCollection(object):
         sizePolicy.setHeightForWidth(DialogNewCollection.sizePolicy().hasHeightForWidth())
         DialogNewCollection.setSizePolicy(sizePolicy)
         DialogNewCollection.setMinimumSize(QtCore.QSize(450, 500))
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = QtGui.QIcon(os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_icon.jpg')
+        #icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         DialogNewCollection.setWindowIcon(icon)
         self.verticalLayout_4 = QtGui.QVBoxLayout(DialogNewCollection)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
