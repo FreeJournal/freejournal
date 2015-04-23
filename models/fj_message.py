@@ -53,12 +53,16 @@ class FJMessage():
 
         return hashlib.sha256(public_signing_key + self.payload).hexdigest()
 
-    def to_json(self):
+    def to_json(self, previous_signature=None):
         """
         Creates a json encoding to be sendable in a Bit Message,
         :return: the json encoding of the message
         """
-        signature = self._generate_signature()
+
+        if previous_signature is None:
+            signature = self._generate_signature()
+        else:
+            signature = previous_signature
         if signature is None:
             print "Could not find address in keys.dat"
             return None
