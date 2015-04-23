@@ -197,8 +197,8 @@ class Controller:
             try:
                 self.cache.insert_new_collection(collection_model)
                 self.cache.insert_new_collection(signature)
-                #self._hash_document_filenames(collection_model.documents)
-                #thread.start_new_thread(self._download_documents, (collection_model.title, collection_model.documents))
+                self._hash_document_filenames(collection_model.documents)
+                thread.start_new_thread(self._download_documents, (collection_model.title, collection_model.documents))
                 print "Cached New Collection"
                 return True
             except IntegrityError as m:
@@ -225,8 +225,8 @@ class Controller:
             try:
                 self.cache.insert_new_collection(cached_collection)
                 self.cache.insert_new_collection(cached_sig)
-                #self._hash_document_filenames(cached_collection.documents)
-                #thread.start_new_thread(self._download_documents, (cached_collection.title, cached_collection.documents))
+                self._hash_document_filenames(cached_collection.documents)
+                thread.start_new_thread(self._download_documents, (cached_collection.title, cached_collection.documents))
                 print "Cached Updated Collection"
                 return True
             except IntegrityError as m:

@@ -109,7 +109,7 @@ class Cache():
         Insert a new document associated with an existing collection into local storage
         :param document: Document object to insert into local storage
         """
-        collection = self.session.query(Collection).filter(Collection.address == document.collection_address).first()
+        collection = self.session.query(Collection).filter_by(address = document.collection_address).first()
         self.session.add(document)
         collection.documents.append(document)
         self.session.commit()
