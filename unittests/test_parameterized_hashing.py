@@ -34,6 +34,7 @@ def add_collection():
             latest_broadcast_date=datetime.datetime.now()
     )
     our_cache.session.add(coll)
+    our_cache.session.commit()
     collections.update_hash(coll)
     return coll
 
