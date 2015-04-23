@@ -44,22 +44,28 @@ class FJMessage():
         for line in selected_key:
             if 'privsigningkey' in line:
                 privkey_line = line.split('=')
-        if privkey_line is None:
+        if not privkey_line:
             return None
+
         privkey = privkey_line[1].strip()
         public_signing_key = privtopub(privkey)
         self.pubkey = public_signing_key
 
         return hashlib.sha256(public_signing_key + self.payload).hexdigest()
 
-    def to_json(self):
+    def to_json(self, previous_signature=None):
         """
         Creates a json encoding to be sendable in a Bit Message,
         :return: the json encoding of the message
         """
-        signature = self._generate_signature()
+
+        if previous_signature is None:
+            signature = self._generate_signature()
+        else:
+            signature = previous_signature
         if signature is None:
-            return False
+            print "Could not find address in keys.dat"
+            return None
         json_representation = {"protocol": self.protocol, "type_id": self.type_id, "original_sender": self.original_sender,
                                "signature": signature, "time_created": self.time_created.strftime("%A, %d. %B %Y %I:%M%p"),
                                "payload": self.payload, "pubkey": self.pubkey}

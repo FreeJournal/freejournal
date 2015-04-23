@@ -12,7 +12,7 @@ class TestController(unittest.TestCase):
 
     def setUp(self):
         self.controller = Controller()
-        self.address = self.controller.connection.create_address('Controller Test address')
+        self.address = self.controller.connection.create_address('Controller Test address', True)
 
         coll_address = str(uuid.uuid1())
         doc_hash_1 = str(uuid.uuid1())

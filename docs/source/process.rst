@@ -76,7 +76,9 @@ Once we decide what issues are in a particular sprint, no more issues should be 
 
 Stand-ups
 ---------
+
 On weeks when we're meeting and not having sprint planning meetings, we will have a "stand-up" where we discuss the current sprint. Each team member discusses the following:
+
  * What they're currently working on
  * Risks: issues or pieces of work that might not be finished by the end of the sprint
  * Blockers: work that other team members need to complete first before the team member can finish their own work

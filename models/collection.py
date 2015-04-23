@@ -2,6 +2,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Tabl
 from sqlalchemy.orm import relationship, backref
 from models import DecBase
 from models.document import Document
+from models.keyword import Keyword
 from jsonschema import *
 from json_schemas import *
 from models.collection_version import CollectionVersion 
@@ -13,6 +14,10 @@ import json
 collection_keywords = Table('collection_keywords', DecBase.metadata,
                             Column('keyword_id', Integer, ForeignKey('keyword.id')),
                             Column('collection_address', String, ForeignKey('collection.address'))                           
+                            )
+collection_docs = Table('collection_docs', DecBase.metadata,
+                            Column('document_address', String, ForeignKey('document.hash')),
+                            Column('collection_address_docs', String, ForeignKey('collection.address'))
                             )
 
 hash_association = Table('collection_hashes', DecBase.metadata,
@@ -54,7 +59,7 @@ class Collection(DecBase):
     address = Column(String, primary_key=True)
     btc = Column(String)
     keywords = relationship("Keyword", secondary=collection_keywords, backref='collection')
-    documents = relationship(Document, cascade="all, delete-orphan")
+    documents = relationship("Document", secondary=collection_docs, backref='collection')
     latest_broadcast_date = Column(DateTime, nullable=False)
     creation_date = Column(DateTime, nullable=False)
     oldest_date = Column(DateTime, nullable=False)
@@ -64,6 +69,7 @@ class Collection(DecBase):
     votes = Column(Integer, nullable=False, default=0)
     votes_last_checked = Column(DateTime)
     version_list = relationship(CollectionVersion,  backref="collection", lazy='dynamic', secondary=hash_association)
+
     def to_json(self):
         """
         Encodes a Collection as a json representation so it can be sent through the bitmessage network
@@ -98,17 +104,6 @@ class Collection(DecBase):
         except ValidationError as m:
             return None
 
-    def _keyword_in(self, key_id):
-        """
-        Finds if the given Keyword id is in the Collection's Keywords
-        :param key_id: the Keyword id to search for
-        :return: True if this id is in the Collection's Keywords, False otherwise
-        """
-        for key in self.keywords:
-            if key.id == key_id:
-                return True
-        return False
-
     def get_latest_version(self):
         latest_version = self.version_list.order_by(CollectionVersion.collection_version.desc()).first() 
         if latest_version is None:
@@ -119,19 +114,6 @@ class Collection(DecBase):
     def get_latest_collection_version(self):
         latest_version = self.version_list.order_by(CollectionVersion.collection_version.desc()).first() 
         return latest_version
-
-    def update_keywords(self, new_keywords):
-        """
-        Updates the Collection's Keywords with any new Keywords in the given list.
-        :param new_keywords: a list of Keywords
-        """
-        i = 0
-        new_key_list = []
-        while i < len(new_keywords):
-            if not self._keyword_in(new_keywords[i].id):
-                new_key_list.append(new_keywords[i])
-            i += 1
-        self.keywords.extend(new_key_list)
 
     def update_timestamp (self):
         collection_version = get_latest_version()

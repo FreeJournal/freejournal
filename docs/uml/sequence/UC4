@@ -1,0 +1,36 @@
+title Network Node Operation
+
+
+note left of Frontend (commands.py): Nodes both cache collections\n (download from the network) and\n reupload collections to the \nnetwork (maintenance/keepalive)
+
+Frontend (commands.py)->bitmessage_listener: get_collections()
+
+loop update collections in cache: while True
+    bitmessage_listener->collection_handler:import_new_collection(config.MAIN_CHANNEL)
+collection_handler->BitMessage API:check_messages()
+BitMessage API->collection_handler:unread messages
+bitmessage_listener->bitmessage_listener API:parse_json_as_object(unread_message)
+bitmessage_listener->bitmessage_listener:check_signature(object)
+bitmessage_listener->bitmessage_listener:validate(object)
+bitmessage_listener->bitmessage_listener:create_cache_object(object)
+bitmessage_listener->cache:insert_or_update(cache_obj)
+end
+
+
+Frontend (commands.py)->bitmessage_keepalive: find_old_collections()
+
+loop update collections on network: while True
+loop for each collection
+alt collection has not been broadcast on network in >7 days
+
+bitmessage_keepalive->bitmessage_keepalive: rebroadcast_collection(collection)
+
+bitmessage_keepalive->collection_handler: publish_collection(collection, main_channel, source address)
+
+collection_handler->collection_handler:create_json_message(collection)
+
+collection_handler->BitMessage API:send_message(collection_as_json, main_channel, source address)
+
+end
+end    
+end

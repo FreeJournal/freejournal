@@ -6,6 +6,7 @@ from models.collection import Collection
 from models.document import Document
 from models.collection_version import CollectionVersion
 from models.keyword import Keyword
+from models.signature import Signature
 
 engine = connect_db()
 setup_db(engine)
@@ -60,6 +61,19 @@ class Cache():
             pass
         return row
 
+    def get_signature_by_address(self, address):
+        """
+        Retrieve a specific signature by it's collection address
+        :param address: The address of the associated collection
+        :return: The signature object if in the cache, None otherwise
+        """
+        row = None
+        try:
+            row = self.session.query(Signature).filter(Signature.address == address).one()
+        except NoResultFound:
+            pass
+        return row
+
     def get_document_by_hash(self, hash):
         """
         Retrieve a specific Document by it's hash
@@ -89,13 +103,18 @@ class Cache():
         self.session.add(collection)
         self.session.commit()
 
-    #Note, if this is called manually(and not via cli/api) the collection root hash will not be updated
     def insert_new_document(self,document):
+        collection = self.session.query(Collection).filter_by(address = document.collection_address).first()
+        self.insert_new_document_in_collection(document, collection)
+
+    #Note, if this is called manually(and not via cli/api) the collection root hash will not be updated
+    def insert_new_document_in_collection(self,document,collection):
         """
         Insert a new document associated with an existing collection into local storage
         :param document: Document object to insert into local storage
         """
         self.session.add(document)
+        collection.documents.append(document)
         self.session.commit()
 
     def reset_database(self):
@@ -106,6 +125,14 @@ class Cache():
         meta.reflect()
         meta.drop_all()
         meta.create_all()
-
+        
+    def remove_collection(self, collection):
+        """
+        Remove a collection from local storage
+        :param collection: Collection object to remove from local storage
+        """
+        self.session.delete(collection)
+        self.session.commit()
+        
     def close(self):
         self.session.close()

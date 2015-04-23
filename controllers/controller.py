@@ -1,23 +1,17 @@
-import json
-import time
-import base64
-import datetime
-import hashlib
-import os
-from jsonschema import *
-from sqlalchemy.exc import IntegrityError
 from models.keyword import Keyword
 from models.document import Document
 from models.collection import Collection
 from bitmessage.bitmessage import Bitmessage
 from models.fj_message import FJMessage
+from models.signature import Signature
 from cache.cache import Cache
-from models.json_schemas import *
-from config import DOCUMENT_DIRECTORY_PATH
+from config import DOCUMENT_DIRECTORY_PATH, MAIN_CHANNEL_ADDRESS
 from freenet.FreenetConnection import FreenetConnection
 from jsonschema import *
 from models.json_schemas import *
 from sqlalchemy.exc import IntegrityError
+from random import randint
+import copy
 import json
 import time
 import base64
@@ -26,7 +20,6 @@ import hashlib
 import thread
 import sys
 import os
-
 
 
 class Controller:
@@ -49,32 +42,6 @@ class Controller:
         else:
             print "Signature Not Verified"
             return False
-
-
-    def _build_docs_keywords(self, payload):
-        """
-        Builds a list of Keyword objects and a list of Document objects from the received json.
-
-        :param payload: The payload of the FJ Message including the documents and keywords
-        :return: Two lists representing the documents and keywords of the FJ Message
-        """
-        keywords = []
-        docs = []
-        for key in payload["keywords"]:
-            db_key = self.cache.get_keyword_by_id(key["id"])
-            if db_key is not None:
-                keywords.append(db_key)
-            else:
-                keywords.append(Keyword(name=key["name"], id=key["id"]))
-
-        for doc in payload["documents"]:
-            db_doc = self.cache.get_document_by_hash(doc["hash"])
-            if db_doc is not None:
-                docs.append(db_doc)
-            else:
-                docs.append(Document(collection_address=doc["address"], description=doc["description"],
-                                     hash=doc["hash"], title=doc["title"]))
-        return docs, keywords
 
     def _save_document(self, data, file_name):
         """
@@ -118,6 +85,29 @@ class Controller:
 
         return data
 
+    def _hash_document_filenames(self, documents, collection):
+        """
+        Private helper function for hashing a collection of
+        documents file names so that file name conflicts will be
+        rare.
+
+        :param documents: a list of document objects
+        """
+
+        for document in documents:
+            #Create a new file name out of a hash to deal with possible naming conflicts
+            file_name = document.filename
+            if not document.filename:
+                file_name = document.title + str(randint(0, 100))
+
+            name, extension = os.path.splitext(file_name)
+            hash_name = hashlib.sha256(name + str(randint(0, 100))).hexdigest()
+            new_file_name = hash_name + extension
+
+            #Save the new file name to the cache so it can be viewed later
+            document.filename = new_file_name
+            self.cache.insert_new_document_in_collection(document, collection)
+
     def _download_documents(self, collection_title, documents):
         """
         A function that downloads documents from a collection.
@@ -155,7 +145,30 @@ class Controller:
 
         sys.exit()  # Exit current thread
 
-    def _cache_collection(self, message, payload):
+    def _build_docs_keywords(self, payload, collection):
+        """
+        Builds a list of Keyword objects and a list of Document objects from the received json.
+
+        :param payload: The payload of the FJ Message including the documents and keywords
+        :return: Two lists representing the documents and keywords of the FJ Message
+        """
+        for key in payload["keywords"]:
+            db_key = self.cache.get_keyword_by_id(key["id"])
+            if db_key is not None:
+                collection.keywords.append(db_key)
+            else:
+                collection.keywords.append(Keyword(name=key["name"], id=key["id"]))
+
+        for doc in payload["documents"]:
+            db_doc = self.cache.get_document_by_hash(doc["hash"])
+            if db_doc is not None:
+                collection.documents.append(db_doc)
+            else:
+                collection.documents.append(Document(collection_address=doc["address"], description=doc["description"],
+                                     hash=doc["hash"], title=doc["title"], filename=doc["filename"], accesses=doc["accesses"]))
+
+
+    def _cache_collection(self, payload, message):
         """
         Checks to see if this collection is already in the cache. If it is we update the collection with the new data.
         Otherwise a new collection is made and cached.
@@ -163,7 +176,7 @@ class Controller:
         :param payload: the contents of the FJ_message
         """
         # Grabbing the text representations of the documents and keywords and rebuilding them
-        docs, keywords = self._build_docs_keywords(payload)
+        #docs, keywords = self._build_docs_keywords(payload)
         cached_collection = self.cache.get_collection_with_address(payload["address"])
 
         if cached_collection is None:
@@ -172,16 +185,19 @@ class Controller:
                 description=payload["description"],
                 address=payload["address"],
                 btc=payload["btc"],
-                keywords=keywords,
-                documents=docs,
                 creation_date=datetime.datetime.strptime(payload["creation_date"], "%A, %d. %B %Y %I:%M%p"),
                 oldest_date=datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p"),
                 latest_broadcast_date=datetime.datetime.strptime(payload["latest_broadcast_date"], "%A, %d. %B %Y %I:%M%p"),
                 votes=payload['votes'],
                 votes_last_checked=datetime.datetime.strptime(payload["votes_last_checked"], "%A, %d. %B %Y %I:%M%p"),
             )
+
+            self._build_docs_keywords(payload, collection_model)
+            signature = Signature(pubkey=message["pubkey"], signature=message["signature"], address=payload["address"])
             try:
                 self.cache.insert_new_collection(collection_model)
+                self.cache.insert_new_collection(signature)
+                self._hash_document_filenames(collection_model.documents, collection_model)
                 thread.start_new_thread(self._download_documents, (collection_model.title, collection_model.documents))
                 print "Cached New Collection"
                 return True
@@ -189,12 +205,15 @@ class Controller:
                 print m.message
                 return False
         else:
-            cached_collection.keywords = keywords
+            cached_collection.keywords = []
+            cached_sig = self.cache.get_signature_by_address(payload["address"])
+            cached_sig.pubkey = message["pubkey"]
+            cached_sig.signature = message["signature"]
             cached_collection.title = payload["title"]
             cached_collection.description = payload["description"]
             cached_collection.address = payload["address"]
             cached_collection.btc = payload["btc"]
-            cached_collection.documents = docs
+            cached_collection.documents = []
             cached_collection.creation_date = datetime.datetime.strptime(payload["creation_date"],
                                                                          "%A, %d. %B %Y %I:%M%p")
             cached_collection.oldest_date = datetime.datetime.strptime(payload["oldest_date"], "%A, %d. %B %Y %I:%M%p")
@@ -202,8 +221,11 @@ class Controller:
                                                                                  "%A, %d. %B %Y %I:%M%p")
             cached_collection.votes = payload['votes']
             cached_collection.votes_last_checked = datetime.datetime.strptime(payload["votes_last_checked"], "%A, %d. %B %Y %I:%M%p")
+            self._build_docs_keywords(payload, cached_collection)
             try:
                 self.cache.insert_new_collection(cached_collection)
+                self.cache.insert_new_collection(cached_sig)
+                self._hash_document_filenames(cached_collection.documents, cached_collection)
                 thread.start_new_thread(self._download_documents, (cached_collection.title, cached_collection.documents))
                 print "Cached Updated Collection"
                 return True
@@ -263,7 +285,7 @@ class Controller:
                         continue
 
                     if self._check_signature(json_decode):
-                        if self._cache_collection(message, payload):
+                        if self._cache_collection(payload, json_decode):
                             self.connection.delete_message(message['msgid'])
                             return True
 
@@ -280,7 +302,7 @@ class Controller:
         """
 
         if from_address is None:
-            from_address = self.connection.create_address("new address")
+            from_address = self.connection.create_address("new address", True)
             print "created address: ", from_address
         if not self._find_address_in_keysdat(from_address):
             print "This address is not in keys.dat, can not send message"
@@ -295,5 +317,30 @@ class Controller:
             return False
         self.connection.send_message(to_address, from_address, "subject", sendable_fj_message)
         return True
+
+    def rebroadcast(self, collection, to_address=MAIN_CHANNEL_ADDRESS, from_address=MAIN_CHANNEL_ADDRESS):
+        """
+        Rebroadcasts a collection that is stored locally to the bitmessage network
+        :param collection: The collection to rebroadcast
+        :param to_address: the address to send the collection to, only used for testing
+        :param from_address: the address to send the collection from, only used for testing
+        :return: True if the collection is sent successfully, false otherwise
+        """
+        collection_payload = collection.to_json()
+        if collection_payload is None:
+            return False
+        cached_signature = self.cache.get_signature_by_address(collection.address)
+        h = hashlib.sha256(cached_signature.pubkey + collection_payload).hexdigest()
+
+        if h == cached_signature.signature:
+            new_fj_message = FJMessage(3, collection.address, collection_payload)
+            sendable_fj_message = new_fj_message.to_json(cached_signature.signature)
+            if sendable_fj_message is None:
+                return False
+            self.connection.send_message(to_address, from_address, "subject", sendable_fj_message)
+            return True
+        else:
+            print "Signature Not Verified"
+            return False
 
 

@@ -1,13 +1,18 @@
 #!/usr/bin/python
 
 import sys, datetime, uuid
-from controllers import collections
+
 # BitMessage installer imports
 import platform
 from bitmessage.install import apt_install, windows_install
 
 # FreeNet installer imports
 from freenet.install import linux_install
+
+try:
+    from controllers import collections
+except:
+    print('SQLAlchemy import error')
 
 # FreeJournal library imports
 import config
@@ -27,7 +32,7 @@ except:
 
 try:
     from bitmessage.bitmessage import Bitmessage
-    from backend.controller import Controller
+    from controllers.controller import Controller
 except:
     print ("Error: could not import BitMessage dependencies.")
 
@@ -267,7 +272,7 @@ def process_command(command):
         if (validate_cli_arguments(3)):
             print_command_help(sys.argv[2])
     elif command == 'getdoc':
-        if (validate_cli_arguments(3)):
+        if (validate_cli_arguments(4)):
             get_doc_file(sys.argv[2], sys.argv[3])
     elif command == 'putdoc':
         if (validate_cli_arguments(6)):
