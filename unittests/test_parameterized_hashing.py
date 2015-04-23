@@ -49,15 +49,16 @@ class TestSequense(unittest.TestCase):
 def test_generator(test_coll, prev_value):
     def test(self):
         global our_cache
-        d = Document(
+        try:
+            d = Document(
                     description=str(uuid.uuid4()),
                     hash=str(uuid.uuid4()),
                     collection_address=test_coll.address,
                     title=str(uuid.uuid4()),
-        )
-        try:
+            )
             our_cache.insert_new_collection(test_coll)
         except ObjectDeletedError:
+            # Test already ran
             return True
         our_cache.insert_new_document_in_collection(d, test_coll)
         collections.update_hash(test_coll)
