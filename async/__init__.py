@@ -1,4 +1,4 @@
-from threading import Thread, Timer
+from threading import Thread, Event
 from functools import wraps
 from time import sleep
 
@@ -18,13 +18,26 @@ def run_as_thread(func):
 
     return thread_func
 
-@run_as_thread
-def run_periodic(func, period, args=[], kwargs={}):
-    """
-    Calls a function once per period
-    :param func: the function to call
-    :param period: the time in seconds between calls
-    """
+
+def repeat_periodic(interval):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            stop_event = Event()
+            @run_as_thread
+            def loop():
+                while not stop_event.wait(interval):
+                    func(*args, **kwargs)
+            loop()
+            return stop_event
+        return wrapper
+    return decorator
+
+
+def wait_for_interrupt(func, stop_event):
     while True:
-        func(*args, **kwargs)
-        sleep(period)
+        try:
+            sleep(10)
+        except (KeyboardInterrupt, SystemExit):
+            stop_event.set()
+            func()
+            exit(0)
