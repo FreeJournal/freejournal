@@ -5,8 +5,15 @@ import sys, datetime, uuid, argparse, platform
 from helpers import get_doc_file, put_document, list_collections, list_collection_version, list_collection_details, show_collection, install_dependencies, put_collection, publish_collection
 import config
 
+
+class HelpfulParser(argparse.ArgumentParser):
+    def error(self, message):
+        sys.stderr.write('error: %s\n' % message)
+        self.print_help()
+        exit(2)
+
 # Base parser
-parser = argparse.ArgumentParser(description="FreeJournal Client")
+parser = HelpfulParser(description="FreeJournal Client")
 subparsers = parser.add_subparsers(help="FreeJournal client commands", dest="command", metavar="<command>")
 
 # Subcommand parsers
