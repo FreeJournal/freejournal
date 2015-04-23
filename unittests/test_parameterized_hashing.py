@@ -51,18 +51,19 @@ class TestSequense(unittest.TestCase):
 def test_generator(test_coll, prev_value):
     def test(self):
         global our_cache
-        try:
-            d = Document(
+        with our_cache.session.no_autoflush:
+            try:
+                d = Document(
                     description=str(uuid.uuid4()),
                     hash=str(uuid.uuid4()),
                     collection_address=test_coll.address,
                     title=str(uuid.uuid4()),
-            )
-            our_cache.insert_new_collection(test_coll)
-            our_cache.insert_new_document_in_collection(d, test_coll)
-        except:
-            # Test already ran
-            return True
+                )
+                our_cache.insert_new_collection(test_coll)
+                our_cache.insert_new_document_in_collection(d, test_coll)
+            except:
+                # Test already ran
+                return True
         collections.update_hash(test_coll)
         curr_value = test_coll.get_latest_collection_version().root_hash
         self.assertNotEqual(str(curr_value),prev_value)
