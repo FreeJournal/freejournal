@@ -103,13 +103,16 @@ class Cache():
         self.session.add(collection)
         self.session.commit()
 
-    #Note, if this is called manually(and not via cli/api) the collection root hash will not be updated
     def insert_new_document(self,document):
+        collection = self.session.query(Collection).filter_by(address = document.collection_address).first()
+        self.insert_new_document_in_collection(document, collection)
+
+    #Note, if this is called manually(and not via cli/api) the collection root hash will not be updated
+    def insert_new_document_in_collection(self,document,collection):
         """
         Insert a new document associated with an existing collection into local storage
         :param document: Document object to insert into local storage
         """
-        collection = self.session.query(Collection).filter_by(address = document.collection_address).first()
         self.session.add(document)
         collection.documents.append(document)
         self.session.commit()

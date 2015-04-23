@@ -55,7 +55,7 @@ def test_generator(test_coll, prev_value):
                     collection_address=test_coll.address,
                     title=str(uuid.uuid4()),
         )
-        our_cache.insert_new_document(d)
+        our_cache.insert_new_document_in_collection(d, test_coll)
         collections.update_hash(test_coll)
         curr_value = test_coll.get_latest_collection_version().root_hash
         self.assertNotEqual(str(curr_value),prev_value)
