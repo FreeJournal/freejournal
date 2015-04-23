@@ -7,6 +7,7 @@ from controllers.collections import update_hash
 from controllers import collections
 import uuid
 from sqlalchemy.orm.exc import ObjectDeletedError
+from sqlalchemy.exc import StatementError
 
 our_cache = Cache()
 
@@ -58,7 +59,7 @@ def test_generator(test_coll, prev_value):
                     title=str(uuid.uuid4()),
             )
             our_cache.insert_new_collection(test_coll)
-        except ObjectDeletedError:
+        except ObjectDeletedError, StatementError:
             # Test already ran
             return True
         our_cache.insert_new_document_in_collection(d, test_coll)
