@@ -6,6 +6,7 @@ from models.collection import Collection
 from models.document import Document
 from models.collection_version import CollectionVersion
 from models.keyword import Keyword
+from models.signature import Signature
 
 engine = connect_db()
 setup_db(engine)
@@ -56,6 +57,19 @@ class Cache():
         row = None
         try:
             row = self.session.query(Keyword).filter(Keyword.id == cur_id).one()
+        except NoResultFound:
+            pass
+        return row
+
+    def get_signature_by_address(self, address):
+        """
+        Retrieve a specific signature by it's collection address
+        :param address: The address of the associated collection
+        :return: The signature object if in the cache, None otherwise
+        """
+        row = None
+        try:
+            row = self.session.query(Signature).filter(Signature.address == address).one()
         except NoResultFound:
             pass
         return row

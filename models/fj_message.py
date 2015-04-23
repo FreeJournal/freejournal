@@ -52,12 +52,16 @@ class FJMessage():
 
         return hashlib.sha256(public_signing_key + self.payload).hexdigest()
 
-    def to_json(self):
+    def to_json(self, previous_signature=None):
         """
         Creates a json encoding to be sendable in a Bit Message,
         :return: the json encoding of the message
         """
-        signature = self._generate_signature()
+
+        if previous_signature is None:
+            signature = self._generate_signature()
+        else:
+            signature = previous_signature
         if signature is None:
             return False
         json_representation = {"protocol": self.protocol, "type_id": self.type_id, "original_sender": self.original_sender,
