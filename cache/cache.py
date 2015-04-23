@@ -125,6 +125,14 @@ class Cache():
         meta.reflect()
         meta.drop_all()
         meta.create_all()
-
+        
+    def remove_collection(self, collection):
+        """
+        Remove a collection from local storage
+        :param collection: Collection object to remove from local storage
+        """
+        self.session.delete(collection)
+        self.session.commit()
+        
     def close(self):
         self.session.close()
