@@ -6,6 +6,7 @@ from models.keyword import Keyword
 from controllers.collections import update_hash
 from controllers import collections
 import uuid
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 our_cache = Cache()
 
