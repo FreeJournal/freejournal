@@ -65,6 +65,7 @@ def update_hash(collection):
     if collection is None:
       return None
     #check whether the version hashed already collection.version
+    cache = Cache()
     for document in collection.documents:
         string+=document.hash+"|"
         if len(string) ==0:
@@ -72,9 +73,13 @@ def update_hash(collection):
     string = string[:-1]
     h = hashlib.sha256()
     h.update(string)
-    collection_hash = CollectionVersion(root_hash=h.hexdigest(), document_ids = string, collection_version = collection.get_latest_version()+1,
-                        collection_address = collection.address)
+    root_hash = h.hexdigest()
     session = DBSession.object_session(collection)
+    collection_hash = session.query(CollectionVersion).filter_by(root_hash=root_hash).first()
+    if collection_hash is not None:
+        return
+    collection_hash = CollectionVersion(root_hash=root_hash, document_ids = string, collection_version = collection.get_latest_version()+1,
+                        collection_address = collection.address)
     session.add(collection_hash)
     collection.version_list.append(collection_hash)
     session.commit()
