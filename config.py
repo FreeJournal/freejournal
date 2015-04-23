@@ -36,3 +36,4 @@ DOCUMENT_DIRECTORY_PATH = "~/Documents/"
 # Set to true at your own risk
 WEBAPP_DEBUG = True
 WEBAPP_PORT  = 5000
+LISTEN_PERIOD = 30
