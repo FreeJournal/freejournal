@@ -1,0 +1,8 @@
+.idea
+*.iml
+*.pyc
+node_modules
+docs/build
+docs/fj.db
+docs/src
+*.db
