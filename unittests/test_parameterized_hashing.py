@@ -33,9 +33,9 @@ def add_collection():
             oldest_date=datetime.datetime.now(),
             latest_broadcast_date=datetime.datetime.now()
     )
-    our_cache.session.add(coll)
-    our_cache.session.commit()
+    our_cache.insert_new_collection(coll)
     collections.update_hash(coll)
+    our_cache.session.commit()
     return coll
 
 param_arr = []
