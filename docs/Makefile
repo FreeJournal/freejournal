@@ -47,7 +47,7 @@ help:
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
 install:
-	sudo apt-get install python-pip texlive-latex-recommended
+	sudo apt-get install python-pip texlive-latex-recommended texlive-latex-extra
 	sudo pip install -e "git+https://github.com/alendit/sphinx-pyreverse.git#egg=sphinx-pyreverse"
 	sudo apt-get install pylint
 	sudo pip install sphinxcontrib-napoleon
