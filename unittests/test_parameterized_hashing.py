@@ -60,7 +60,7 @@ def test_generator(test_coll, prev_value):
             )
             our_cache.insert_new_collection(test_coll)
             our_cache.insert_new_document_in_collection(d, test_coll)
-        except ObjectDeletedError, StatementError:
+        except:
             # Test already ran
             return True
         collections.update_hash(test_coll)
