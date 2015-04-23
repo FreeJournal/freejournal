@@ -272,7 +272,7 @@ def process_command(command):
         if (validate_cli_arguments(3)):
             print_command_help(sys.argv[2])
     elif command == 'getdoc':
-        if (validate_cli_arguments(3)):
+        if (validate_cli_arguments(4)):
             get_doc_file(sys.argv[2], sys.argv[3])
     elif command == 'putdoc':
         if (validate_cli_arguments(6)):
