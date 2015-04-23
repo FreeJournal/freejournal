@@ -293,7 +293,7 @@ class Controller:
         """
 
         if from_address is None:
-            from_address = self.connection.create_address("new address")
+            from_address = self.connection.create_address("new address", True)
             print "created address: ", from_address
         if not self._find_address_in_keysdat(from_address):
             print "This address is not in keys.dat, can not send message"
