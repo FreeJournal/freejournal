@@ -14,7 +14,7 @@ class TestBitmessage(unittest.TestCase):
     def tearDown(self):
         self.bitmessage = None
 
-    def test_create_address(self):
+    def test_create_address_random(self):
         label = "Test"
         encoded_label = base64.b64encode(label) + '\n'
         address = self.bitmessage.create_address(label, random=True)
@@ -28,6 +28,11 @@ class TestBitmessage(unittest.TestCase):
 
         if not found:
             self.fail("Failed to create a new bitmessage address")
+
+    def test_create_address_deterministic(self):
+        password = "asdf123"
+        address = self.bitmessage.create_address(password, random=False)
+        self.assertTrue(address == 'BM-2DCBxwnwRV43bfsy3GnKRgxMY77mkqRKoE')
 
     def test_broadcast(self):
         message = "Hello World"
@@ -57,7 +62,8 @@ class TestBitmessage(unittest.TestCase):
         subject = "Test Message"
         address = self.bitmessage.create_address("Unit Test: Message")
 
-        ack_data = self.bitmessage.send_message(address, address, subject, message)
+        ack_data = self.bitmessage.send_message(
+            address, address, subject, message)
 
         timeout = 600  # 10 minutes
         start_time = time.time()
