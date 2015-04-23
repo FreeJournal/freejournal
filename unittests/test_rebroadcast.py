@@ -27,8 +27,8 @@ class TestRebroadcast(unittest.TestCase):
             address=self.address,
             btc="123456789",
             keywords=[
-                Keyword(name="Keyword A", id=1099),
-                Keyword(name="Keyword B", id=111),
+                Keyword(name="Keyword A"),
+                Keyword(name="Keyword B"),
             ],
             documents=[
                 Document(
