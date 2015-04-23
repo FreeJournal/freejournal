@@ -22,7 +22,7 @@ class StartQT4(QtGui.QMainWindow):
 
         #Tree Defintions
         self.model = QtGui.QDirModel()
-        self.model.setReadOnly(False)
+        self.model.setReadOnly(True)
         self.ui.treeViewLocal.setModel(self.model)
         self.model.setSorting(QtCore.QDir.DirsFirst | QtCore.QDir.IgnoreCase | QtCore.QDir.Name)
         self.index = QtCore.QModelIndex()
@@ -63,18 +63,27 @@ class StartQT4(QtGui.QMainWindow):
         (Desc, truthD) = QtGui.QInputDialog.getText(self, "Doc Description", "Description:", QtGui.QLineEdit.Normal, "None")
         if truthD == True:
             description = str(Desc)
-        if isfile(filepath):
-            if not title == '':
-                CLI.put_document(filepath, collection_address, title, description)
-        else:
-             message = QtGui.QMessageBox(self)
-             message.setText("Please enter a vaild directory path.")
-             message.setWindowTitle("Error")
-             message.setIcon(QtGui.QMessageBox.Warning)
-             message.addButton("OK", QtGui.QMessageBox.AcceptRole)
-             message.exec_() 
-        self.UpdateTreeFromCache()
-        self.ui.lineEditOut.setText("Inserted Document successfully!")
+        if truth == True & truthD == True:
+            if isfile(filepath):
+                if not title == '':
+                    CLI.put_document(filepath, collection_address, title, description)
+                    self.UpdateTreeFromCache()
+                    self.ui.lineEditOut.setText("Inserted Document successfully!")
+                else:
+                    message = QtGui.QMessageBox(self)
+                    message.setText("Please enter a title.")
+                    message.setWindowTitle("Error")
+                    message.setIcon(QtGui.QMessageBox.Warning)
+                    message.addButton("OK", QtGui.QMessageBox.AcceptRole)
+                    message.exec_()     
+            else:
+                 message = QtGui.QMessageBox(self)
+                 message.setText("Please select a valid file.")
+                 message.setWindowTitle("Error")
+                 message.setIcon(QtGui.QMessageBox.Warning)
+                 message.addButton("OK", QtGui.QMessageBox.AcceptRole)
+                 message.exec_() 
+        
 
         
     def RemoveDoc(self):
@@ -116,11 +125,21 @@ class StartQT4(QtGui.QMainWindow):
         if checked==None: return
         selectedItem = self.ui.treeWidgetCollections.currentItem()
         collection_address = str(selectedItem.text(1))
-        address_password = "temp"
-        CLI.publish_collection(address_password, collection_address) 
-        self.ui.lineEditOut.setText("Collection published successfully!")
-        self.UpdateTreeFromCache()
-
+        (password, pressed) = QtGui.QInputDialog.getText(self, "Collection Password", "Enter the collection password:", QtGui.QLineEdit.Normal, "")
+        if pressed == True:
+            if not password == '':
+                address_password = password
+                CLI.publish_collection(address_password, collection_address) 
+                self.ui.lineEditOut.setText("Collection published successfully!")
+                self.UpdateTreeFromCache()
+            else:
+                message = QtGui.QMessageBox(self)
+                message.setText("Please enter a password.")
+                message.setWindowTitle("Error")
+                message.setIcon(QtGui.QMessageBox.Warning)
+                message.addButton("OK", QtGui.QMessageBox.AcceptRole)
+                message.exec_()  
+                
     def DeleteStuff(self, checked=None):
         if checked==None: return    
         message = QtGui.QMessageBox(self)
@@ -134,9 +153,12 @@ class StartQT4(QtGui.QMainWindow):
         decision = message.clickedButton().text()
         if decision == "Yes":
             selectedItem = self.ui.treeWidgetCollections.currentItem()
+            collection_address = str(selectedItem.text(1))
             itemIndex = self.ui.treeWidgetCollections.indexOfTopLevelItem(selectedItem)
             garbage = self.ui.treeWidgetCollections.takeTopLevelItem(itemIndex)
-            #CLI.removeCollection()
+            collection = CLI.cache.get_collection_with_address(collection_address)
+            CLI.cache.remove_collection(collection)
+            self.ui.lineEditOut.setText("Collection deleted successfully!")
     
     def NewAboutWindowOpen(self, checked=None):
         if checked==None: return
@@ -153,8 +175,6 @@ class StartQT4(QtGui.QMainWindow):
 
     def NewCollecWindowOpen(self, checked=None):
         if checked==None: return
-        self.index = self.ui.treeViewLocal.currentIndex()
-        if not self.index.isValid(): return
         dialogObject = NewCollecWindow(self)
         dialogObject.show()
         
@@ -173,31 +193,13 @@ class NewCollecWindow(QtGui.QDialog):
         self.ui = NewCollection_UI.Ui_DialogNewCollection()
         self.ui.setupUi(self)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)   
-        global filepath
-        self.filepath = ''
         self.title = ''
         self.description = ''
         self.keywords = ''
         self.btc = ''
         self.address_password = ''
         self.collection_address = ''
-        self.ui.toolButtonAddDirectory.clicked.connect(self.AddDirectory)
         self.ui.buttonBoxConfirm.accepted.connect(self.PutCollection)
-
-      def AddDirectory(self):
-         fd = QtGui.QFileDialog(self)
-         self.filename = fd.getOpenFileName(caption='Open File', directory='')
-         if isfile(self.filename):
-             text = self.filename
-             self.ui.lineEditAddDirectory.setText(text)
-             self.filepath = self.filename
-         else:
-             message = QtGui.QMessageBox(self)
-             message.setText("Not a valid file.")
-             message.setWindowTitle("Error")
-             message.setIcon(QtGui.QMessageBox.Warning)
-             message.addButton("OK", QtGui.QMessageBox.AcceptRole)
-             message.exec_()
              
       def PutCollection(self):
           self.address_password = str(self.ui.lineEditPassword.text())
@@ -208,23 +210,6 @@ class NewCollecWindow(QtGui.QDialog):
           CLI.put_collection(self.address_password, self.title, self.description, self.keywords, self.btc)
           main_UI.ui.lineEditOut.setText("Collection created successfully!")
           main_UI.UpdateTreeFromCache()
-          #self.PutDoc()
-          
-      def PutDoc(self):
-          self.filepath = self.ui.lineEditAddDirectory.text()
-          self.title = self.ui.lineEditCollectionName.text()
-          if isfile(self.filepath):
-             self.filepath = self.ui.lineEditAddDirectory.text()
-             if not self.title == '':
-                 main_UI.model.mkdir(main_UI.index, self.title)
-             CLI.put_document(self.filepath, self.collection_address, self.title, self.description)
-          else:
-             message = QtGui.QMessageBox(self)
-             message.setText("Please enter a vaild directory path.")
-             message.setWindowTitle("Error")
-             message.setIcon(QtGui.QMessageBox.Warning)
-             message.addButton("OK", QtGui.QMessageBox.AcceptRole)
-             message.exec_() 
 
 def run():
     app = QtGui.QApplication(sys.argv)
