@@ -2,6 +2,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Tabl
 from sqlalchemy.orm import relationship, backref
 from models import DecBase
 from models.document import Document
+from models.keyword import Keyword
 from jsonschema import *
 from json_schemas import *
 from models.collection_version import CollectionVersion 
@@ -13,6 +14,10 @@ import json
 collection_keywords = Table('collection_keywords', DecBase.metadata,
                             Column('keyword_id', Integer, ForeignKey('keyword.id')),
                             Column('collection_address', String, ForeignKey('collection.address'))                           
+                            )
+collection_docs = Table('collection_docs', DecBase.metadata,
+                            Column('document_address', String, ForeignKey('document.hash')),
+                            Column('collection_address_docs', String, ForeignKey('collection.address'))
                             )
 
 hash_association = Table('collection_hashes', DecBase.metadata,
@@ -54,7 +59,7 @@ class Collection(DecBase):
     address = Column(String, primary_key=True)
     btc = Column(String)
     keywords = relationship("Keyword", secondary=collection_keywords, backref='collection')
-    documents = relationship(Document, cascade="all, delete-orphan")
+    documents = relationship("Document", secondary=collection_docs, backref='collection')
     latest_broadcast_date = Column(DateTime, nullable=False)
     creation_date = Column(DateTime, nullable=False)
     oldest_date = Column(DateTime, nullable=False)
