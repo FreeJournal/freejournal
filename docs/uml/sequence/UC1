@@ -1,0 +1,21 @@
+title Document Upload
+
+note left of Frontend (commands.py): The Frontend interface\n is shared by the CLI and \nuploader application
+Frontend (commands.py)->FreenetConnection: put(document contents)
+
+
+opt Freenet Upload
+    FreenetConnection->fcpNode: request_url(document data)
+    note right of fcpNode: fcpNode is part \nof the pyFreenet API
+    fcpNode->FreenetConnection: URL
+    FreenetConnection->fcpNode: start_async_upload(document data)
+end
+FreenetConnection->Frontend (commands.py): URL
+
+
+Frontend (commands.py)->Cache: insert_new_document(models.Document object)
+
+Cache->Frontend (commands.py):get_document_collection(models.Document object)
+
+Frontend (commands.py)->Collections Controller:update_collection_hash(models.Collection object)
+note right of Collections Controller: Updating the hash \nalso increments the\ncollection's version in the cache
