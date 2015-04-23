@@ -3,8 +3,9 @@ from models.document import Document
 from models.collection import Collection
 from bitmessage.bitmessage import Bitmessage
 from models.fj_message import FJMessage
+from models.signature import Signature
 from cache.cache import Cache
-from config import DOCUMENT_DIRECTORY_PATH
+from config import DOCUMENT_DIRECTORY_PATH, MAIN_CHANNEL_ADDRESS
 from freenet.FreenetConnection import FreenetConnection
 from jsonschema import *
 from models.json_schemas import *
@@ -169,7 +170,7 @@ class Controller:
 
         sys.exit()  # Exit current thread
 
-    def _cache_collection(self, message, payload):
+    def _cache_collection(self, payload, message):
         """
         Checks to see if this collection is already in the cache. If it is we update the collection with the new data.
         Otherwise a new collection is made and cached.
@@ -194,8 +195,10 @@ class Controller:
                 votes=payload['votes'],
                 votes_last_checked=datetime.datetime.strptime(payload["votes_last_checked"], "%A, %d. %B %Y %I:%M%p"),
             )
+            signature = Signature(pubkey=message["pubkey"], signature=message["signature"], address=payload["address"])
             try:
                 self.cache.insert_new_collection(collection_model)
+                self.cache.insert_new_collection(signature)
                 self._hash_document_filenames(collection_model.documents)
                 thread.start_new_thread(self._download_documents, (collection_model.title, collection_model.documents))
                 print "Cached New Collection"
@@ -204,6 +207,9 @@ class Controller:
                 print m.message
                 return False
         else:
+            cached_sig = self.cache.get_signature_by_address(payload["address"])
+            cached_sig.pubkey = message["pubkey"]
+            cached_sig.signature = message["signature"]
             cached_collection.keywords = keywords
             cached_collection.title = payload["title"]
             cached_collection.description = payload["description"]
@@ -219,6 +225,7 @@ class Controller:
             cached_collection.votes_last_checked = datetime.datetime.strptime(payload["votes_last_checked"], "%A, %d. %B %Y %I:%M%p")
             try:
                 self.cache.insert_new_collection(cached_collection)
+                self.cache.insert_new_collection(cached_sig)
                 self._hash_document_filenames(cached_collection.documents)
                 thread.start_new_thread(self._download_documents, (cached_collection.title, cached_collection.documents))
                 print "Cached Updated Collection"
@@ -279,7 +286,7 @@ class Controller:
                         continue
 
                     if self._check_signature(json_decode):
-                        if self._cache_collection(message, payload):
+                        if self._cache_collection(payload, json_decode):
                             self.connection.delete_message(message['msgid'])
                             return True
 
@@ -296,7 +303,7 @@ class Controller:
         """
 
         if from_address is None:
-            from_address = self.connection.create_address("new address")
+            from_address = self.connection.create_address("new address", True)
             print "created address: ", from_address
         if not self._find_address_in_keysdat(from_address):
             print "This address is not in keys.dat, can not send message"
@@ -311,5 +318,30 @@ class Controller:
             return False
         self.connection.send_message(to_address, from_address, "subject", sendable_fj_message)
         return True
+
+    def rebroadcast(self, collection, to_address=MAIN_CHANNEL_ADDRESS, from_address=MAIN_CHANNEL_ADDRESS):
+        """
+        Rebroadcasts a collection that is stored locally to the bitmessage network
+        :param collection: The collection to rebroadcast
+        :param to_address: the address to send the collection to, only used for testing
+        :param from_address: the address to send the collection from, only used for testing
+        :return: True if the collection is sent successfully, false otherwise
+        """
+        collection_payload = collection.to_json()
+        if collection_payload is None:
+            return False
+        cached_signature = self.cache.get_signature_by_address(collection.address)
+        h = hashlib.sha256(cached_signature.pubkey + collection_payload).hexdigest()
+
+        if h == cached_signature.signature:
+            new_fj_message = FJMessage(3, collection.address, collection_payload)
+            sendable_fj_message = new_fj_message.to_json(cached_signature.signature)
+            if sendable_fj_message is None:
+                return False
+            self.connection.send_message(to_address, from_address, "subject", sendable_fj_message)
+            return True
+        else:
+            print "Signature Not Verified"
+            return False
 
 

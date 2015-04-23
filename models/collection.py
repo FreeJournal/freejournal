@@ -64,6 +64,7 @@ class Collection(DecBase):
     votes = Column(Integer, nullable=False, default=0)
     votes_last_checked = Column(DateTime)
     version_list = relationship(CollectionVersion,  backref="collection", lazy='dynamic', secondary=hash_association)
+
     def to_json(self):
         """
         Encodes a Collection as a json representation so it can be sent through the bitmessage network
@@ -98,17 +99,6 @@ class Collection(DecBase):
         except ValidationError as m:
             return None
 
-    def _keyword_in(self, key_id):
-        """
-        Finds if the given Keyword id is in the Collection's Keywords
-        :param key_id: the Keyword id to search for
-        :return: True if this id is in the Collection's Keywords, False otherwise
-        """
-        for key in self.keywords:
-            if key.id == key_id:
-                return True
-        return False
-
     def get_latest_version(self):
         latest_version = self.version_list.order_by(CollectionVersion.collection_version.desc()).first() 
         if latest_version is None:
@@ -119,19 +109,6 @@ class Collection(DecBase):
     def get_latest_collection_version(self):
         latest_version = self.version_list.order_by(CollectionVersion.collection_version.desc()).first() 
         return latest_version
-
-    def update_keywords(self, new_keywords):
-        """
-        Updates the Collection's Keywords with any new Keywords in the given list.
-        :param new_keywords: a list of Keywords
-        """
-        i = 0
-        new_key_list = []
-        while i < len(new_keywords):
-            if not self._keyword_in(new_keywords[i].id):
-                new_key_list.append(new_keywords[i])
-            i += 1
-        self.keywords.extend(new_key_list)
 
     def update_timestamp (self):
         collection_version = get_latest_version()
