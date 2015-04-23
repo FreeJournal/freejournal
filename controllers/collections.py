@@ -7,11 +7,9 @@ import datetime
 
 
 def get_oldest(collection):
-    """
-    Used to get the latest timestamp time from collection
-    :param collection:
-    :return: oldest time
-    """
+    """Used to get the latest timestamp time from collection
+       :param collection:
+       :return: oldest time"""
     if collection.oldest_date is None:
         time_str = str(datetime.datetime.now()).split(".")[0]
         return time.strptime(time_str, "%Y-%m-%d %H:%M:%S")
@@ -20,11 +18,9 @@ def get_oldest(collection):
 
 
 def get_latest(collection):
-    """
-    Used to get the latest timestamp time from collection
-    :param collection:
-    :return:latest time
-    """
+    """Used to get the latest timestamp time from collection
+       :param collection:
+       :return:latest time"""
     if collection.oldest_date is None:
         return time.gmtime(0)
     else:
@@ -33,12 +29,10 @@ def get_latest(collection):
 
 
 def edit_time(collection, curr, curr_txs):
-    """
-    Used to edit collection oldest_date, oldest_btc_tx, latest_btc_tx
-    :param collection:
-    :param curr: the new hash timestamp time
-    :param curr_txs: new hash timestamp transaction id
-    """
+    """Used to edit collection oldest_date, oldest_btc_tx, latest_btc_tx
+       :param collection:
+       :param curr: the new hash timestamp time
+       :param curr_txs: new hash timestamp transaction id"""
     oldest = get_oldest(collection)
     latest = get_latest(collection)
     if curr < oldest:
@@ -49,10 +43,8 @@ def edit_time(collection, curr, curr_txs):
 
 
 def update_timestamp(collection):
-    """
-    Used to update collection timestamp information by new hash
-    :param collection:
-    """
+    """Used to update collection timestamp information by new hash
+      :param collection:"""
     collection_version = collection.get_latest_collection_version()
     if(collection_version is None):
         print(
@@ -66,6 +58,8 @@ def update_timestamp(collection):
 
 
 def update_hash(collection):
+    """Used to update collection's hash value depends on the document changing in the collection
+       :param collection: a collection to update the hash"""
     string = ""
     if collection is None:
         return None

@@ -5,17 +5,13 @@ import shutil
 
 
 def check_config_creation():
-    """
-    Checks whether PyBitmessage has created its keys.dat file
-    Linux specific for now, but will be modified for other operating systems
-    """
+    """Checks whether PyBitmessage has created its keys.dat file
+       Linux specific for now, but will be modified for other operating systems"""
     return os.path.exists(os.path.expanduser("~/.config/PyBitmessage/keys.dat"))
 
 
 def apt_install():
-    """
-    Generic installation for linux versions using apt
-    """
+    """Generic installation for linux versions using apt"""
     subprocess.call(["sudo apt-get update"], shell=True)
     subprocess.call(
         ["sudo apt-get install openssl git python-qt4"], shell=True)
@@ -47,7 +43,6 @@ def apt_install():
 
 
 def windows_install():
-    """
-    Error message 
-    """
-    print ('FATAL ERROR: We detected you are using an inferior operating system to Linux...')
+    """Print Error message """
+    print (
+        'FATAL ERROR: We detected you are using an inferior operating system to Linux...')

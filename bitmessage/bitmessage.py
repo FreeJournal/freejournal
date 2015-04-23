@@ -8,13 +8,14 @@ import json
 
 
 class Bitmessage():
-    """Bitmessage responsible for communicating with the BitMessage software, which provides 
+
+    """Bitmessage responsible for communicating with the BitMessage software, which provides
        a communication channel over which freejournal nodes communicate with each other.
-       The listener listens for new messages coming in on the network, dispatching them to be 
-       processed and added to the local cache if necessary. The connection is also responsible for 
+       The listener listens for new messages coming in on the network, dispatching them to be
+       processed and added to the local cache if necessary. The connection is also responsible for
        publishing new messages to the network, broadcasting collections to the network at large.
        The install class is responsible for preparing dependencies associated with Bitmessage communication.
-    """
+       """
 
     def __init__(self):
         self.os = sys.platform
@@ -23,9 +24,7 @@ class Bitmessage():
         self.subscribe(MAIN_CHANNEL_ADDRESS, "FreeJournal Main Channel")
 
     def __startup(self):
-        """
-        Try connecting via the api first to see if PyBitmessage is already running
-        """
+        """Try connecting via the api first to see if PyBitmessage is already running"""
         try:
             self._api_connect()
             assert(5 == self.api.add(2, 3))
@@ -47,15 +46,11 @@ class Bitmessage():
         print('Connected successfully')
 
     def _api_connect(self):
-        """
-        Connect to the Bitmessage client
-        """
+        """Connect to the Bitmessage client"""
         self.api = xmlrpclib.ServerProxy(BITMESSAGE_SERVER)
 
     def _launch_bitmessage(self):
-        """
-        Used to start up the PyBitmessage client so that we can connect to the api
-        """
+        """Used to start up the PyBitmessage client so that we can connect to the api"""
         print('Starting BitMessage on ' + self.os)
         if 'linux2' in self.os:
             # Used to ignore the ENORMOUS amount of output from PyBitmessage
@@ -66,12 +61,10 @@ class Bitmessage():
                 [RUN_PYBITMESSAGE_LINUX], shell=True, stdout=devnull, stderr=devnull)
 
     def subscribe(self, address, label=None):
-        """
-        Subscribes to an address and gives it an optional label
-        :param address: subscription bitmessage address
-        :param label: (optional) text to associate with address
-        :return boolean noting success of adding the subscription
-        """
+        """Subscribes to an address and gives it an optional label
+           :param address: subscription bitmessage address
+           :param label: (optional) text to associate with address
+           :return boolean noting success of adding the subscription"""
         # Retrieve a list of current subscriptions
         subs = self.api.listSubscriptions()
 
@@ -91,11 +84,9 @@ class Bitmessage():
         return True
 
     def check_inbox(self, trash=False):
-        """
-        Returns a json object of all the messages currently in the user's inbox
-        :param trash: boolean indicating whether the messages should be deleted (default is false)
-        :return: json object of messages
-        """
+        """Returns a json object of all the messages currently in the user's inbox
+           :param trash: boolean indicating whether the messages should be deleted (default is false)
+           :return: json object of messages"""
         messages = self.api.getAllInboxMessages()
         messages_dict = json.loads(messages)
 
@@ -106,21 +97,17 @@ class Bitmessage():
         return messages_dict
 
     def delete_message(self, message_id):
-        """
-        Delete the message
-        :param message_id: id indicates the message
-        """
+        """Delete the message
+           :param message_id: id indicates the message"""
         self.api.trashMessage(message_id)
 
     def create_address(self, password, random=False):
-        """
-        Creates a deterministic address for the user
-        :param password: text to use to create the deterministic address
-        Will act as a label instead if random is set to True
-        :param random: flag indicating whether the address should be deterministic
-        or random (default is deterministic)
-        :return: the bitmessage address
-        """
+        """Creates a deterministic address for the user
+           :param password: text to use to create the deterministic address
+            Will act as a label instead if random is set to True
+           :param random: flag indicating whether the address should be deterministic
+            or random (default is deterministic)
+           :return: the bitmessage address"""
         encoded_password = base64.b64encode(password)
 
         if random:
@@ -136,33 +123,26 @@ class Bitmessage():
             return json.loads(self.api.createDeterministicAddresses(encoded_password, 1, 3, 1))['addresses'][0]
 
     def get_addresses(self):
-        """
-        Get a list of addresses for the user
-        :return: json object of the addresses
-        """
+        """Get a list of addresses for the user
+           :return: json object of the addresses"""
         addresses = self.api.listAddresses2()
         addresses_dict = json.loads(addresses)
 
         return addresses_dict
 
     def get_sending_status(self, ack_data):
-        """
-        Get the status of ack_data
-        :param ack_data: 
-        """
+        """Get the status of ack_data
+           :param ack_data: data """
         return self.api.getStatus(ack_data)
 
     def send_message(self, to_address, from_address, subject, message):
-        """
-        Sends a message to specific address
-        **Useful for communicating with the main channel**
-        :param to_address: a valid address to send to
-        :param from_address: a valid identity address
-        :param subject: text
-        :param message: text
-        :return: ack_data
-        """
-
+        """Sends a message to specific address
+           **Useful for communicating with the main channel**
+           :param to_address: a valid address to send to
+           :param from_address: a valid identity address
+           :param subject: text
+           :param message: text
+           :return: ack_data"""
         encoded_subject = base64.b64encode(subject)
         encoded_message = base64.b64encode(message)
         ack_data = self.api.sendMessage(
@@ -174,14 +154,11 @@ class Bitmessage():
 
     def send_broadcast(self, from_address, subject, message):
         """Sends a broadcast to subscribers of the parameter address
-        :param from_address: a valid address identity
-        :param subject: text
-        :param message: text
-        """
-
+           :param from_address: a valid address identity
+           :param subject: text
+           :param message: text"""
         encoded_subject = base64.b64encode(subject)
         encoded_message = base64.b64encode(message)
-
         ack_data = self.api.sendBroadcast(
             from_address, encoded_subject, encoded_message)
 

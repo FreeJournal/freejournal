@@ -54,7 +54,9 @@ except:
 
 
 def print_help():
-    """ Print usage instructions for the command-line library. """
+    """
+    Print usage instructions for the command-line library.
+    """
     print ("Usage: ./freejournal [command]")
     print (
         "./freejournal_cli help [command name] - display extended command information.\n")
@@ -118,8 +120,7 @@ def print_command_help(command):
 def get_doc_file(document_hash, document_output_filename):
     """ Get a document file from the Freenet network
         :param document_hash: the Freenet URI to retreive
-        :param document_output_filename: path/filename to write to
-    """
+        :param document_output_filename: path/filename to write to"""
     freeCon = FreenetConnection()
     output = freeCon.get(document_hash)
     open(document_output_filename, 'w').write(output)
@@ -142,6 +143,8 @@ def list_collections():
 
 
 def list_collection_details(collection_address):
+    """ Print collection attributes and its values
+        :param collection_address: collection bitmessage address"""
     collection = cache.get_collection_with_address(collection_address)
     if collection is not None:
         print (collection.to_json())
@@ -150,6 +153,9 @@ def list_collection_details(collection_address):
 
 
 def list_collection_version(collection_address, document_ids):
+    """Print collection version
+       :param collection_address: collection bitmessage address
+       :param document_ids: a string of ids for each document in the collection"""
     versions = cache.get_versions_for_collection(collection_address)
     if(len(versions) != 0):
         print("Collection Versions for " + collection_address + ":")
@@ -168,8 +174,7 @@ def list_collection_version(collection_address, document_ids):
 def install_dependencies(dependency):
     """ Install a prerequisite (dependency) for deploying a FreeJournal
         node.  Rerun with each FreeJournal upgrade.
-        :param dependency: Software to install, freenet/bitmessage/all
-    """
+        :param dependency: Software to install, freenet/bitmessage/all"""
     dependency = dependency.lower()
     if dependency == 'freenet' or dependency == 'all':
         os = sys.platform
@@ -192,8 +197,7 @@ def put_document(file_path, collection_address, title, description):
         :param file_path: the path of the file to upload
         :param collection_address: the collection address associated with the document
         :param title: the title of the document being uploaded
-        :param description: the description of the document being uploaded
-    """
+        :param description: the description of the document being uploaded"""
     file_name = file_path.rsplit('/', 1)[0]
     contents = open(file_path).read()
     freeCon = FreenetConnection()
@@ -222,8 +226,7 @@ def put_collection(address_password, title, description, keywords, btc):
         :param title: The title of the created collection
         :param description: The description of the created collection
         :param keywords: Comma-separated keywords for the resulting collection
-        :param BTC: the Bitcoin address of the resulting collection
-    """
+        :param BTC: the Bitcoin address of the resulting collection"""
     bitmessage_connection = Bitmessage()
     address = bitmessage_connection.create_address(address_password)
     keywords = [Keyword(name=x) for x in keywords.split(",")]
@@ -246,10 +249,8 @@ def put_collection(address_password, title, description, keywords, btc):
 
 
 def show_collection(collection_address):
-    '''
-    Displays information about a specific collection, including a document list
-    :param collection_address: Collection address
-    '''
+    """Displays information about a specific collection, including a document list
+       :param collection_address: Collection address"""
     collection = cache.get_collection_with_address(collection_address)
     print ("\tID " + collection.address + "\t " + collection.title +
            "\tCreation Date " + collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p"))
@@ -261,6 +262,9 @@ def show_collection(collection_address):
 
 
 def publish_collection(address_password, collection_address):
+    """Publish the collection through main channel
+        :param address_password: password for the address
+        :param collection_address: collection bitmessage address"""
     bitmessage_connection = Bitmessage()
     address = bitmessage_connection.create_address(address_password)
     collection = cache.get_collection_with_address(collection_address)
@@ -282,8 +286,7 @@ def validate_cli_arguments(length):
 def process_command(command):
     """ Process a command-line command and execute the
         resulting FreeJournal action
-        :param command: The command to be executed, as a sys arg array
-    """
+        :param command: The command to be executed, as a sys arg array"""
     if len(sys.argv) < 2:
         print_help()
         return

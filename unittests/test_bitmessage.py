@@ -60,7 +60,8 @@ class TestBitmessage(unittest.TestCase):
         subject = "Test Message"
         address = self.bitmessage.create_address("Unit Test: Message")
 
-        ack_data = self.bitmessage.send_message(address, address, subject, message)
+        ack_data = self.bitmessage.send_message(
+            address, address, subject, message)
 
         timeout = 600  # 10 minutes
         start_time = time.time()

@@ -22,16 +22,19 @@ import os
 
 class Controller:
 
+    """
+    The controller files provide for an API for packages using the core
+    freejournal library to manipulate the models.
+    """
+
     def __init__(self):
         self.connection = Bitmessage()
         self.cache = Cache()
 
     def _check_signature(self, fj_message):
-        """
-        Checks that the signature is the correct sha256 hash of the address's public keys and payload
-        :param fj_message: the message containing the collection and signature
-        :return: True if the signatures match, False otherwise
-        """
+        """Checks that the signature is the correct sha256 hash of the address's public keys and payload
+           :param fj_message: the message containing the collection and signature
+           :return: True if the signatures match, False otherwise"""
         h = hashlib.sha256(
             fj_message["pubkey"] + fj_message['payload']).hexdigest()
 
@@ -43,12 +46,9 @@ class Controller:
             return False
 
     def _build_docs_keywords(self, payload):
-        """
-        Builds a list of Keyword objects and a list of Document objects from the received json.
-
-        :param payload: The payload of the FJ Message including the documents and keywords
-        :return: Two lists representing the documents and keywords of the FJ Message
-        """
+        """Builds a list of Keyword objects and a list of Document objects from the received json.
+           :param payload: The payload of the FJ Message including the documents and keywords
+           :return: Two lists representing the documents and keywords of the FJ Message"""
         keywords = []
         docs = []
         for key in payload["keywords"]:
@@ -71,15 +71,11 @@ class Controller:
         return docs, keywords
 
     def _save_document(self, data, file_name):
-        """
-        Private helper function for writing file data to disk.
-        Creates the file to the directory specified in config.py.
-
-        :param data: the file data
-        :param file_name: the name of the file
-        :return: a boolean indicating success
-        """
-
+        """Private helper function for writing file data to disk.
+           Creates the file to the directory specified in config.py.
+           :param data: the file data
+           :param file_name: the name of the file
+           :return: a boolean indicating success"""
         try:
             file_path = os.path.expanduser(DOCUMENT_DIRECTORY_PATH) + file_name
             open(file_path, 'w').write(data)
@@ -88,16 +84,11 @@ class Controller:
             return False
 
     def _get_document(self, hash):
-        """
-        Private helper function for getting document data
-        from freenet.
-
-        :param hash: the Content Hash Key for a document
-        :return: the file data if successful, None otherwise
-        """
-
+        """Private helper function for getting document data
+           from freenet.
+           :param hash: the Content Hash Key for a document
+           :return: the file data if successful, None otherwise"""
         data = None
-
         # Try obtaining a freenet connection
         try:
             freenet_connection = FreenetConnection()
@@ -113,14 +104,10 @@ class Controller:
         return data
 
     def _hash_document_filenames(self, documents):
-        """
-        Private helper function for hashing a collection of
-        documents file names so that file name conflicts will be
-        rare.
-
-        :param documents: a list of document objects
-        """
-
+        """ Private helper function for hashing a collection of
+            documents file names so that file name conflicts will be
+            rare.
+            :param documents: a list of document objects"""
         for document in documents:
             # Create a new file name out of a hash to deal with possible naming
             # conflicts
@@ -137,18 +124,13 @@ class Controller:
             self.cache.insert_new_document(document)
 
     def _download_documents(self, collection_title, documents):
-        """
-        A function that downloads documents from a collection.
-        NOTE: This function should only be called in its own thread
-        since this is a blocking call and can take awhile to execute.
-
-        :param collection_title: the title of the collection
-        :param documents: the list of document objects to download
-        """
-
+        """A function that downloads documents from a collection.
+           NOTE: This function should only be called in its own thread
+           since this is a blocking call and can take awhile to execute.
+           :param collection_title: the title of the collection
+           :param documents: the list of document objects to download"""
         print("Downloading documents for " + collection_title)
         print("Number of Documents to download: " + str(len(documents)))
-
         doc_counter = 0
         for document in documents:
             # Store and validate that the document has a file name
@@ -175,12 +157,10 @@ class Controller:
         sys.exit()  # Exit current thread
 
     def _cache_collection(self, message, payload):
-        """
-        Checks to see if this collection is already in the cache. If it is we update the collection with the new data.
-        Otherwise a new collection is made and cached.
-        :param message: the Bitmessage message containing an FJ_message
-        :param payload: the contents of the FJ_message
-        """
+        """Checks to see if this collection is already in the cache. If it is we update the collection with the new data.
+           Otherwise a new collection is made and cached.
+           :param message: the Bitmessage message containing an FJ_message
+           :param payload: the contents of the FJ_message"""
         # Grabbing the text representations of the documents and keywords and
         # rebuilding them
         docs, keywords = self._build_docs_keywords(payload)
@@ -245,11 +225,9 @@ class Controller:
                 return False
 
     def _find_address_in_keysdat(self, address):
-        """
-        Checks if this bitmessage address is in our keys.dat
-        :param address: The address to look for
-        :return: True if the address is in keys.dat, false otherwise
-        """
+        """Checks if this bitmessage address is in our keys.dat
+           :param address: The address to look for
+           :return: True if the address is in keys.dat, false otherwise"""
         f = open(os.path.expanduser('~/.config/PyBitmessage/keys.dat'), 'r')
         keys = f.read()
         keys_list = keys.split('\n\n')
@@ -260,13 +238,10 @@ class Controller:
         return False
 
     def import_collection(self, address):
-        """
-        Imports a Collection from the given Bit Message address and checks if its signature is valid.
-        If it is valid then it is cached locally.
-        :param address: the address to import the collection from
-        :return: True if the collection was imported and cached successfully, False otherwise
-        """
-
+        """Imports a Collection from the given Bit Message address and checks if its signature is valid.
+           If it is valid then it is cached locally.
+           :param address: the address to import the collection from
+           :return: True if the collection was imported and cached successfully, False otherwise"""
         # buffer time to make sure to get messages
         time.sleep(10)
         messages = self.connection.check_inbox()
@@ -304,21 +279,17 @@ class Controller:
         return False
 
     def publish_collection(self, collection, to_address, from_address=None):
-        """
-        Publishes the given to collection to the bitmessage network
-        :param collection: the collection to be published
-        :param to_address: the address to send the collection to,  always MAIN_CHANNEL_ADDRESS except in unittests
-        :param from_address: the address to send the collection from
-        :return: True if the collection is published successfully, False otherwise
-        """
-
+        """Publishes the given to collection to the bitmessage network
+           :param collection: the collection to be published
+           :param to_address: the address to send the collection to,  always MAIN_CHANNEL_ADDRESS except in unittests
+           :param from_address: the address to send the collection from
+           :return: True if the collection is published successfully, False otherwise"""
         if from_address is None:
             from_address = self.connection.create_address("new address")
             print "created address: ", from_address
         if not self._find_address_in_keysdat(from_address):
             print "This address is not in keys.dat, can not send message"
             return False
-
         collection_payload = collection.to_json()
         if collection_payload is None:
             return False
