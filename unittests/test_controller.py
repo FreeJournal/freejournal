@@ -149,8 +149,8 @@ class TestController(unittest.TestCase):
         data = open('unittests/Test1.txt', 'r').read()
         file_name = "Test1.txt"
 
-        self.controller._save_document(data, file_name)
-        self.assertTrue(os.path.exists(os.path.expanduser(DOCUMENT_DIRECTORY_PATH + "Test1.txt")))
+        self.controller._save_document(data, file_name, testing_mode=True)
+        self.assertTrue(os.path.exists(os.path.expanduser("Test1.txt")))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestController)
 unittest.TextTestRunner(verbosity=2).run(suite)
