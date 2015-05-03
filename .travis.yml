@@ -15,7 +15,7 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-  - coverage run --omit=*/python?.?/*,*/site-packages/*,*__init__*,test_* -m unittest discover unittests
+  - coverage run --omit=*/python?.?/*,*/site-packages/*,*__init__*,test_*,*Freenet* -m unittest discover unittests
 
 after_success:
   coveralls
