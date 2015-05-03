@@ -157,7 +157,7 @@ class Controller:
             if db_key is not None:
                 collection.keywords.append(db_key)
             else:
-                collection.keywords.append(Keyword(name=key["name"], id=key["id"]))
+                collection.keywords.append(Keyword(name=key["name"]))
 
         for doc in payload["documents"]:
             db_doc = self.cache.get_document_by_hash(doc["hash"])

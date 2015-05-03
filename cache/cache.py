@@ -61,6 +61,19 @@ class Cache():
             pass
         return row
 
+    def get_keyword_by_name(self, name):
+        """
+        Retrieve a specific keyword by it's name
+        :param name: The name of the requested keyword
+        :return: The Keyword object if in the cache, None otherwise
+        """
+        row = None
+        try:
+            row = self.session.query(Keyword).filter(Keyword.name == name).one()
+        except NoResultFound:
+            pass
+        return row
+
     def get_signature_by_address(self, address):
         """
         Retrieve a specific signature by it's collection address
