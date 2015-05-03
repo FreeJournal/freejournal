@@ -1,5 +1,6 @@
 from async import repeat_periodic, wait_for_interrupt
 
+
 @repeat_periodic(1)
 def job_thread():
     print "hello repeatable world"

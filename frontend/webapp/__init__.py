@@ -5,7 +5,6 @@ import datetime
 from cache.cache import Cache
 
 
-
 app = Flask(__name__, static_folder='public')
 app.config.update(
     CELERY_BROKER_URL='amqp://',

@@ -18,25 +18,31 @@ except AttributeError:
 
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
+
 class Ui_Form(object):
+
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(300, 200)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
         Form.setSizePolicy(sizePolicy)
         Form.setMinimumSize(QtCore.QSize(300, 200))
         Form.setMaximumSize(QtCore.QSize(300, 200))
-        icon = QtGui.QIcon(os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_icon.jpg')
-        #icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = QtGui.QIcon(
+            os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_icon.jpg')
+        # icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")),
+        # QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Form.setWindowIcon(icon)
         self.gridLayout = QtGui.QGridLayout(Form)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
@@ -44,7 +50,8 @@ class Ui_Form(object):
         self.label.setMinimumSize(QtCore.QSize(244, 75))
         self.label.setMaximumSize(QtCore.QSize(244, 75))
         self.label.setText(_fromUtf8(""))
-        self.label.setPixmap(QtGui.QPixmap(os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_logo_small.jpg'))
+        self.label.setPixmap(
+            QtGui.QPixmap(os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_logo_small.jpg'))
         self.label.setScaledContents(True)
         self.label.setWordWrap(False)
         self.label.setOpenExternalLinks(False)
@@ -66,7 +73,8 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "About Free Journal", None))
-        self.label_3.setText(_translate("Form", "Version 0.0.1                                        MIT License", None))
+        self.label_3.setText(
+            _translate("Form", "Version 0.0.1                                        MIT License", None))
         self.label_2.setText(_translate("Form", "Free Journal", None))
 
 from frontend.uploader import resources_rc
