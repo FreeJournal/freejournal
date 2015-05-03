@@ -1,4 +1,4 @@
-from backend.controller import Controller
+from controllers.controller import Controller
 from bitmessage import Bitmessage
 from config import MAIN_CHANNEL_ADDRESS
 from cache.cache import Cache
@@ -14,7 +14,7 @@ def rebroadcast(collection):
 
     #Connect to bitmessage and create a temporary address
     bitmessage = Bitmessage()
-    from_address = bitmessage.create_address("Rebroadcast")
+    from_address = bitmessage.create_address("Rebroadcast", random=True)
     collection.address = from_address
 
     #Connect to controller and rebroadcast

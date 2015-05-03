@@ -1,12 +1,12 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, g
 from make_celery import make_celery
 from datetime import timedelta
 import datetime
-import config
 from cache.cache import Cache
 from models.collection import Collection
 from models.keyword import Keyword
 from models.document import Document
+
 
 
 app = Flask(__name__, static_folder='public')
@@ -23,7 +23,21 @@ app.config.update(
     CELERY_TIMEZONE='UTC'
 )
 celery = make_celery(app)
-cache = Cache()
+
+
+def get_cache():
+    cache = getattr(g, '_cache', None)
+    if cache is None:
+        cache = g._cache = Cache()
+    return cache
+
+
+@app.teardown_appcontext
+def teardown_cache(exception):
+    cache = getattr(g, '_cache', None)
+    if cache is not None:
+        cache.close()
+
 
 from tasks.add_task import add_together
 from tasks.periodic_test import add_test
@@ -67,7 +81,7 @@ documents = [
 @app.route('/')
 def index():
     # TODO: Use Flask `g` object to store database connection
-    return render_template("index.html", collections=cache.get_all_collections())
+    return render_template("index.html", collections=get_cache().get_all_collections())
 
 
 @app.route('/c/<string:collection>')

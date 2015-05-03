@@ -22,7 +22,6 @@ class Document(DecBase):
     description = Column(String)
     hash = Column(String, primary_key=True)
     title = Column(String, nullable=False)
-
     # Caching information (for pruning)
     filename = Column(String)
     accesses = Column(Integer, nullable=False, default=0)

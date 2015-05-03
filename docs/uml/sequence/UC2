@@ -1,0 +1,14 @@
+title FreeJournal Web Interface
+
+note left of Frontend (commands.py): The web interface can\nbe started either locally or\nhosted on a server\nand explosed to the world.
+Frontend (commands.py)->Webapp: run(debug, port)
+Webapp->Flask: initialize_server(app)
+Webapp->Celery: initialize_celery(app)
+loop webserver run
+Webapp->Webapp: server_forever()
+
+Document Viewer->Webapp: request_via_http(page)
+note over Webapp,Cache: Fetch data for requested page (document or collection info)
+Webapp->Webapp: render_template(data)
+Webapp->User: serve(rendered_template)
+

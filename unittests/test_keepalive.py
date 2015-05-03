@@ -8,11 +8,10 @@ import unittest
 class TestKeepalive(unittest.TestCase):
     def setUp(self):
         cache = Cache()
+        cache.reset_database()
 
         collection1 = Collection(
             title="First Collection",
-            merkle="Test",
-            version=1,
             btc="btc",
             address="bm-first",
             description="description",
@@ -32,8 +31,6 @@ class TestKeepalive(unittest.TestCase):
 
         collection2 = Collection(
             title="Second Collection",
-            merkle="Test",
-            version=1,
             btc="btc",
             address="bm-second",
             description="description",
@@ -53,8 +50,6 @@ class TestKeepalive(unittest.TestCase):
 
         collection3 = Collection(
             title="Third Collection",
-            merkle="Test",
-            version=1,
             btc="btc",
             address="bm-third",
             description="description",
@@ -74,9 +69,7 @@ class TestKeepalive(unittest.TestCase):
 
         collection4 = Collection(
             title="Fourth Collection",
-            merkle="Test",
             description="description",
-            version=1,
             btc="btc",
             address="bm-fourth",
             keywords=[],

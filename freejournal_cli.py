@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 from frontend.cli import commands
 import sys
 

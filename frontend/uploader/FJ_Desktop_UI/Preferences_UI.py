@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+import os
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -34,8 +35,8 @@ class Ui_DialogPreferences(object):
         DialogPreferences.setSizePolicy(sizePolicy)
         DialogPreferences.setMinimumSize(QtCore.QSize(550, 450))
         DialogPreferences.setMaximumSize(QtCore.QSize(550, 450))
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = QtGui.QIcon(os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_icon.jpg')
+        #icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         DialogPreferences.setWindowIcon(icon)
         DialogPreferences.setAutoFillBackground(False)
         self.gridLayout_2 = QtGui.QGridLayout(DialogPreferences)

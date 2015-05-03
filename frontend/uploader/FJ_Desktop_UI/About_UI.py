@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+import os
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -34,8 +35,8 @@ class Ui_Form(object):
         Form.setSizePolicy(sizePolicy)
         Form.setMinimumSize(QtCore.QSize(300, 200))
         Form.setMaximumSize(QtCore.QSize(300, 200))
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = QtGui.QIcon(os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_icon.jpg')
+        #icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Form.setWindowIcon(icon)
         self.gridLayout = QtGui.QGridLayout(Form)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
@@ -43,7 +44,7 @@ class Ui_Form(object):
         self.label.setMinimumSize(QtCore.QSize(244, 75))
         self.label.setMaximumSize(QtCore.QSize(244, 75))
         self.label.setText(_fromUtf8(""))
-        self.label.setPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_logo_small.jpg")))
+        self.label.setPixmap(QtGui.QPixmap(os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_logo_small.jpg'))
         self.label.setScaledContents(True)
         self.label.setWordWrap(False)
         self.label.setOpenExternalLinks(False)
