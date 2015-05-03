@@ -1,6 +1,11 @@
 from controllers.controller import Controller
 from config import MAIN_CHANNEL_ADDRESS, LISTEN_PERIOD
-from async import repeat_periodic, wait_for_interrupt
+from async import repeat_periodic, wait_for_interrupt, run_as_thread
+from time import sleep
+
+@run_as_thread
+def wait_for_join(controller):
+    controller.join_downloads()
 
 
 def exit_func(controller):
@@ -8,11 +13,14 @@ def exit_func(controller):
     if controller.alive_downloads():
         print "Downloads in progress, please wait for them to finish. Press ctrl+c again to cancel downloads."
         try:
-            controller.join_downloads()
+            t = wait_for_join(controller)
+            while t.is_alive():
+                sleep(0.1)
             print "Exited safely."
         except (KeyboardInterrupt, SystemExit):
             print ""
             print "Cancelling downloads and exiting."
+            exit(1)
     else:
         print "Exiting listener."
 

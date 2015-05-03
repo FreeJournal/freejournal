@@ -254,7 +254,6 @@ class Controller:
         """
 
         # buffer time to make sure to get messages
-        time.sleep(10)
         messages = self.connection.check_inbox()
         for message in messages["inboxMessages"]:
             if message["toAddress"] == address:
@@ -345,12 +344,8 @@ class Controller:
         Checks if there are any downloads in progress
         :return: True if there is a running download
         """
-        for dl_thread in self.download_threads:
-            if dl_thread.is_alive():
-                return True
-            else:
-                self.download_threads.remove(dl_thread)
-        return False
+        self.download_threads = {t for t in self.download_threads if t.is_alive()}
+        return len(self.download_threads) > 0
 
     def join_downloads(self):
         """
@@ -358,4 +353,4 @@ class Controller:
         """
         for dl_thread in self.download_threads:
             dl_thread.join()
-
+        self.download_threads = set()
