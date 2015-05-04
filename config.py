@@ -33,7 +33,11 @@ privencryptionkey = "5JBZS85dLU8QTK5gPxH3YGnEgiGyaB8RjQ9J6yEuTsAtSTrbZYR"
 (Make sure to keep the last '/' at the end of the path)'''
 DOCUMENT_DIRECTORY_PATH = "~/Documents/"
 
+''' Webapp settings'''
 # Set to true at your own risk
 WEBAPP_DEBUG = True
 WEBAPP_PORT = 5000
+INDEX_LIMIT = 10
+
+''' Listener settings'''
 LISTEN_PERIOD = 30

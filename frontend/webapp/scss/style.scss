@@ -1,14 +1,27 @@
+@import "listing";
+@import "variables";
+@import "documents";
+@import "vote";
+
 body {
-  background-color: #0a395e;
+  background-color: $background-color;
   margin: 0;
+  font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
+  line-height: 1.3em;
 }
 
-.bagel {
-  background-color: red;
+a {
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+h1 {
+  font-size: 1.6em;
 }
 
 .container {
-  //background-color: grey;
   margin: 0 auto;
   max-width: 800px;
   width: 100%;
@@ -18,79 +31,4 @@ body {
   margin: 10px;
   max-width: 400px;
   width: 100%;
-}
-
-$listing-height: 40px;
-
-.listing {
-  background-color: white;
-  height: $listing-height;
-  border: black 1px solid;
-  padding: 3px;
-  margin-bottom: 5px;
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-}
-
-.listing-info-block {
-  //line-height: $listing-height;
-  display: inline-block;
-  //vertical-align: bottom;
-}
-
-.listing-title {
-  margin-bottom: 3px;
-}
-
-.listing-info {
-  font-size: 11px;
-}
-
-.listing-date {
-  display: inline-block;
-}
-
-.listing-submitter {
-  display: inline-block;
-  margin-left: 10px;
-}
-
-.listing-keywords {
-  display: inline-block;
-  line-height: $listing-height;
-  float: right;
-}
-
-.listing-vote {
-  display: inline-block;
-  vertical-align: top;
-}
-
-
-.vote-triangle {
-  display: block;
-  margin: 0 auto;
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-}
-
-.vote-triangle-up {
-  border-bottom: 10px solid red;
-}
-
-.vote-triangle-down {
-  border-top: 10px solid red;
-}
-
-.vote-score {
-  height: 20px;
-  line-height: 20px;
-  font-size: 15px;
-}
-
-.listing-icon {
-
 }

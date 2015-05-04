@@ -1,4 +1,4 @@
-from webapp import app, celery
+from frontend.webapp import app, celery
 import config
 
 celery = celery  # Give `celery` variable to pass to celery
