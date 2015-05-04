@@ -37,11 +37,11 @@ def repeat_periodic(interval):
     return decorator
 
 
-def wait_for_interrupt(func, stop_event):
+def wait_for_interrupt(func, stop_event, args=[]):
     while True:
         try:
             sleep(10)
         except (KeyboardInterrupt, SystemExit):
             stop_event.set()
-            func()
+            func(*args)
             exit(0)

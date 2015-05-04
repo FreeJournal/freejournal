@@ -11,13 +11,12 @@ from jsonschema import *
 from models.json_schemas import *
 from sqlalchemy.exc import IntegrityError
 from random import randint
-import copy
+from async import run_as_thread
 import json
 import time
 import base64
 import datetime
 import hashlib
-import thread
 import sys
 import os
 
@@ -27,6 +26,7 @@ class Controller:
     def __init__(self):
         self.connection = Bitmessage()
         self.cache = Cache()
+        self.download_threads = set()
 
     def _check_signature(self, fj_message):
         """
@@ -44,7 +44,7 @@ class Controller:
             print "Signature Not Verified"
             return False
 
-    def _save_document(self, data, file_name):
+    def _save_document(self, data, file_name, testing_mode=False):
         """
         Private helper function for writing file data to disk.
         Creates the file to the directory specified in config.py.
@@ -55,7 +55,11 @@ class Controller:
         """
 
         try:
-            file_path = os.path.expanduser(DOCUMENT_DIRECTORY_PATH) + file_name
+            if testing_mode:
+                file_path = file_name
+            else:
+                file_path = os.path.expanduser(DOCUMENT_DIRECTORY_PATH) + file_name
+
             open(file_path, 'w').write(data)
             return True
         except Exception as e:
@@ -110,11 +114,10 @@ class Controller:
             document.filename = new_file_name
             self.cache.insert_new_document_in_collection(document, collection)
 
+    @run_as_thread
     def _download_documents(self, collection_title, documents):
         """
-        A function that downloads documents from a collection.
-        NOTE: This function should only be called in its own thread
-        since this is a blocking call and can take awhile to execute.
+        A function that downloads documents from a collection in a new thread.
 
         :param collection_title: the title of the collection
         :param documents: the list of document objects to download
@@ -137,6 +140,7 @@ class Controller:
                 print("Couldn't download " + file_name + " from freenet")
                 continue
 
+<<<<<<< HEAD
             # If the file data was successfully downloaded, save the data to
             # disk
             success = self._save_document(data, file_name)
@@ -145,8 +149,6 @@ class Controller:
             else:
                 print("Couldn't save document data to disk (check that the document"
                       + " directory path exists and appropriate permissions are set")
-
-        sys.exit()  # Exit current thread
 
     def _build_docs_keywords(self, payload, collection):
         """
@@ -160,8 +162,7 @@ class Controller:
             if db_key is not None:
                 collection.keywords.append(db_key)
             else:
-                collection.keywords.append(
-                    Keyword(name=key["name"], id=key["id"]))
+                collection.keywords.append(Keyword(name=key["name"]))
 
         for doc in payload["documents"]:
             db_doc = self.cache.get_document_by_hash(doc["hash"])
@@ -209,10 +210,9 @@ class Controller:
             try:
                 self.cache.insert_new_collection(collection_model)
                 self.cache.insert_new_collection(signature)
-                self._hash_document_filenames(
-                    collection_model.documents, collection_model)
-                thread.start_new_thread(self._download_documents, (
-                    collection_model.title, collection_model.documents))
+                self._hash_document_filenames(collection_model.documents, collection_model)
+                self.download_threads.add(self._download_documents(collection_model.title, 
+					collection_model.documents))
                 print "Cached New Collection"
                 return True
             except IntegrityError as m:
@@ -244,10 +244,9 @@ class Controller:
             try:
                 self.cache.insert_new_collection(cached_collection)
                 self.cache.insert_new_collection(cached_sig)
-                self._hash_document_filenames(
-                    cached_collection.documents, cached_collection)
-                thread.start_new_thread(self._download_documents, (
-                    cached_collection.title, cached_collection.documents))
+                self._hash_document_filenames(cached_collection.documents, cached_collection)
+                self.download_threads.add(self._download_documents(cached_collection.title, 
+					cached_collection.documents))
                 print "Cached Updated Collection"
                 return True
             except IntegrityError as m:
@@ -278,7 +277,6 @@ class Controller:
         """
 
         # buffer time to make sure to get messages
-        time.sleep(10)
         messages = self.connection.check_inbox()
         for message in messages["inboxMessages"]:
             if message["toAddress"] == address:
@@ -369,3 +367,19 @@ class Controller:
         else:
             print "Signature Not Verified"
             return False
+
+    def alive_downloads(self):
+        """
+        Checks if there are any downloads in progress
+        :return: True if there is a running download
+        """
+        self.download_threads = {t for t in self.download_threads if t.is_alive()}
+        return len(self.download_threads) > 0
+
+    def join_downloads(self):
+        """
+        Joins all of the in-progress download threads
+        """
+        for dl_thread in self.download_threads:
+            dl_thread.join()
+        self.download_threads = set()

@@ -225,8 +225,17 @@ def put_collection(address_password, title, description, keywords, btc):
         :param BTC: the Bitcoin address of the resulting collection
     """
     bitmessage_connection = Bitmessage()
+    cache = Cache()
     address = bitmessage_connection.create_address(address_password)
-    keywords = [Keyword(name=x) for x in keywords.split(",")]
+
+    input_keywords = [Keyword(name=x) for x in keywords.split(",")]
+    keywords = []
+    for key in input_keywords:
+            db_key = cache.get_keyword_by_name(key.name)
+            if db_key is not None:
+                keywords.append(db_key)
+            else:
+                keywords.append(key)
     collection = Collection(
         title=title,
         description=description,

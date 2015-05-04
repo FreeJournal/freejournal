@@ -95,7 +95,7 @@ class TestKeepalive(unittest.TestCase):
         cache.reset_database()
 
     def test_bitmessage_keepalive(self):
-        num_collections = find_old_collections(3)
+        num_collections = find_old_collections(3, testing_mode=True)
         self.assertTrue(num_collections == 2)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestKeepalive)
