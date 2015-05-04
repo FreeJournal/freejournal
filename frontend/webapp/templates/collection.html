@@ -1,0 +1,43 @@
+{% extends "container.html" %}
+
+{% block title %}
+{{collection.title}} - FreeJournal
+{% endblock %}
+
+{% block container_content %}
+	<div class="collection">
+		<div class="collection-title">
+			<div class="listing-info-block">
+				<div class="listing-title">
+					{{collection.title}}
+				</div>
+				<div class="listing-info">
+					<div class="listing-date">
+						{{collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p")}} UTC
+					</div>
+					<div class="listing-submitter">
+						Submitted by {{collection.address}}
+					</div>
+				</div>
+			</div>
+			<div class="listing-keywords">
+				{% for keyword in collection.keywords %}
+				<a href="#">{{keyword.name}}</a>{% if not loop.last %},{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+		{% for document in collection.documents %}
+		<div class="document">
+			<div class="document-title-block">
+				<img src="/public/img/document.png" class="listing-icon"/>
+				<div class="document-title">
+					<a href="/file/{{document.filename}}" target="_blank">{{document.title}}</a>
+				</div>
+			</div>
+			<div class="document-description">
+				{{document.description}}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+{% endblock %}

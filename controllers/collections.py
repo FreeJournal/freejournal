@@ -11,11 +11,11 @@ def get_oldest (collection):
     :param collection:
     :return: oldest time
     """
-    if collection.oldest_date == None:
+    if collection.oldest_date != None:
         time_str=str(datetime.datetime.now()).split(".")[0]
         return time.strptime(time_str, "%Y-%m-%d %H:%M:%S")
     else:
-        return collection.oldest_date
+	return time.mktime(collection.oldest_date.timetuple())
 
 def get_latest (collection):
     """
@@ -23,8 +23,9 @@ def get_latest (collection):
     :param collection:
     :return:latest time
     """
-    if collection.oldest_date==None:
-        return time.gmtime(0)
+    if collection.oldest_date==None or collection.latest_btc_tx is  None:
+        time_str=str(datetime.datetime.now()).split(".")[0]
+        return time.strptime(time_str, "%Y-%m-%d %H:%M:%S")
     else:
         get_time = collection.latest_btc_tx.split(";")
         return time.strptime(get_time[0] , "%Y-%m-%d %H:%M:%S")
@@ -38,24 +39,35 @@ def edit_time (collection, curr, curr_txs):
     """
     oldest = get_oldest(collection)
     latest = get_latest(collection)
+
     if curr < oldest:
       collection.oldest_date = curr
       collection.oldest_btc_tx = curr_txs
     if curr > latest:
       collection.latest_btc_tx = curr_txs
+    if collection.latest_btc_tx is None:
+      collection.latest_btc_tx = collection.oldest_btc_tx
+    if collection.oldest_btc_tx is None:
+      collection.oldest_btc_tx = collection.latest_btc_tx
 
-def update_timestamp (collection):
+def update_timetamp(collection):
+    update_timestamp(collection.get_latest_collection_version())
+
+def update_timestamp_version (collection, collection_version):
     """
     Used to update collection timestamp information by new hash
     :param collection:
     """
-    collection_version = collection.get_latest_collection_version()
     if(collection_version == None):
         print("Timestamp called on empty collection, CollectionVersion not in Cache")
         return
 
     timestamp = TimestampFile(collection_version.root_hash).check_timestamp()
+   
+    print timestamp['time']
+
     curr_time=time.strptime(timestamp['time'], "%Y-%m-%d %H:%M:%S")
+
     curr_txs= timestamp['time'] + ";" + timestamp['Transaction']
     edit_time (collection, curr_time, curr_txs)
 

@@ -1,0 +1,27 @@
+@import "variables";
+
+.vote-triangle {
+  display: block;
+  margin: 0 auto;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.vote-triangle-up {
+  border-bottom: 10px solid $vote-triangle-color;
+  margin-bottom: 5px;
+}
+
+.vote-triangle-down {
+  margin-top: 5px;
+  border-top: 10px solid $vote-triangle-color;
+}
+
+.vote-score {
+  height: 20px;
+  line-height: 20px;
+  font-size: 15px;
+}
+

@@ -110,8 +110,6 @@ class Ui_FJ_Uploader_Main_Window(object):
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName(_fromUtf8("menuHelp"))
-        self.menuEdit = QtGui.QMenu(self.menubar)
-        self.menuEdit.setObjectName(_fromUtf8("menuEdit"))
         FJ_Uploader_Main_Window.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(FJ_Uploader_Main_Window)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
@@ -129,8 +127,6 @@ class Ui_FJ_Uploader_Main_Window(object):
         self.actionFree_Journal_Website.setObjectName(_fromUtf8("actionFree_Journal_Website"))
         self.actionGitHub_Source = QtGui.QAction(FJ_Uploader_Main_Window)
         self.actionGitHub_Source.setObjectName(_fromUtf8("actionGitHub_Source"))
-        self.actionPrefernces = QtGui.QAction(FJ_Uploader_Main_Window)
-        self.actionPrefernces.setObjectName(_fromUtf8("actionPrefernces"))
         self.menuFile.addAction(self.actionNew_Collection)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionQuit_FJ)
@@ -139,9 +135,7 @@ class Ui_FJ_Uploader_Main_Window(object):
         self.menuHelp.addAction(self.actionView_Documentation)
         self.menuHelp.addSeparator()
         self.menuHelp.addAction(self.actionAbout_Free_Journal)
-        self.menuEdit.addAction(self.actionPrefernces)
         self.menubar.addAction(self.menuFile.menuAction())
-        self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(FJ_Uploader_Main_Window)
@@ -166,7 +160,6 @@ class Ui_FJ_Uploader_Main_Window(object):
         self.labelOut.setText(_translate("FJ_Uploader_Main_Window", "Output:", None))
         self.menuFile.setTitle(_translate("FJ_Uploader_Main_Window", "File", None))
         self.menuHelp.setTitle(_translate("FJ_Uploader_Main_Window", "Help", None))
-        self.menuEdit.setTitle(_translate("FJ_Uploader_Main_Window", "Edit", None))
         self.actionView_Documentation.setText(_translate("FJ_Uploader_Main_Window", "View Documentation", None))
         self.actionView_Documentation.setShortcut(_translate("FJ_Uploader_Main_Window", "F1", None))
         self.actionAbout_Free_Journal.setText(_translate("FJ_Uploader_Main_Window", "About Free Journal", None))
@@ -174,6 +167,3 @@ class Ui_FJ_Uploader_Main_Window(object):
         self.actionQuit_FJ.setText(_translate("FJ_Uploader_Main_Window", "Quit", None))
         self.actionFree_Journal_Website.setText(_translate("FJ_Uploader_Main_Window", "Free Journal Website", None))
         self.actionGitHub_Source.setText(_translate("FJ_Uploader_Main_Window", "View Source Code", None))
-        self.actionPrefernces.setText(_translate("FJ_Uploader_Main_Window", "Preferences...", None))
-
-from frontend.uploader import resources_rc

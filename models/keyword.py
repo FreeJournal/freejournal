@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from models import DecBase
-from sqlalchemy.orm import relationship, backref
 
 
 class Keyword(DecBase):
@@ -11,7 +10,7 @@ class Keyword(DecBase):
             name: The keyword itself, as a string of max-length 50
     """
     __tablename__ = 'keyword'
-    id = Column(Integer, primary_key=True)
+
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     name = Column(String(50), nullable=False, unique=True)
-    #collection_address = Column(String, ForeignKey('collection.address'))
-    #collections = relationship("Collection", back_populates="keywords")
+
