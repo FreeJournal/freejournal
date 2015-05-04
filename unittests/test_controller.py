@@ -3,9 +3,11 @@ from controllers.controller import Controller
 from models.collection import Collection
 from models.keyword import Keyword
 from models.document import Document
+from config import DOCUMENT_DIRECTORY_PATH
 import uuid
 import datetime
 import time
+import os
 
 
 class TestController(unittest.TestCase):
@@ -142,3 +144,13 @@ class TestController(unittest.TestCase):
         self.assertEqual(coll.address, self.address)
         self.assertEqual(3, len(coll.documents))
         self.assertEqual(3, len(coll.keywords))
+
+    def test_save_document(self):
+        data = open('unittests/Test1.txt', 'r').read()
+        file_name = "Test1.txt"
+
+        self.controller._save_document(data, file_name, testing_mode=True)
+        self.assertTrue(os.path.exists(os.path.expanduser("Test1.txt")))
+
+suite = unittest.TestLoader().loadTestsFromTestCase(TestController)
+unittest.TextTestRunner(verbosity=2).run(suite)

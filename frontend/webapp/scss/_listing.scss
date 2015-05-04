@@ -1,0 +1,79 @@
+@import "mixins";
+
+.navigation {
+  padding-left: 0;
+  li {
+    display: inline-block;
+    font-size: 1.3em;
+    margin-right: 15px;
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+}
+
+.listing {
+  border: #CCC 1px solid;
+  @include box-shadow(0, 2px, 5px, 1px, #DDD);
+  padding: 10px;
+  margin-bottom: 15px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.listing-info-block {
+  display: inline-block;
+}
+
+.listing-title {
+}
+
+.listing-info {
+  font-size: 12px;
+}
+
+.listing-date {
+  display: inline-block;
+  margin-right: 12px;
+}
+
+.listing-submitter {
+  display: inline-block;
+}
+
+.listing-keywords {
+  display: inline-block;
+  float: right;
+  @media screen and (max-width: 700px) {
+    float: none;
+  }
+}
+
+.listing-vote {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.listing-icon {
+
+}
+
+.page-button {
+  display: inline-block;
+  border-radius: 3px;
+  padding: 5px;
+  &:hover {
+    background-color: #e3e3e3;
+  }
+  background-color: #eee;
+  border: #CCC 1px solid;
+}
+
+.page-prev {
+  float: left;
+}
+
+.page-next {
+  float: right;
+}

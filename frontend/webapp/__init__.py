@@ -1,25 +1,9 @@
-from flask import Flask, render_template, send_from_directory, g
-from make_celery import make_celery
-from datetime import timedelta
-import datetime
+from flask import Flask, render_template, send_from_directory, g, request
 from cache.cache import Cache
-
-
+from config import DOCUMENT_DIRECTORY_PATH, INDEX_LIMIT
+from os.path import expanduser
 
 app = Flask(__name__, static_folder='public')
-app.config.update(
-    CELERY_BROKER_URL='amqp://',
-    CELERY_RESULT_BACKEND='amqp://',
-    CELERYBEAT_SCHEDULE={
-        'periodic_test': {
-            'task': 'periodic_test',
-            'schedule': timedelta(seconds=5),
-            'args': (16, 16)
-        },
-    },
-    CELERY_TIMEZONE='UTC'
-)
-celery = make_celery(app)
 
 
 def get_cache():
@@ -36,57 +20,55 @@ def teardown_cache(exception):
         cache.close()
 
 
-from tasks.add_task import add_together
-from tasks.periodic_test import add_test
-
-documents = [
-    {
-        "name": "Company, Inc. Hiring Practices",
-        "type": "PDF",
-        "keywords": ["corporate", "hiring", "leak"],
-        "score": "1.243",
-        "date": datetime.datetime.now(),
-        "submitter": "wafflelover42"
-    },
-    {
-        "name": "Company, Inc. Hiring Practices",
-        "type": "PDF",
-        "keywords": ["corporate", "hiring", "leak"],
-        "score": "1.243",
-        "date": datetime.datetime.now(),
-        "submitter": "wafflelover42"
-    },
-    {
-        "name": "Company, Inc. Hiring Practices",
-        "type": "PDF",
-        "keywords": ["corporate", "hiring", "leak"],
-        "score": "1.243",
-        "date": datetime.datetime.now(),
-        "submitter": "wafflelover42"
-    },
-    {
-        "name": "Company, Inc. Hiring Practices",
-        "type": "PDF",
-        "keywords": ["corporate", "hiring", "leak"],
-        "score": "1.243",
-        "date": datetime.datetime.now(),
-        "submitter": "wafflelover42"
-    },
-]
-
-
 @app.route('/')
 def index():
-    # TODO: Use Flask `g` object to store database connection
-    return render_template("index.html", collections=get_cache().get_all_collections())
+    """
+    Index route page that lists available collections
+    """
+    page_num = request.args.get("p") or 0
+    try:
+        page_num = int(page_num)
+    except ValueError:
+        page_num = 0
+    offset = page_num * INDEX_LIMIT
+    return render_template("listing.html", collections=get_cache().get_collections_paginated(INDEX_LIMIT, offset),
+                           page=page_num)
+
+
+@app.route('/c/<string:collection>')
+def collection_page(collection):
+    """
+    Route for the collection page that lists documents in a collection
+    """
+    return render_template("collection.html", collection=get_cache().get_collection_with_address(collection))
 
 
 @app.route('/public/<path:path>')
 def send_static(path):
+    """
+    Route for sending static files e.g. CSS, images
+    """
     return send_from_directory('public', path)
 
 
-@app.route('/celerytest')
-def celery_test():
-    result = add_together.delay(23, 42)
-    return str(result.wait())
+@app.route('/file/<path:path>')
+def send_file(path):
+    """
+    Route for file downloads
+    """
+    # If the document path has a tilde, expand it
+    path_prefix = DOCUMENT_DIRECTORY_PATH
+    if path_prefix[0] == "~":
+        path_prefix = expanduser("~") + path_prefix[1:]
+    print "path:", path
+    return send_from_directory(path_prefix, path)
+
+
+@app.route('/about')
+def about_page():
+    return render_template("about.html")
+
+
+@app.route('/help')
+def help_page():
+    return render_template("help.html")

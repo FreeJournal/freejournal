@@ -1,0 +1,15 @@
+title Bitcoin Timestamp Verification
+
+note left of Frontend (commands.py): The adding of a document\nis handled by the\ndocument upload use case.
+
+Frontend (commands.py)->Cache: get_document(document hash, collection ID)
+
+Cache->Frontend (commands.py): models.Document object
+
+Frontend (commands.py)->timestamp.TimestampFile: init(models.Collection root_hash)
+
+Frontend (commands.py)->timestamp.TimestampFile: check_timestamp()
+
+Frontend (commands.py)->models.Collection: get_latest_timestamp()
+
+models.Collection->Frontend (commands.py): timestamp

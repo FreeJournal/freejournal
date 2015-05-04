@@ -115,4 +115,3 @@ class Collection(DecBase):
         latest_version = self.version_list.order_by(CollectionVersion.collection_version.desc()).first() 
         return latest_version
 
-

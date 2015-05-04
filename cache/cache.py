@@ -35,6 +35,15 @@ class Cache():
         """
         return self.session.query(Collection).order_by(Collection.creation_date.desc())
 
+    def get_collections_paginated(self, limit, offset):
+        """
+        Get a few collections, selecting using a limit and offset
+        :param limit: maximum number of collections to return
+        :param offset: how many collections to skip
+        :return: list of collections, ordered by date added
+        """
+        return self.session.query(Collection).order_by(Collection.creation_date.desc()).offset(offset).limit(limit)
+
     def get_collection_with_address(self, address):
         """
         Retreive a specific collection as it's stored locally
@@ -57,6 +66,19 @@ class Cache():
         row = None
         try:
             row = self.session.query(Keyword).filter(Keyword.id == cur_id).one()
+        except NoResultFound:
+            pass
+        return row
+
+    def get_keyword_by_name(self, name):
+        """
+        Retrieve a specific keyword by it's name
+        :param name: The name of the requested keyword
+        :return: The Keyword object if in the cache, None otherwise
+        """
+        row = None
+        try:
+            row = self.session.query(Keyword).filter(Keyword.name == name).one()
         except NoResultFound:
             pass
         return row
@@ -107,10 +129,10 @@ class Cache():
         collection = self.session.query(Collection).filter_by(address = document.collection_address).first()
         self.insert_new_document_in_collection(document, collection)
 
-    #Note, if this is called manually(and not via cli/api) the collection root hash will not be updated
     def insert_new_document_in_collection(self,document,collection):
         """
         Insert a new document associated with an existing collection into local storage
+        WARNING: if this is called manually(and not via cli/api) the collection root hash will not be updated
         :param document: Document object to insert into local storage
         """
         self.session.add(document)

@@ -1,0 +1,37 @@
+{% extends "container.html" %}
+
+{% block title %}
+FreeJournal
+{% endblock %}
+
+{% block container_content %}
+<h1>Recent Collections</h1>
+	{% for collection in collections %}
+	<div class="listing">
+		<div class="listing-info-block">
+			<div class="listing-title">
+				<a href="/c/{{collection.address}}">{{collection.title}}</a>
+			</div>
+			<div class="listing-info">
+				<div class="listing-date">
+					{{collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p")}} UTC
+				</div>
+				<div class="listing-submitter">
+					Submitted by {{collection.address}}
+				</div>
+			</div>
+		</div>
+		<div class="listing-keywords">
+			{% for keyword in collection.keywords %}
+			<a href="#">{{keyword.name}}</a>{% if not loop.last %},{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+	{% endfor %}
+<div class="pagination">
+	{% if not page == 0 %}
+	<a class="page-button page-prev" href="/?p={{page - 1}}">Previous</a>
+	{% endif %}
+	<a class="page-button page-next" href="/?p={{page + 1}}">Next</a>
+</div>
+{% endblock %}

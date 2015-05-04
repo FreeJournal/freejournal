@@ -6,6 +6,10 @@ class Signature(DecBase):
     """ A signature validates the contents of a collection.
 
         Attributes:
+            id: The unique identifier for a signature
+            pubkey: the Bitmessage pubkey associated with this signature
+            signature: the SHA256 hash of the pubkey and the contents of the associated collection
+            address: the Bitmessage address that this signature is for
 
     """
     __tablename__ = 'signature'
