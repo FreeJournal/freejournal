@@ -7,11 +7,6 @@
 {% block container_content %}
 	<div class="collection">
 		<div class="collection-title">
-			<div class="listing-vote">
-				<a href="#" class="vote-triangle vote-triangle-up"></a>
-				<div class="vote-score">+200</div>
-				<a href="#" class="vote-triangle vote-triangle-down"></a>
-			</div>
 			<div class="listing-info-block">
 				<div class="listing-title">
 					{{collection.title}}
@@ -21,7 +16,7 @@
 						{{collection.creation_date.strftime("%A, %d. %B %Y %I:%M%p")}}
 					</div>
 					<div class="listing-submitter">
-						Submitted by <a href="#">{{collection.address}}</a>
+						Submitted by {{collection.address}}
 					</div>
 				</div>
 			</div>
@@ -34,9 +29,9 @@
 		{% for document in collection.documents %}
 		<div class="document">
 			<div class="document-title-block">
-				<img src="public/img/document.png" class="listing-icon"/>
+				<img src="/public/img/document.png" class="listing-icon"/>
 				<div class="document-title">
-					<a href="{{document.filename}}" target="_blank">{{document.title}}</a>
+					<a href="/file{{document.filename}}" target="_blank">{{document.title}}</a>
 				</div>
 			</div>
 			<div class="document-description">

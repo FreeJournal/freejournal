@@ -1,8 +1,17 @@
+.navigation {
+  padding-left: 0; }
+  .navigation li {
+    display: inline-block;
+    font-size: 1.3em;
+    margin-right: 15px; }
+    .navigation li:last-of-type {
+      margin-right: 0; }
+
 .listing {
   border: #CCC 1px solid;
-  -webkit-box-shadow: 0 1px 3px 1px #DDD;
-  -moz-box-shadow: 0 1px 3px 1px #DDD;
-  box-shadow: 0 1px 3px 1px #DDD;
+  -webkit-box-shadow: 0 2px 5px 1px #DDD;
+  -moz-box-shadow: 0 2px 5px 1px #DDD;
+  box-shadow: 0 2px 5px 1px #DDD;
   padding: 10px;
   margin-bottom: 15px; }
   .listing:last-of-type {
@@ -32,11 +41,26 @@
   display: inline-block;
   vertical-align: top; }
 
+.page-button {
+  display: inline-block;
+  border-radius: 3px;
+  padding: 5px;
+  background-color: #eee;
+  border: #CCC 1px solid; }
+  .page-button:hover {
+    background-color: #e3e3e3; }
+
+.page-prev {
+  float: left; }
+
+.page-next {
+  float: right; }
+
 .collection {
   border: #CCC 1px solid;
-  -webkit-box-shadow: 0 1px 3px 1px #DDD;
-  -moz-box-shadow: 0 1px 3px 1px #DDD;
-  box-shadow: 0 1px 3px 1px #DDD; }
+  -webkit-box-shadow: 0 1px 10px 1px #DDD;
+  -moz-box-shadow: 0 1px 10px 1px #DDD;
+  box-shadow: 0 1px 10px 1px #DDD; }
 
 .collection-title {
   padding: 10px;
@@ -90,6 +114,9 @@ a {
   text-decoration: none; }
   a:hover {
     text-decoration: underline; }
+
+h1 {
+  font-size: 1.6em; }
 
 .container {
   margin: 0 auto;

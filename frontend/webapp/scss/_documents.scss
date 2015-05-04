@@ -1,8 +1,9 @@
 @import "variables";
+@import "mixins";
 
 .collection {
   border: $box-border-color 1px solid;
-  @include box-shadow(0, 1px, 3px, 1px, #DDD);
+  @include box-shadow(0, 1px, 10px, 1px, #DDD);
 }
 
 .collection-title {
