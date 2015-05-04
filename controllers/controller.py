@@ -43,7 +43,7 @@ class Controller:
             print "Signature Not Verified"
             return False
 
-    def _save_document(self, data, file_name):
+    def _save_document(self, data, file_name, testing_mode=False):
         """
         Private helper function for writing file data to disk.
         Creates the file to the directory specified in config.py.
@@ -54,7 +54,11 @@ class Controller:
         """
 
         try:
-            file_path = os.path.expanduser(DOCUMENT_DIRECTORY_PATH) + file_name
+            if testing_mode:
+                file_path = file_name
+            else:
+                file_path = os.path.expanduser(DOCUMENT_DIRECTORY_PATH) + file_name
+
             open(file_path, 'w').write(data)
             return True
         except Exception as e:
