@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
-import sys
-import datetime
-import uuid
+import sys, datetime, uuid, shutil, os
 
 # BitMessage installer imports
 import platform
@@ -194,17 +192,21 @@ def put_document(file_path, collection_address, title, description):
         :param title: the title of the document being uploaded
         :param description: the description of the document being uploaded
     """
-    file_name = file_path.rsplit('/', 1)[0]
+    file_name = os.path.basename(file_path)
     contents = open(file_path).read()
     freeCon = FreenetConnection()
     uri = freeCon.put(contents)
+    name, extension = os.path.splitext(file_name)
+    hash_name = uri
+    new_file_name = hash_name + extension
+    shutil.copy(file_path, os.path.expanduser(config.DOCUMENT_DIRECTORY_PATH) + new_file_name)
     document = Document(
-        collection_address=collection_address,
-        description=description,
-        hash=uri,
-        title=title,
-        filename=file_name,
-        accesses=0
+        collection_address = collection_address,
+        description = description,
+        hash = uri,
+        title = title,
+        filename = new_file_name,
+        accesses = 0
     )
     cache.insert_new_document(document)
     collection = cache.get_collection_with_address(collection_address)

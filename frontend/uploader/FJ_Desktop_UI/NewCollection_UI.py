@@ -30,19 +30,15 @@ class Ui_DialogNewCollection(object):
 
     def setupUi(self, DialogNewCollection):
         DialogNewCollection.setObjectName(_fromUtf8("DialogNewCollection"))
-        DialogNewCollection.resize(450, 500)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        DialogNewCollection.resize(475, 500)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
             DialogNewCollection.sizePolicy().hasHeightForWidth())
         DialogNewCollection.setSizePolicy(sizePolicy)
-        DialogNewCollection.setMinimumSize(QtCore.QSize(450, 500))
-        icon = QtGui.QIcon(
-            os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_icon.jpg')
-        # icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")),
-        # QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        DialogNewCollection.setMinimumSize(QtCore.QSize(475, 500))
+        icon = QtGui.QIcon(os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_icon.jpg')
         DialogNewCollection.setWindowIcon(icon)
         self.verticalLayout_4 = QtGui.QVBoxLayout(DialogNewCollection)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
@@ -127,17 +123,9 @@ class Ui_DialogNewCollection(object):
         QtCore.QMetaObject.connectSlotsByName(DialogNewCollection)
 
     def retranslateUi(self, DialogNewCollection):
-        DialogNewCollection.setWindowTitle(
-            _translate("DialogNewCollection", "New Collection", None))
-        self.label.setText(
-            _translate("DialogNewCollection", "Create a new Collection by filling out the information below:", None))
-        self.labelCollectionName.setText(
-            _translate("DialogNewCollection", "Collection Name:", None))
-        self.label_3.setText(
-            _translate("DialogNewCollection", "Password:", None))
-        self.label_2.setText(
-            _translate("DialogNewCollection", "Description:", None))
-        self.labelAddKeywords.setText(
-            _translate("DialogNewCollection", "Add Keywords:", None))
-
-from frontend.uploader import resources_rc
+        DialogNewCollection.setWindowTitle(_translate("DialogNewCollection", "New Collection", None))
+        self.label.setText(_translate("DialogNewCollection", "Create a new Collection by filling out the information below:", None))
+        self.labelCollectionName.setText(_translate("DialogNewCollection", "Collection Title:", None))
+        self.label_3.setText(_translate("DialogNewCollection", "Password:", None))
+        self.label_2.setText(_translate("DialogNewCollection", "Description:", None))
+        self.labelAddKeywords.setText(_translate("DialogNewCollection", "Add Keywords:", None))

@@ -3,7 +3,6 @@ from PyQt4 import QtCore, QtGui
 import frontend.uploader.FJ_Desktop_UI.fjUploaderUI as UploaderUI
 import frontend.uploader.FJ_Desktop_UI.NewCollection_UI as NewCollection_UI
 import frontend.uploader.FJ_Desktop_UI.About_UI as About_UI
-import frontend.uploader.FJ_Desktop_UI.Preferences_UI as Preferences_UI
 import webbrowser
 from frontend.cli import commands as CLI
 from os.path import isfile
@@ -38,15 +37,12 @@ class StartQT4(QtGui.QMainWindow):
 
         # button definitions
         self.ui.pushButtonNew.clicked.connect(self.NewCollecWindowOpen)
-        self.ui.actionNew_Collection.triggered.connect(
-            self.NewCollecWindowOpen)
-        self.ui.actionAbout_Free_Journal.triggered.connect(
-            self.NewAboutWindowOpen)
-        self.ui.actionPrefernces.triggered.connect(self.NewPrefWindowOpen)
+        self.ui.actionNew_Collection.triggered.connect(self.NewCollecWindowOpen)
+        self.ui.actionAbout_Free_Journal.triggered.connect(self.NewAboutWindowOpen)
         self.ui.actionFree_Journal_Website.triggered.connect(self.FJWeb)
         self.ui.actionGitHub_Source.triggered.connect(self.FJSource)
         self.ui.actionView_Documentation.triggered.connect(self.FJDocs)
-        self.ui.pushButtonDelete.clicked.connect(self.DeleteStuff)
+        self.ui.pushButtonDelete.clicked.connect(self.DeleteCollection)
         self.ui.pushButtonPublish.clicked.connect(self.Publish)
         self.ui.treeWidgetCollections.itemClicked.connect(self.EnableFunctions)
         self.ui.pushButtonAdd.clicked.connect(self.AddDoc)
@@ -85,23 +81,34 @@ class StartQT4(QtGui.QMainWindow):
                     message.addButton("OK", QtGui.QMessageBox.AcceptRole)
                     message.exec_()
             else:
-                message = QtGui.QMessageBox(self)
-                message.setText("Please select a valid file.")
-                message.setWindowTitle("Error")
-                message.setIcon(QtGui.QMessageBox.Warning)
-                message.addButton("OK", QtGui.QMessageBox.AcceptRole)
-                message.exec_()
-
+                 message = QtGui.QMessageBox(self)
+                 message.setText("Please select a valid file.")
+                 message.setWindowTitle("Error")
+                 message.setIcon(QtGui.QMessageBox.Warning)
+                 message.addButton("OK", QtGui.QMessageBox.AcceptRole)
+                 message.exec_() 
+           
     def RemoveDoc(self):
-
-        self.UpdateTreeFromCache()
-
+        if self.ui.treeWidgetCollections.currentItem() is None: return
+        selectedItem = self.ui.treeWidgetCollections.currentItem()
+        document_hash = str(selectedItem.text(2))
+        if document_hash != '':
+            document = CLI.cache.get_document_by_hash(document_hash)
+            CLI.cache.remove_document(document)
+            self.UpdateTreeFromCache()
+        
     def EnableFunctions(self):
         self.ui.pushButtonPublish.setEnabled(True)
         self.ui.pushButtonDelete.setEnabled(True)
         self.ui.pushButtonAdd.setEnabled(True)
         self.ui.pushButtonRemove.setEnabled(True)
-
+    
+    def DisableFunctions(self):
+        self.ui.pushButtonPublish.setEnabled(False)
+        self.ui.pushButtonDelete.setEnabled(False)
+        self.ui.pushButtonAdd.setEnabled(False)
+        self.ui.pushButtonRemove.setEnabled(False)
+        
     def UpdateTreeFromCache(self):
         self.ui.treeWidgetCollections.clear()
         for collection in CLI.cache.get_all_collections():
@@ -134,8 +141,8 @@ class StartQT4(QtGui.QMainWindow):
         webbrowser.open('http://www.freejournal.org', new=0, autoraise=True)
 
     def Publish(self, checked=None):
-        if checked == None:
-            return
+        if checked==None: return
+        if self.ui.treeWidgetCollections.currentItem() is None: return
         selectedItem = self.ui.treeWidgetCollections.currentItem()
         collection_address = str(selectedItem.text(1))
         (password, pressed) = QtGui.QInputDialog.getText(self, "Collection Password",
@@ -154,10 +161,10 @@ class StartQT4(QtGui.QMainWindow):
                 message.setIcon(QtGui.QMessageBox.Warning)
                 message.addButton("OK", QtGui.QMessageBox.AcceptRole)
                 message.exec_()
-
-    def DeleteStuff(self, checked=None):
-        if checked == None:
-            return
+                
+    def DeleteCollection(self, checked=None):
+        if checked==None: return
+        if self.ui.treeWidgetCollections.currentItem() is None: return
         message = QtGui.QMessageBox(self)
         message.setText("Are you sure you want to delete this Collection?")
         message.setWindowTitle("Delete Collection")
@@ -178,7 +185,10 @@ class StartQT4(QtGui.QMainWindow):
                 collection_address)
             CLI.cache.remove_collection(collection)
             self.ui.lineEditOut.setText("Collection deleted successfully!")
-
+            if self.ui.treeWidgetCollections.currentItem() is None:
+                self.DisableFunctions()
+                
+    
     def NewAboutWindowOpen(self, checked=None):
         if checked == None:
             return
@@ -186,29 +196,13 @@ class StartQT4(QtGui.QMainWindow):
         NewAbout.ui = About_UI.Ui_Form()
         NewAbout.ui.setupUi(NewAbout)
         NewAbout.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        NewAbout.exec_()
-
-    def NewPrefWindowOpen(self, checked=None):
-        if checked == None:
-            return
-        PrefDialog = NewPrefWindow(self)
-        PrefDialog.show()
+        NewAbout.exec_() 
 
     def NewCollecWindowOpen(self, checked=None):
         if checked == None:
             return
         dialogObject = NewCollecWindow(self)
         dialogObject.show()
-
-
-class NewPrefWindow(QtGui.QDialog):
-
-    def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
-        self.ui = Preferences_UI.Ui_DialogPreferences()
-        self.ui.setupUi(self)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-
 
 class NewCollecWindow(QtGui.QDialog):
 
@@ -226,18 +220,32 @@ class NewCollecWindow(QtGui.QDialog):
         self.address_password = ''
         self.collection_address = ''
         self.ui.buttonBoxConfirm.accepted.connect(self.PutCollection)
-
-    def PutCollection(self):
-        self.address_password = str(self.ui.lineEditPassword.text())
-        self.title = str(self.ui.lineEditCollectionName.text())
-        self.description = str(self.ui.plainTextEditDescription.toPlainText())
-        self.keywords = str(self.ui.plainTextEditAddKeywords.toPlainText())
-        self.btc = "btc123"
-        CLI.put_collection(
-            self.address_password, self.title, self.description, self.keywords, self.btc)
-        main_UI.ui.lineEditOut.setText("Collection created successfully!")
-        main_UI.UpdateTreeFromCache()
-
+        
+      def PutCollection(self):
+          self.address_password = str(self.ui.lineEditPassword.text())
+          self.title = str(self.ui.lineEditCollectionName.text())
+          self.description = str(self.ui.plainTextEditDescription.toPlainText())
+          self.keywords = str(self.ui.plainTextEditAddKeywords.toPlainText())
+          self.btc = "btc123"         
+          if self.address_password == '': 
+              message = QtGui.QMessageBox(self)
+              message.setText("A Collection password is required.")
+              message.setWindowTitle("Error")
+              message.setIcon(QtGui.QMessageBox.Warning)
+              message.addButton("OK", QtGui.QMessageBox.AcceptRole)
+              message.exec_()   
+          elif self.title == '':
+              message = QtGui.QMessageBox(self)
+              message.setText("Please enter a Collection title.")
+              message.setWindowTitle("Error")
+              message.setIcon(QtGui.QMessageBox.Warning)
+              message.addButton("OK", QtGui.QMessageBox.AcceptRole)
+              message.exec_() 
+          else:
+              CLI.put_collection(self.address_password, self.title, self.description, self.keywords, self.btc)
+              main_UI.ui.lineEditOut.setText("Collection created successfully!")
+              main_UI.UpdateTreeFromCache()
+      
 
 def run():
     app = QtGui.QApplication(sys.argv)

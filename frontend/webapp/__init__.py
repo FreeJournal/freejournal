@@ -58,10 +58,7 @@ def send_file(path):
     Route for file downloads
     """
     # If the document path has a tilde, expand it
-    path_prefix = DOCUMENT_DIRECTORY_PATH
-    if path_prefix[0] == "~":
-        path_prefix = expanduser("~") + path_prefix[1:]
-    print "path:", path
+    path_prefix = expanduser(DOCUMENT_DIRECTORY_PATH)
     return send_from_directory(path_prefix, path)
 
 
