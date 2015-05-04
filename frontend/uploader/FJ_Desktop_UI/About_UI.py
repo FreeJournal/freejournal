@@ -36,7 +36,6 @@ class Ui_Form(object):
         Form.setMinimumSize(QtCore.QSize(300, 200))
         Form.setMaximumSize(QtCore.QSize(300, 200))
         icon = QtGui.QIcon(os.getcwd() + '/frontend/uploader/FJ_Desktop_UI/FreeJournal_icon.jpg')
-        #icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/FreeJournal_icon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Form.setWindowIcon(icon)
         self.gridLayout = QtGui.QGridLayout(Form)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
@@ -66,7 +65,5 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "About Free Journal", None))
-        self.label_3.setText(_translate("Form", "Version 0.0.1                                        MIT License", None))
+        self.label_3.setText(_translate("Form", "Version 0.0.1                          MIT License", None))
         self.label_2.setText(_translate("Form", "Free Journal", None))
-
-from frontend.uploader import resources_rc

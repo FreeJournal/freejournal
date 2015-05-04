@@ -147,5 +147,13 @@ class Cache():
         self.session.delete(collection)
         self.session.commit()
         
+    def remove_document(self, document):
+        """
+        Remove a document from a collection from local storage
+        :param document: Document object to remove from local storage
+        """
+        self.session.delete(document)
+        self.session.commit()
+        
     def close(self):
         self.session.close()
