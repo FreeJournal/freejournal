@@ -140,7 +140,6 @@ class Controller:
                 print("Couldn't download " + file_name + " from freenet")
                 continue
 
-<<<<<<< HEAD
             # If the file data was successfully downloaded, save the data to
             # disk
             success = self._save_document(data, file_name)
