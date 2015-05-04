@@ -126,8 +126,8 @@ class Collection(DecBase):
         curr_time = date_check['time']
         split_time = curr_time[0:4]+" "+curr_time[5:7]+" "+curr_time[8:10]+" "+curr_time[11:13]+" "+curr_time[14:16]+" "+curr_time[17:19]
         cmp_curr_time = time.strptime(split_time, "%Y %m %d %H %M %S")
-        curr_txs= curr_time + ";" + date_check['Transaction']
-        if self.oldest_date == None:
+        curr_txs = curr_time + ";" + date_check['Transaction']
+        if self.oldest_date is None:
             self.oldest_date = cmp_curr_time
             self.oldest_btc_tx = curr_txs
             self.latest_btc_tx = curr_txs
