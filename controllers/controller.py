@@ -103,11 +103,9 @@ class Controller:
             file_name = document.filename
             if not document.filename:
                 file_name = document.title + str(randint(0, 100))
-
             name, extension = os.path.splitext(file_name)
-            hash_name = hashlib.sha256(name + str(randint(0, 100))).hexdigest()
+            hash_name = document.hash
             new_file_name = hash_name + extension
-
             #Save the new file name to the cache so it can be viewed later
             document.filename = new_file_name
             self.cache.insert_new_document_in_collection(document, collection)
@@ -129,9 +127,8 @@ class Controller:
             # Store and validate that the document has a file name
             file_name = document.filename
             if not file_name:
-                file_name = collection_title + str(doc_counter)
+                file_name = collection_title + str(doc_counter) + document.title
                 doc_counter += 1
-
             # Try obtaining the file data from freenet
             data = self._get_document(document.hash)
             if not data:
