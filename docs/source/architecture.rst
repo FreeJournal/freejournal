@@ -45,6 +45,7 @@ The following are the freejournal database objects:
 .. uml:: ../../models/document.py
 .. uml:: ../../models/collection.py
 .. uml:: ../../models/keyword.py
+.. uml:: ../../models/signature.py
 .. uml:: ../../models/fj_message.py
 
 Each Column is a database column in our local cache.  Each file represents a type
@@ -133,5 +134,10 @@ Use Case 4
 ----------
 
 .. image:: ../uml/sequence/UC4.png
+
+Use Case 5
+----------
+
+.. image:: ../uml/sequence/UC5.png
 
 
