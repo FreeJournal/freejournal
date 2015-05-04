@@ -115,30 +115,4 @@ class Collection(DecBase):
         latest_version = self.version_list.order_by(CollectionVersion.collection_version.desc()).first() 
         return latest_version
 
-    def update_timestamp (self):
-        collection_version = get_latest_version()
-        if(collection_version == None):
-            print("Timestamp called on empty collection, CollectionVersion not in Cache")
-            return
-        
-        timestamp_obj = TimestampFile(collection_version.root_hash)
-        date_check = timestamp_obj.check_timestamp()
-        curr_time = date_check['time']
-        split_time = curr_time[0:4]+" "+curr_time[5:7]+" "+curr_time[8:10]+" "+curr_time[11:13]+" "+curr_time[14:16]+" "+curr_time[17:19]
-        cmp_curr_time = time.strptime(split_time, "%Y %m %d %H %M %S")
-        curr_txs= curr_time + ";" + date_check['Transaction']
-        if self.oldest_date == None:
-            self.oldest_date = cmp_curr_time
-            self.oldest_btc_tx = curr_txs
-            self.latest_btc_tx = curr_txs
-            return
-        split_time = self.latest_btc_tx.split(";")
-        latest_time = split_time[0]
-        latest_time_str = latest_time[0:4]+" "+latest_time[5:7]+" "+latest_time[8:10]+" "+latest_time[11:13]+" "+latest_time[14:16]+" "+latest_time[17:19]
-        cmp_latest = time.strptime(latest_time_str, "%Y %m %d %H %M %S")
-        if cmp_curr_time < self.oldest_date:
-            self.oldest_date = cmp_curr_time
-            self.oldest_btc_tx = curr_txs
-        if cmp_curr_time > cmp_latest:
-            self.latest_btc_tx = curr_txs
 
