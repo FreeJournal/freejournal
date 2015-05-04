@@ -21,11 +21,11 @@
   display: inline-block; }
 
 .listing-info {
-  font-size: 11px; }
+  font-size: 12px; }
 
 .listing-date {
   display: inline-block;
-  margin-right: 10px; }
+  margin-right: 12px; }
 
 .listing-submitter {
   display: inline-block; }
@@ -108,7 +108,8 @@
 body {
   background-color: #FFF;
   margin: 0;
-  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
+  font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
+  line-height: 1.3em; }
 
 a {
   text-decoration: none; }
